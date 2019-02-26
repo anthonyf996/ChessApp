@@ -1,7 +1,7 @@
 class Piece:
   def __init__(self, color, stepLimit ):
     self.color = color
-    self.movementVectors = []
+    self.movementVectors = set()
     self.stepLimit = stepLimit
     self.hasMoved = False
 
@@ -19,3 +19,6 @@ class Piece:
 
   def setHasMoved(self):
     self.hasMoved = True
+
+  def getExtraMoves(self):
+    return set()
