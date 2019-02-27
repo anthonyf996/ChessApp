@@ -23,5 +23,5 @@ class Piece:
   def getHasMoved(self):
     return self.hasMoved
 
-  def setHasMoved(self):
-    self.hasMoved = True
+  def setHasMoved(self, b = True):
+    self.hasMoved = b

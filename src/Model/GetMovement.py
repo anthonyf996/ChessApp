@@ -1,6 +1,6 @@
 # This is the base class of a Template Design Pattern and should not
 # be instantiated.
-class Movement:
+class GetMovement:
   def __init__(self):
     pass
 

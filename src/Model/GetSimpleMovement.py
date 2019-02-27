@@ -1,7 +1,7 @@
-from Move import Move
-from Movement import Movement
+from SimpleMove import SimpleMove
+from GetMovement import GetMovement
 
-class SimpleMovement(Movement):
+class GetSimpleMovement(GetMovement):
   def getStepLimit(self, piece):
     return piece.getStepLimit()
 
@@ -12,6 +12,6 @@ class SimpleMovement(Movement):
     return moves
 
   def checkToAddMove(self, moves, currPos, potentialMove):
-    moves.add( Move( currPos, potentialMove ) )
+    moves.add( SimpleMove( currPos, potentialMove ) )
 
     return moves

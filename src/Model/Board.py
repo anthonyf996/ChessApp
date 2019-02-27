@@ -1,7 +1,5 @@
-from MoveType import MoveType
-from Move import Move
-from SimpleMovement import SimpleMovement
-from EatMovement import EatMovement
+from GetSimpleMovement import GetSimpleMovement
+from GetEatMovement import GetEatMovement
 
 class Board:
   def __init__(self, numRows, numCols):
@@ -43,13 +41,19 @@ class Board:
     return currPiece.getColor() != otherPiece.getColor()
 
   def getMoves(self, pos):
-    return SimpleMovement().getMoves( self, pos )
+    return GetSimpleMovement().getMoves( self, pos )
 
   def getEatMoves(self, pos):
-    return EatMovement().getMoves( self, pos )
+    return GetEatMovement().getMoves( self, pos )
 
   def move(self, move):
+    """
     startPos, endPos = move.getPosPair()
     self.addPiece( endPos, self.getPiece( startPos ) )
     self.removePiece( startPos )
     self.getPiece( endPos ).setHasMoved()
+    """
+    move.perform( self )
+
+  def undo(self, move):
+    move.undo( self )

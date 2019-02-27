@@ -1,19 +1,15 @@
-from MoveType import MoveType
-
 class Move:
-  def __init__(self, startPos, endPos, moveType = MoveType.MOVE):
+  def __init__(self, startPos, endPos):
     self.startPos = startPos
     self.endPos = endPos
-    self.moveType = moveType
 
   def __repr__(self):
-    return "Move(%s,%s,%s)" % ( self.getStartPos(), self.getEndPos(), self.getMoveType() )
+    return "Move(%s,%s)" % ( self.getStartPos(), self.getEndPos() )
 
   def __eq__(self, other):
     if isinstance(other, Move):
       return ( self.getStartPos() == other.getStartPos() and \
-               self.getEndPos() == other.getEndPos() and \
-               self.getMoveType() == other.getMoveType() )
+               self.getEndPos() == other.getEndPos() )
     else:
       return False
 
@@ -28,6 +24,3 @@ class Move:
 
   def getPosPair(self):
     return self.getStartPos(), self.getEndPos()
-
-  def getMoveType(self):
-    return self.moveType

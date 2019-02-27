@@ -1,8 +1,7 @@
-from MoveType import MoveType
-from Move import Move
-from Movement import Movement
+from EatMove import EatMove
+from GetMovement import GetMovement
 
-class EatMovement(Movement):
+class GetEatMovement(GetMovement):
   def getStepLimit(self, piece):
     return piece.getEatStepLimit()
 
@@ -10,7 +9,7 @@ class EatMovement(Movement):
     return piece.getEatVectors()
 
   def checkToAddEat(self, moves, currPos, potentialMove):
-    moves.add( Move( currPos, potentialMove, MoveType.EAT ) )
+    moves.add( EatMove( currPos, potentialMove ) )
     return moves
 
   def checkToAddMove(self, moves, currPos, potentialMove):
