@@ -12,7 +12,7 @@ class Pon( Piece ):
   def setCanEnPassant(self, b):
     self.canEnPassant = b
 
-  def getExtraMoves(self):
+  def getMovementVectors(self):
     extraMoves = set()
 
     if not self.getHasMoved():
@@ -21,4 +21,7 @@ class Pon( Piece ):
     if not self.getHasMoved() and self.getCanEnPassant():
       extraMoves = extraMoves.union( { ( 1, 1 ), ( -1, 1 ) } )
 
-    return extraMoves
+    return self.movementVectors.union( extraMoves )
+
+  def getEatVectors(self):
+    return { ( 1, 1 ), ( -1, 1 ) }

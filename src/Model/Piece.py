@@ -11,6 +11,12 @@ class Piece:
   def getMovementVectors(self):
     return self.movementVectors
 
+  def getEatVectors(self):
+    return self.getMovementVectors()
+
+  def getEatStepLimit(self):
+    return self.getStepLimit()
+
   def getStepLimit(self):
     return self.stepLimit
 
@@ -19,6 +25,3 @@ class Piece:
 
   def setHasMoved(self):
     self.hasMoved = True
-
-  def getExtraMoves(self):
-    return set()

@@ -9,10 +9,13 @@ from Rook import Rook
 from Queen import Queen
 from King import King
 from Board import Board
+from Move import Move
+from MoveType import MoveType
 
 class TestBoard(unittest.TestCase):
   def setUp(self):
     self.color = PieceColor.LIGHT
+    self.otherColor = PieceColor.DARK
     self.board = Board( 8, 8 )
 
   def test_Board(self):
@@ -44,59 +47,170 @@ class TestBoard(unittest.TestCase):
     self.assertFalse( self.board.isValidMove( ( 8, 7 ) ) )
     self.assertFalse( self.board.isValidMove( ( -1, 7 ) ) )
     self.assertFalse( self.board.isValidMove( ( 1, -1 ) ) )
+
+  def test_isCollision(self):
+    self.assertFalse( self.board.isCollision( ( 0, 0 ) ) )
     self.board.addPiece( ( 0, 0 ), Pon( self.color ) )
-    self.assertFalse( self.board.isValidMove( ( 0, 0 ) ) )
+    self.assertTrue( self.board.isCollision( ( 0, 0 ) ) )
+
+  def pairsToMoves(self, startPos, pairsSet, moveType = MoveType.MOVE):
+    moves = set()
+
+    for p in pairsSet:
+      moves.add( Move( startPos, p, moveType ) )
+
+    return moves
 
   def test_getMoves_Pon(self):
-    self.board.addPiece( ( 1, 1 ), Pon( self.color ) ) 
-    self.assertTrue( self.board.getMoves( ( 1, 1 ) ) == { ( 1, 2 ), ( 1, 3 ) } )
+    startPos = ( 1, 1 )
+    self.board.addPiece( startPos, Pon( self.color ) ) 
+    pairsSet = { ( 1, 2 ), ( 1, 3 ) }
+    self.assertEqual( self.board.getMoves( startPos ), self.pairsToMoves( startPos, pairsSet ) )
 
   def test_getMoves_Pon_CanEnPassant(self):
-    self.board.addPiece( ( 1, 1 ), Pon( self.color ) ) 
-    self.board.getPiece( ( 1, 1 ) ).setCanEnPassant( True )
-    self.assertFalse( self.board.getMoves( ( 1, 1 ) ) == { ( 1, 2 ), ( 1, 3 ) } )
-    self.assertTrue( self.board.getMoves( ( 1, 1 ) ) == { ( 1, 2 ), ( 1, 3 ), ( 2, 2 ), ( 0, 2 ) } )
+    startPos = ( 1, 1 )
+    self.board.addPiece( startPos, Pon( self.color ) ) 
+    self.board.getPiece( startPos ).setCanEnPassant( True )
+    self.assertFalse( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { Move( ( 1, 1 ), ( 1, 2 ) ), Move( ( 1, 1 ), ( 1, 3 ) ) } ) )
+    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 2 ), ( 1, 3 ), ( 2, 2 ), ( 0, 2 ) } ) )
 
   def test_getMoves_Knight(self):
-    self.board.addPiece( ( 2, 2 ), Knight( self.color ) ) 
-    self.assertTrue( self.board.getMoves( ( 2, 2 ) ) == { ( 1, 0 ), ( 0, 1 ), ( 4, 3 ), ( 3, 4 ), ( 3, 0 ), ( 1, 4 ), ( 0, 3 ), ( 4, 1 ) } )
+    startPos = ( 2, 2 )
+    self.board.addPiece( startPos, Knight( self.color ) ) 
+    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 0 ), ( 0, 1 ), ( 4, 3 ), ( 3, 4 ), ( 3, 0 ), ( 1, 4 ), ( 0, 3 ), ( 4, 1 ) } ) )
 
   def test_getMoves_Bishop(self):
-    self.board.addPiece( ( 2, 2 ), Bishop( self.color, 8 ) ) 
-    self.assertTrue( self.board.getMoves( ( 2, 2 ) ) == { ( 0, 0 ), ( 1, 1 ), ( 3, 3 ), ( 4, 4 ), ( 5, 5 ), ( 6, 6 ), ( 7, 7 ), ( 1, 3 ), ( 0, 4 ), ( 3, 1 ), ( 4, 0 ) } )
+    startPos = ( 2, 2 )
+    self.board.addPiece( startPos, Bishop( self.color, 8 ) ) 
+    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 0, 0 ), ( 1, 1 ), ( 3, 3 ), ( 4, 4 ), ( 5, 5 ), ( 6, 6 ), ( 7, 7 ), ( 1, 3 ), ( 0, 4 ), ( 3, 1 ), ( 4, 0 ) } ) )
 
   def test_getMoves_Rook(self):
-    self.board.addPiece( ( 2, 2 ), Rook( self.color, 8 ) ) 
-    self.assertTrue( self.board.getMoves( ( 2, 2 ) ) == { ( 2, 1 ), ( 2, 0 ), ( 2, 3 ), ( 2, 4 ), ( 2, 5 ), ( 2, 6 ), ( 2, 7 ), ( 1, 2 ), ( 0, 2 ), ( 3, 2 ), ( 4, 2 ), ( 5, 2 ), ( 6, 2 ), ( 7, 2 ) } )
+    startPos = ( 2, 2 )
+    self.board.addPiece( startPos, Rook( self.color, 8 ) ) 
+    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 2, 1 ), ( 2, 0 ), ( 2, 3 ), ( 2, 4 ), ( 2, 5 ), ( 2, 6 ), ( 2, 7 ), ( 1, 2 ), ( 0, 2 ), ( 3, 2 ), ( 4, 2 ), ( 5, 2 ), ( 6, 2 ), ( 7, 2 ) } ) )
 
   def test_getMoves_Queen(self):
-    self.board.addPiece( ( 2, 2 ), Queen( self.color, 8 ) ) 
-    self.assertTrue( self.board.getMoves( ( 2, 2 ) ) == { ( 0, 0 ), ( 1, 1 ), ( 3, 3 ), ( 4, 4 ), ( 5, 5 ), ( 6, 6 ), ( 7, 7 ), ( 1, 3 ), ( 0, 4 ), ( 3, 1 ), ( 4, 0 ), ( 2, 1 ), ( 2, 0 ), ( 2, 3 ), ( 2, 4 ), ( 2, 5 ), ( 2, 6 ), ( 2, 7 ), ( 1, 2 ), ( 0, 2 ), ( 3, 2 ), ( 4, 2 ), ( 5, 2 ), ( 6, 2 ), ( 7, 2 ) } )
+    startPos = ( 2, 2 )
+    self.board.addPiece( startPos, Queen( self.color, 8 ) ) 
+    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 0, 0 ), ( 1, 1 ), ( 3, 3 ), ( 4, 4 ), ( 5, 5 ), ( 6, 6 ), ( 7, 7 ), ( 1, 3 ), ( 0, 4 ), ( 3, 1 ), ( 4, 0 ), ( 2, 1 ), ( 2, 0 ), ( 2, 3 ), ( 2, 4 ), ( 2, 5 ), ( 2, 6 ), ( 2, 7 ), ( 1, 2 ), ( 0, 2 ), ( 3, 2 ), ( 4, 2 ), ( 5, 2 ), ( 6, 2 ), ( 7, 2 ) } ) )
 
   def test_getMoves_King(self):
-    self.board.addPiece( ( 2, 2 ), King( self.color ) ) 
-    self.assertTrue( self.board.getMoves( ( 2, 2 ) ) == { ( 1, 1 ), ( 3, 3 ), ( 1, 3 ), ( 3, 1 ), ( 2, 1 ), ( 1, 2 ), ( 3, 2 ), ( 2, 3 ) } )
+    startPos = ( 2, 2 )
+    self.board.addPiece( startPos, King( self.color ) ) 
+    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 1 ), ( 3, 3 ), ( 1, 3 ), ( 3, 1 ), ( 2, 1 ), ( 1, 2 ), ( 3, 2 ), ( 2, 3 ) } ) )
 
   def test_getMoves_Bishop_Obstacle(self):
-    self.board.addPiece( ( 2, 2 ), Bishop( self.color, 8 ) ) 
+    startPos = ( 2, 2 )
+    self.board.addPiece( startPos, Bishop( self.color, 8 ) ) 
     self.board.addPiece( ( 4, 4 ), Pon( self.color ) )
-    self.assertTrue( self.board.getMoves( ( 2, 2 ) ) == { ( 0, 0 ), ( 1, 1 ), ( 3, 3 ), ( 1, 3 ), ( 0, 4 ), ( 3, 1 ), ( 4, 0 ) } )
+    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 0, 0 ), ( 1, 1 ), ( 3, 3 ), ( 1, 3 ), ( 0, 4 ), ( 3, 1 ), ( 4, 0 ) } ) )
 
   def test_getMoves_Knight_Obstacle(self):
-    self.board.addPiece( ( 2, 2 ), Knight( self.color ) ) 
+    startPos = ( 2, 2 )
+    self.board.addPiece( startPos, Knight( self.color ) ) 
     self.board.addPiece( ( 1, 0 ), Pon( self.color ) )
-    self.assertTrue( self.board.getMoves( ( 2, 2 ) ) == { ( 0, 1 ), ( 4, 3 ), ( 3, 4 ), ( 3, 0 ), ( 1, 4 ), ( 0, 3 ), ( 4, 1 ) } )
+    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 0, 1 ), ( 4, 3 ), ( 3, 4 ), ( 3, 0 ), ( 1, 4 ), ( 0, 3 ), ( 4, 1 ) } ) )
 
   def test_move_Pon(self):
     pon = Pon( self.color )
     self.assertFalse( pon.getHasMoved() )
-    self.board.addPiece( ( 1, 1 ), pon )
-    self.assertTrue( self.board.getMoves( ( 1, 1 ) ) == { ( 1, 2 ), ( 1, 3 ) } )
-    self.board.move( ( 1, 1 ), ( 1, 2 ) )
-    self.assertTrue( self.board.getMoves( ( 1, 2 ) ) == { ( 1, 3 ) } )
+    startPos = ( 1, 1 )
+    self.board.addPiece( startPos, pon )
+    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 2 ), ( 1, 3 ) } ) )
+    self.board.move( Move( ( 1, 1 ), ( 1, 2 ) ) )
+    startPos = ( 1, 2 )
+    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 3 ) } ) )
     self.assertTrue( self.board.getPiece( ( 1, 1 ) ) == None )
     self.assertTrue( self.board.getPiece( ( 1, 2 ) ) == pon )
     self.assertTrue( self.board.getPiece( ( 1, 2 ) ).getHasMoved() )
+
+  def test_getEatMoves_Pon(self):
+    pon = Pon( self.color )
+    ponPos = ( 1, 1 )
+    other = Pon( self.otherColor )
+    otherPos = ( 2, 2 )
+    self.board.addPiece( ponPos, pon )
+    self.assertEqual( self.board.getEatMoves( ponPos ), self.pairsToMoves( ponPos,  set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 1, 2 ), other )
+    self.assertEqual( self.board.getEatMoves( ponPos ), self.pairsToMoves( ponPos,  set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( otherPos, other )
+    self.assertEqual( self.board.getEatMoves( ponPos ), self.pairsToMoves( ponPos,  { ( 2, 2 ) }, moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 0, 2 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 0, 0 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 2, 0 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( ponPos ), self.pairsToMoves( ponPos,  { ( 0, 2 ), ( 2, 2 ) }, moveType = MoveType.EAT ) )
+
+  def test_getEatMoves_Knight(self):
+    knight = Knight( self.color )
+    kPos = ( 2, 2 )
+    self.board.addPiece( kPos, knight )
+    self.assertEqual( self.board.getEatMoves( kPos ), self.pairsToMoves( kPos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 1, 1 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( kPos ), self.pairsToMoves( kPos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 1, 0 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( kPos ), self.pairsToMoves( kPos, { ( 1, 0 ) }, moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 1, 4 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 3, 0 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 3, 4 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( kPos ), self.pairsToMoves( kPos, { ( 1, 0 ), ( 1, 4 ), ( 3, 0 ), ( 3, 4 ) }, moveType = MoveType.EAT ) )
+
+  def test_getEatMoves_Bishop(self):
+    bishop = Bishop( self.color, 8 )
+    pos = ( 2, 2 )
+    self.board.addPiece( pos, bishop )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 2, 0 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 3, 3 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 1, 1 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 1, 3 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 4, 0 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 5, 0 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, { ( 3, 3 ), ( 1, 1 ), ( 1, 3 ), ( 4, 0 ) }, moveType = MoveType.EAT ) )
+
+  def test_getEatMoves_Rook(self):
+    rook = Rook( self.color, 8 )
+    pos = ( 2, 2 )
+    self.board.addPiece( pos, rook )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 3, 3 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 1, 1 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 2, 0 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 2, 1 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 2, 7 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 7, 2 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, { ( 2, 1 ), ( 2, 7 ), ( 7, 2 ) }, moveType = MoveType.EAT ) )
+
+  def test_getEatMoves_Queen(self):
+    queen = Queen( self.color, 8 )
+    pos = ( 2, 2 )
+    self.board.addPiece( pos, queen )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 3, 4 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 2, 3 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 2, 4 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 2, 5 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 2, 6 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 4, 2 ), Pon( self.color ) )
+    self.board.addPiece( ( 5, 2 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 3, 3 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 1, 3 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, { ( 2, 3 ), ( 3, 3 ), ( 1, 3 ) }, moveType = MoveType.EAT ) )
+
+  def test_getEatMoves_King(self):
+    king = King( self.color )
+    pos = ( 2, 2 )
+    self.board.addPiece( pos, king )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 3, 4 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 2, 6 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, set(), moveType = MoveType.EAT ) )
+    self.board.addPiece( ( 3, 3 ), Pon( self.otherColor ) )
+    self.board.addPiece( ( 1, 2 ), Pon( self.otherColor ) )
+    self.assertEqual( self.board.getEatMoves( pos ), self.pairsToMoves( pos, { ( 3, 3 ), ( 1, 2 ) }, moveType = MoveType.EAT ) )
 
 if __name__ == "__main__":
   unittest.main()

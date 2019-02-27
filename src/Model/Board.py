@@ -1,3 +1,8 @@
+from MoveType import MoveType
+from Move import Move
+from SimpleMovement import SimpleMovement
+from EatMovement import EatMovement
+
 class Board:
   def __init__(self, numRows, numCols):
     self.numRows = numRows
@@ -29,30 +34,22 @@ class Board:
   def isValidMove(self, pos):
     x, y = pos
     if 0 <= y < self.numRows and 0 <= x < self.numCols:
-      return self.getPiece( pos ) == None
+      return True
+
+  def isCollision(self, pos):
+    return self.getPiece( pos ) != None
+
+  def isOpponentPiece(self, currPiece, otherPiece):
+    return currPiece.getColor() != otherPiece.getColor()
 
   def getMoves(self, pos):
-    moves = set()
+    return SimpleMovement().getMoves( self, pos )
 
-    piece = self.getPiece( pos )
-    currX, currY = pos
+  def getEatMoves(self, pos):
+    return EatMovement().getMoves( self, pos )
 
-    movementVectors = piece.getMovementVectors().union( piece.getExtraMoves() )
-
-    for vec in movementVectors:
-      xDir, yDir = vec
-      for numSteps in range(1, piece.getStepLimit() + 1):
-        x = currX + ( numSteps * xDir )
-        y = currY + ( numSteps * yDir )
-
-        if not self.isValidMove( ( x, y ) ):
-          break
-
-        moves.add( ( x, y ) )
-
-    return moves
-
-  def move(self, startPos, endPos):
+  def move(self, move):
+    startPos, endPos = move.getPosPair()
     self.addPiece( endPos, self.getPiece( startPos ) )
     self.removePiece( startPos )
     self.getPiece( endPos ).setHasMoved()
