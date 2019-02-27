@@ -24,22 +24,22 @@ class GetMovement:
         if board.isCollision( potentialMove ):
           if board.isOpponentPiece( piece, board.getPiece( potentialMove ) ):
             #moves.add( Move( pos, potentialMove, MoveType.EAT ) )
-            moves = self.checkToAddEat( moves, pos, potentialMove )
+            moves = self.checkToAddEat( board, moves, pos, potentialMove )
           break
 
         #moves.add( Move( pos, potentialMove ) )
-        moves = self.checkToAddMove( moves, pos, potentialMove )
+        moves = self.checkToAddMove( board, moves, pos, potentialMove )
 
     return moves
 
   def getStepLimit(self, piece):
-    pass
+    raise NotImplementedError
 
   def getMovementVectors(self, piece):
-    pass
+    raise NotImplementedError
 
-  def checkToAddEat(self, currPos, potentialMove):
-    pass
+  def checkToAddEat(self, board, moves, currPos, potentialMove):
+    raise NotImplementedError
 
-  def checkToAddMove(self, currPos, potentialMove):
-    pass
+  def checkToAddMove(self, board, moves, currPos, potentialMove):
+    raise NotImplementedError

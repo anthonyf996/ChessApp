@@ -1,8 +1,8 @@
 from SimpleMove import SimpleMove
 
 class EatMove(SimpleMove):
-  def __init__(self, startPos, endPos):
-    super().__init__(startPos, endPos)
+  def __init__(self, board, startPos, endPos):
+    super().__init__(board, startPos, endPos)
 """
     self.prevHasMoved = None
     self.prevStartPiece = None

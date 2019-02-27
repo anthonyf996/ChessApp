@@ -1,5 +1,8 @@
-class Move:
-  def __init__(self, startPos, endPos):
+from Command import Command
+
+class Move(Command):
+  def __init__(self, board, startPos, endPos):
+    self.board = board
     self.startPos = startPos
     self.endPos = endPos
 

@@ -1,11 +1,22 @@
 from GetSimpleMovement import GetSimpleMovement
 from GetEatMovement import GetEatMovement
+from BoardOrientation import BoardOrientation
 
 class Board:
-  def __init__(self, numRows, numCols):
+  def __init__(self, numRows, numCols, orientation = BoardOrientation.LIGHT_TILE_RIGHT):
     self.numRows = numRows
     self.numCols = numCols
+    self.orientation = orientation
     self.board = self.initBoard()
+
+  def getNumRows(self):
+    return self.numRows
+
+  def getNumCols(self):
+    return self.numCols
+
+  def getOrientation(self):
+    return self.orientation
 
   def initBoard(self):
     board = []
@@ -47,13 +58,7 @@ class Board:
     return GetEatMovement().getMoves( self, pos )
 
   def move(self, move):
-    """
-    startPos, endPos = move.getPosPair()
-    self.addPiece( endPos, self.getPiece( startPos ) )
-    self.removePiece( startPos )
-    self.getPiece( endPos ).setHasMoved()
-    """
-    move.perform( self )
+    move.execute()
 
   def undo(self, move):
-    move.undo( self )
+    move.undo()

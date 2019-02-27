@@ -1,6 +1,6 @@
 class Command:
   def execute(self):
-    pass
+    raise NotImplementedError
 
   def undo(self):
-    pass
+    raise NotImplementedError

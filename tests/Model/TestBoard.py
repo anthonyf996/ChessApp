@@ -58,7 +58,7 @@ class TestBoard(unittest.TestCase):
     moves = set()
 
     for p in pairsSet:
-      moves.add( SimpleMove( startPos, p ) )
+      moves.add( SimpleMove( self.board, startPos, p ) )
 
     return moves
 
@@ -66,7 +66,7 @@ class TestBoard(unittest.TestCase):
     moves = set()
 
     for p in pairsSet:
-      moves.add( EatMove( startPos, p ) )
+      moves.add( EatMove( self.board, startPos, p ) )
 
     return moves
 
@@ -80,7 +80,7 @@ class TestBoard(unittest.TestCase):
     startPos = ( 1, 1 )
     self.board.addPiece( startPos, Pon( self.color ) ) 
     self.board.getPiece( startPos ).setCanEnPassant( True )
-    self.assertFalse( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { SimpleMove( ( 1, 1 ), ( 1, 2 ) ), SimpleMove( ( 1, 1 ), ( 1, 3 ) ) } ) )
+    self.assertFalse( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { SimpleMove( self.board, ( 1, 1 ), ( 1, 2 ) ), SimpleMove( self.board, ( 1, 1 ), ( 1, 3 ) ) } ) )
     self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 2 ), ( 1, 3 ), ( 2, 2 ), ( 0, 2 ) } ) )
 
   def test_getMoves_Knight(self):
@@ -126,7 +126,7 @@ class TestBoard(unittest.TestCase):
     startPos = ( 1, 1 )
     self.board.addPiece( startPos, pon )
     self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 2 ), ( 1, 3 ) } ) )
-    self.board.move( SimpleMove( ( 1, 1 ), ( 1, 2 ) ) )
+    self.board.move( SimpleMove( self.board, ( 1, 1 ), ( 1, 2 ) ) )
     startPos = ( 1, 2 )
     self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 3 ) } ) )
     self.assertTrue( self.board.getPiece( ( 1, 1 ) ) == None )

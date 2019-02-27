@@ -20,7 +20,7 @@ class TestBoard(unittest.TestCase):
   def test_SimpleMove_Pon(self):
     pon = Pon( self.color )
     self.board.addPiece( ( 2, 2 ), pon )
-    self.board.move( SimpleMove( ( 2, 2 ), ( 3, 3 ) ) )
+    self.board.move( SimpleMove( self.board, ( 2, 2 ), ( 3, 3 ) ) )
     self.assertEqual( self.board.getPiece( ( 3, 3 ) ), pon )
     self.assertEqual( self.board.getPiece( ( 2, 2 ) ), None )
 
@@ -28,7 +28,7 @@ class TestBoard(unittest.TestCase):
     pon = Pon( self.color )
     self.board.addPiece( ( 2, 2 ), pon )
     self.assertFalse( pon.getHasMoved() )
-    move = SimpleMove( ( 2, 2 ), ( 3, 3 ) )
+    move = SimpleMove( self.board, ( 2, 2 ), ( 3, 3 ) )
     self.board.move( move )
     self.assertTrue( pon.getHasMoved() )
     self.assertEqual( self.board.getPiece( ( 3, 3 ) ), pon )

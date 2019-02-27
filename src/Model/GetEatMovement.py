@@ -8,9 +8,9 @@ class GetEatMovement(GetMovement):
   def getMovementVectors(self, piece):
     return piece.getEatVectors()
 
-  def checkToAddEat(self, moves, currPos, potentialMove):
-    moves.add( EatMove( currPos, potentialMove ) )
+  def checkToAddEat(self, board, moves, currPos, potentialMove):
+    moves.add( EatMove( board, currPos, potentialMove ) )
     return moves
 
-  def checkToAddMove(self, moves, currPos, potentialMove):
+  def checkToAddMove(self, board, moves, currPos, potentialMove):
     return moves

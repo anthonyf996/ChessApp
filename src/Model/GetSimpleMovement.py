@@ -8,10 +8,10 @@ class GetSimpleMovement(GetMovement):
   def getMovementVectors(self, piece):
     return piece.getMovementVectors()
 
-  def checkToAddEat(self, moves, currPos, potentialMove):
+  def checkToAddEat(self, board, moves, currPos, potentialMove):
     return moves
 
-  def checkToAddMove(self, moves, currPos, potentialMove):
-    moves.add( SimpleMove( currPos, potentialMove ) )
+  def checkToAddMove(self, board, moves, currPos, potentialMove):
+    moves.add( SimpleMove( board, currPos, potentialMove ) )
 
     return moves

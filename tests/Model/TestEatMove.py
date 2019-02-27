@@ -21,7 +21,7 @@ class TestBoard(unittest.TestCase):
     pon = Pon( self.color )
     self.board.addPiece( ( 2, 2 ), pon )
     self.board.addPiece( ( 3, 3 ), Knight( self.otherColor ) )
-    self.board.move( EatMove( ( 2, 2 ), ( 3, 3 ) ) )
+    self.board.move( EatMove( self.board, ( 2, 2 ), ( 3, 3 ) ) )
     self.assertEqual( self.board.getPiece( ( 3, 3 ) ), pon )
     self.assertEqual( self.board.getPiece( ( 2, 2 ) ), None )
 
@@ -31,7 +31,7 @@ class TestBoard(unittest.TestCase):
     target = Knight( self.otherColor )
     self.board.addPiece( ( 3, 3 ), target )
     self.assertFalse( pon.getHasMoved() )
-    move = EatMove( ( 2, 2 ), ( 3, 3 ) )
+    move = EatMove( self.board, ( 2, 2 ), ( 3, 3 ) )
     self.board.move( move )
     self.assertTrue( pon.getHasMoved() )
     self.assertEqual( self.board.getPiece( ( 3, 3 ) ), pon )
