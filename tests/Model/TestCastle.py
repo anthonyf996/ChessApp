@@ -78,57 +78,65 @@ class TestBoard(unittest.TestCase):
     self.assertEqual( board.getPiece( kingEndPos ), None )
     self.assertEqual( board.getPiece( rookEndPos ), None )
 
-  def test_CastleLeft_LightTileRight(self):
-    board = Board( 8, 8, orientation = BoardOrientation.LIGHT_TILE_RIGHT )
+  def test_CastleLeft_LightPiece(self):
+    self.color = PieceColor.LIGHT
+    board = Board( 8, 8 )
     kingStartPos, kingEndPos = ( 4, 7 ), ( 2, 7 )
     rookStartPos, rookEndPos = ( 0, 7 ), ( 3, 7 )
 
     self.castle( board, CastleLeftCommand( board, kingStartPos ), kingStartPos, kingEndPos, rookStartPos, rookEndPos )
 
-  def test_CastleLeft_LightTileRight_undo(self):
-    board = Board( 8, 8, orientation = BoardOrientation.LIGHT_TILE_RIGHT )
+  def test_CastleLeft_LightPiece_undo(self):
+    self.color = PieceColor.LIGHT
+    board = Board( 8, 8 )
     kingStartPos, kingEndPos = ( 4, 7 ), ( 2, 7 )
     rookStartPos, rookEndPos = ( 0, 7 ), ( 3, 7 )
 
     self.castleUndo( board, CastleLeftCommand( board, kingStartPos ), kingStartPos, kingEndPos, rookStartPos, rookEndPos )
 
-  def test_CastleLeft_DarkTileRight(self):
-    board = Board( 8, 8, orientation = BoardOrientation.DARK_TILE_RIGHT )
+  def test_CastleLeft_DarkPiece(self):
+    self.color = PieceColor.DARK
+    board = Board( 8, 8 )
     kingStartPos, kingEndPos = ( 4, 0 ), ( 6, 0 )
     rookStartPos, rookEndPos = ( 7, 0 ), ( 5, 0 )
 
     self.castle( board, CastleLeftCommand( board, kingStartPos ), kingStartPos, kingEndPos, rookStartPos, rookEndPos )
 
-  def test_CastleLeft_DarkTileRight_undo(self):
-    board = Board( 8, 8, orientation = BoardOrientation.DARK_TILE_RIGHT )
+  def test_CastleLeft_DarkPiece_undo(self):
+    self.color = PieceColor.DARK
+    board = Board( 8, 8 )
     kingStartPos, kingEndPos = ( 4, 0 ), ( 6, 0 )
     rookStartPos, rookEndPos = ( 7, 0 ), ( 5, 0 )
 
     self.castleUndo( board, CastleLeftCommand( board, kingStartPos ), kingStartPos, kingEndPos, rookStartPos, rookEndPos )
 
-  def test_CastleRight_LightTileRight(self):
-    board = Board( 8, 8, orientation = BoardOrientation.LIGHT_TILE_RIGHT )
+  def test_CastleRight_LightPiece(self):
+    self.color = PieceColor.LIGHT
+    board = Board( 8, 8 )
     kingStartPos, kingEndPos = ( 4, 7 ), ( 6, 7 )
     rookStartPos, rookEndPos = ( 7, 7 ), ( 5, 7 )
 
     self.castle( board, CastleRightCommand( board, kingStartPos ), kingStartPos, kingEndPos, rookStartPos, rookEndPos )
 
-  def test_CastleRight_LightTileRight_undo(self):
-    board = Board( 8, 8, orientation = BoardOrientation.LIGHT_TILE_RIGHT )
+  def test_CastleRight_LightPiece_undo(self):
+    self.color = PieceColor.LIGHT
+    board = Board( 8, 8 )
     kingStartPos, kingEndPos = ( 4, 7 ), ( 6, 7 )
     rookStartPos, rookEndPos = ( 7, 7 ), ( 5, 7 )
 
     self.castleUndo( board, CastleRightCommand( board, kingStartPos ), kingStartPos, kingEndPos, rookStartPos, rookEndPos )
 
-  def test_CastleRight_DarkTileRight(self):
-    board = Board( 8, 8, orientation = BoardOrientation.DARK_TILE_RIGHT )
+  def test_CastleRight_DarkPiece(self):
+    self.color = PieceColor.DARK
+    board = Board( 8, 8 )
     kingStartPos, kingEndPos = ( 4, 0 ), ( 2, 0 )
     rookStartPos, rookEndPos = ( 0, 0 ), ( 3, 0 )
 
     self.castle( board, CastleRightCommand( board, kingStartPos ), kingStartPos, kingEndPos, rookStartPos, rookEndPos )
 
-  def test_CastleRight_DarkTileRight_undo(self):
-    board = Board( 8, 8, orientation = BoardOrientation.DARK_TILE_RIGHT )
+  def test_CastleRight_DarkPiece_undo(self):
+    self.color = PieceColor.DARK
+    board = Board( 8, 8 )
     kingStartPos, kingEndPos = ( 4, 0 ), ( 2, 0 )
     rookStartPos, rookEndPos = ( 0, 0 ), ( 3, 0 )
 
