@@ -26,3 +26,6 @@ class CastleLeftCommand(CastleCommand):
       return ( kingX + 1, kingY )
     else:
       return ( kingX - 1, kingY )
+
+  def getPosPair(self):
+    return self.kingPos, self.getKingNewPos()

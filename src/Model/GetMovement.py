@@ -1,3 +1,5 @@
+from PieceColor import PieceColor
+
 # This is the base class of a Template Design Pattern and should not
 # be instantiated.
 class GetMovement:
@@ -15,6 +17,10 @@ class GetMovement:
 
     for vec in movementVector:
       xDir, yDir = vec
+
+      if piece.getColor() == PieceColor.LIGHT:
+        yDir *= -1
+
       for numSteps in range(1, stepLimit + 1):
         potentialMove = currX + ( numSteps * xDir ), currY + ( numSteps * yDir )
 
@@ -22,6 +28,7 @@ class GetMovement:
           break
 
         if board.isCollision( potentialMove ):
+          moves = self.checkToAddCollision( board, moves, pos, potentialMove )
           if board.isOpponentPiece( piece, board.getPiece( potentialMove ) ):
             #moves.add( Move( pos, potentialMove, MoveType.EAT ) )
             moves = self.checkToAddEat( board, moves, pos, potentialMove )
@@ -39,7 +46,10 @@ class GetMovement:
     raise NotImplementedError
 
   def checkToAddEat(self, board, moves, currPos, potentialMove):
-    raise NotImplementedError
+    return moves
 
   def checkToAddMove(self, board, moves, currPos, potentialMove):
-    raise NotImplementedError
+    return moves
+
+  def checkToAddCollision(self, board, moves, currPos, potentialMove):
+    return moves

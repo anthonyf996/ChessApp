@@ -11,7 +11,7 @@ from King import King
 from Board import Board
 from SimpleMove import SimpleMove
 
-class TestBoard(unittest.TestCase):
+class TestSimpleMove(unittest.TestCase):
   def setUp(self):
     self.color = PieceColor.LIGHT
     self.otherColor = PieceColor.DARK

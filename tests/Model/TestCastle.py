@@ -13,7 +13,7 @@ from CastleLeftCommand import CastleLeftCommand
 from CastleRightCommand import CastleRightCommand
 from BoardOrientation import BoardOrientation
 
-class TestBoard(unittest.TestCase):
+class TestCastle(unittest.TestCase):
   def setUp(self):
     self.color = PieceColor.LIGHT
     self.otherColor = PieceColor.DARK

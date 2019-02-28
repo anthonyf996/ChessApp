@@ -13,7 +13,7 @@ from EnPassantCommand import EnPassantCommand
 from BoardOrientation import BoardOrientation
 from PieceColor import PieceColor
 
-class TestBoard(unittest.TestCase):
+class TestEnPassant(unittest.TestCase):
   def setUp(self):
     self.color = PieceColor.LIGHT
     self.otherColor = PieceColor.DARK

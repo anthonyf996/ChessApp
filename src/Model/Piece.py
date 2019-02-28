@@ -25,3 +25,6 @@ class Piece:
 
   def setHasMoved(self, b = True):
     self.hasMoved = b
+
+  def getSpecialMoves(self, board, currPos):
+    return set()

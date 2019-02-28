@@ -11,7 +11,7 @@ from King import King
 from Board import Board
 from EatMove import EatMove
 
-class TestBoard(unittest.TestCase):
+class TestEatMove(unittest.TestCase):
   def setUp(self):
     self.color = PieceColor.LIGHT
     self.otherColor = PieceColor.DARK

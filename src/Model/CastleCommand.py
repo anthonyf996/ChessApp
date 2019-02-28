@@ -41,6 +41,9 @@ class CastleCommand(Command):
     king.setHasMoved( self.prevKingHasMoved )
     rook.setHasMoved( self.prevRookHasMoved )
 
+  def getPosPair(self):
+    raise NotImplementedError
+
   def getKingNewPos(self):
     raise NotImplementedError
 

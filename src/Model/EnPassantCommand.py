@@ -29,3 +29,12 @@ class EnPassantCommand(Command):
     self.board.addPiece( self.ponPos, pon )
     self.board.addPiece( self.targetPos, self.target )
     self.board.removePiece( self.newPonPos )
+
+  def getPosPair(self):
+    pon = self.board.getPiece( self.ponPos )
+    targetX, targetY = self.targetPos
+    if pon.getColor() == PieceColor.LIGHT:
+      self.newPonPos = ( targetX, targetY - 1 )
+    else:
+      self.newPonPos = ( targetX, targetY + 1 )
+    return self.ponPos, self.newPonPos
