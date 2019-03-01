@@ -51,15 +51,30 @@ class Board:
     self.addPiece( ( 5, 1 ), Pon( PieceColor.DARK ) )
     self.addPiece( ( 6, 1 ), Pon( PieceColor.DARK ) )
     self.addPiece( ( 7, 1 ), Pon( PieceColor.DARK ) )
-
     self.kings[ PieceColor.LIGHT ] = self.getPiece( ( 4, 7 ) )
     self.kings[ PieceColor.DARK ] = self.getPiece( ( 4, 0 ) )
+    """
+    self.addPiece( ( 1, 3 ), Queen( PieceColor.LIGHT ) )
+    self.addPiece( ( 4, 7 ), King( PieceColor.LIGHT ) )
+    self.addPiece( ( 0, 0 ), King( PieceColor.DARK ) )
+    self.kings[ PieceColor.LIGHT ] = self.getPiece( ( 4, 7 ) )
+    self.kings[ PieceColor.DARK ] = self.getPiece( ( 0, 0 ) )
+    """
+
 
   def __str__(self):
     return self.toString()
 
-  def toString(self, moves = None):
+  def toString(self, game = None, moves = None, check = None, checkMate = None, draw = None):
     moveArr = []
+
+    if game:
+      if game.getIsCheckMate():
+        checkMate = game.getInCheckMate()
+      elif game.getIsDraw():
+        draw = self.getKingsPair()
+      elif game.getIsCheck():
+        check = game.getInCheck()
 
     if moves is not None:
       for m in moves:
@@ -77,11 +92,25 @@ class Board:
           if p is None:
             s += "||||||||||"
           else:
-            s += "|||||%s||||" % ( str( p ) )
+            if checkMate is not None and p == checkMate:
+              s += "|{{{{%s}}}}" % ( str( p ) )
+            elif draw is not None and p in draw:
+              s += "|((((%s))))" % ( str( p ) )
+            elif check is not None and p == check:
+              s += "|<<<<%s>>>>" % ( str( p ) )
+            else:
+              s += "|||||%s||||" % ( str( p ) )
         elif p is None:
           s += "|         "
         else:
-          s += "|    %s    " % ( str( p ) )
+          if checkMate is not None and p == checkMate:
+            s += "|{{{{%s}}}}" % ( str( p ) )
+          elif draw is not None and p in draw:
+            s += "|((((%s))))" % ( str( p ) )
+          elif check is not None and p == check:
+            s += "|<<<<%s>>>>" % ( str( p ) )
+          else:
+            s += "|    %s    " % ( str( p ) )
       s += "|\n"
 
     return s
@@ -100,6 +129,9 @@ class Board:
 
   def getKings(self):
     return self.kings
+
+  def getKingsPair(self):
+    return self.kings[ PieceColor.LIGHT ], self.kings[ PieceColor.DARK ]
 
   def getTurnKing(self, turnColor):
     return self.getKings()[ turnColor ]

@@ -9,6 +9,7 @@ class Controller:
     self.View = View
     self.Model = Model
     self.board = Model.getBoard()
+    self.Game = Model.getGame()
     self.Clock = ConsoleClock( fpsSpec = { "FPS" : 60 } )
     self.MoveController = MoveController()
     self.InputController = ConsoleInputController( ConsoleInputReader( { "getCurrPos" : self.MoveController.getCurrPos, "isGameOver" : self.Model.isGameOver, "getTurnColor" : self.Model.getTurnColor } ) )
@@ -37,9 +38,9 @@ class Controller:
     moves = self.MoveController.getMoves()
 
     if moves is None:
-      self.View.display( self.board )
+      self.View.display( self.board, self.Game )
     else:
-      self.View.display( self.board, moves )
+      self.View.display( self.board, self.Game, moves )
 
   def updateModel(self):
     self.Model.update()

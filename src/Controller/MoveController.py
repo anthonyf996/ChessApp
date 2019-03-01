@@ -25,12 +25,13 @@ class MoveController:
       if self.currPiece is not None:
         moves = board.getAllMoves( self.prevPos )
 
-        if not game.isGameOver() and self.currPiece.getColor() == game.getTurnColor():
-          for m in moves:
-            if ( self.prevPos, self.currPos ) == m.getPosPair():
-              board.move( m )
-              game.advanceTurn()
-              break
+        if not game.isGameOver():
+          if not game.getTurnsEnabled() or self.currPiece.getColor() == game.getTurnColor():
+            for m in moves:
+              if ( self.prevPos, self.currPos ) == m.getPosPair():
+                board.move( m )
+                game.advanceTurn()
+                break
 
         self.currPiece = None
         self.moves = None

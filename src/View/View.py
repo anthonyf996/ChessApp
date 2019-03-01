@@ -2,15 +2,22 @@ class View:
   def __init__(self):
     pass
 
-  def display(self, board, moves = None):
-    print( board.toString( moves ) )
+  def display(self, board, game, moves = None):
+    print( board.toString( game, moves ) )
 
-  def getPos(self, prevPos):
-    posX, posY = "", ""
+    if game.getIsCheckMate():
+      self.displayCheckMate( game.getInCheckMate() )
+    elif game.getIsDraw():
+      kings = board.getKingsPair()
+      self.displayDraw( *kings )
+    elif game.getIsCheck():
+      self.displayCheck( game.getInCheck() )
 
-    while not posX.isnumeric():
-      posX = input( "Enter posX ( %s ):" % str( prevPos ) )
-    while not posY.isnumeric():
-      posY = input( "Enter posY ( %s ):" % str( prevPos ) )
+  def displayCheck(self, piece):
+    print ( "Check at %s [ %s ]" % ( piece.getPos(), piece.getColor() ) )
 
-    return int( posX[0] ), int( posY[0] )
+  def displayCheckMate(self, piece):
+    print ( "CheckMate at %s [ %s ]" % ( piece.getPos(), piece.getColor() ) )
+
+  def displayDraw(self, lightKing, darkKing):
+    print ( "Draw at %s and %s" % ( lightKing.getPos(), darkKing.getPos() ) )
