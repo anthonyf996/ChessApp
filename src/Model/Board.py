@@ -1,7 +1,6 @@
 from GetSimpleMovement import GetSimpleMovement
 from GetEatMovement import GetEatMovement
 from GetCollisionMovement import GetCollisionMovement
-from BoardOrientation import BoardOrientation
 from PieceColor import PieceColor
 from Pon import Pon
 from Knight import Knight
@@ -11,10 +10,9 @@ from Queen import Queen
 from King import King
 
 class Board:
-  def __init__(self, numRows, numCols, orientation = BoardOrientation.LIGHT_TILE_RIGHT):
+  def __init__(self, numRows, numCols ):
     self.numRows = numRows
     self.numCols = numCols
-    self.orientation = orientation
     self.board = self.initBoard()
     self.kings = {}
 
@@ -61,68 +59,11 @@ class Board:
     self.kings[ PieceColor.DARK ] = self.getPiece( ( 0, 0 ) )
     """
 
-
-  def __str__(self):
-    return self.toString()
-
-  def toString(self, game = None, moves = None, check = None, checkMate = None, draw = None):
-    moveArr = []
-
-    if game:
-      if game.getIsCheckMate():
-        checkMate = game.getInCheckMate()
-      elif game.getIsDraw():
-        draw = self.getKingsPair()
-      elif game.getIsCheck():
-        check = game.getInCheck()
-
-    if moves is not None:
-      for m in moves:
-        pair = m.getPosPair()
-        start, end = pair
-        moveArr.append( end )
-
-    s = ""
-
-    for y in range(0,self.numRows):
-      for x in range(0,self.numCols):
-        p = self.getPiece( ( x, y ) )
-
-        if ( x, y ) in moveArr:
-          if p is None:
-            s += "||||||||||"
-          else:
-            if checkMate is not None and p == checkMate:
-              s += "|{{{{%s}}}}" % ( str( p ) )
-            elif draw is not None and p in draw:
-              s += "|((((%s))))" % ( str( p ) )
-            elif check is not None and p == check:
-              s += "|<<<<%s>>>>" % ( str( p ) )
-            else:
-              s += "|||||%s||||" % ( str( p ) )
-        elif p is None:
-          s += "|         "
-        else:
-          if checkMate is not None and p == checkMate:
-            s += "|{{{{%s}}}}" % ( str( p ) )
-          elif draw is not None and p in draw:
-            s += "|((((%s))))" % ( str( p ) )
-          elif check is not None and p == check:
-            s += "|<<<<%s>>>>" % ( str( p ) )
-          else:
-            s += "|    %s    " % ( str( p ) )
-      s += "|\n"
-
-    return s
-
   def getNumRows(self):
     return self.numRows
 
   def getNumCols(self):
     return self.numCols
-
-  def getOrientation(self):
-    return self.orientation
 
   def getBoard(self):
     return self.board
@@ -134,7 +75,21 @@ class Board:
     return self.kings[ PieceColor.LIGHT ], self.kings[ PieceColor.DARK ]
 
   def getTurnKing(self, turnColor):
-    return self.getKings()[ turnColor ]
+    return self.getKing( turnColor )
+
+  def getKing(self, color):
+    return self.getKings()[ color ]
+
+  def getMovesEndPos(self, moves):
+    moveArr = []
+
+    if moves is not None:
+      for m in moves:
+        start, end = m.getPosPair()
+
+        moveArr.append( end )
+
+    return moveArr
 
   def initBoard(self):
     board = []
@@ -200,3 +155,72 @@ class Board:
 
   def undo(self, move):
     move.undo()
+
+  def isInDanger(self, currPos):
+    inDanger = False
+    currPiece = self.getPiece( currPos )
+
+    for y in range(0,self.getNumRows()):
+      for x in range(0,self.getNumCols()):
+        pos = ( x, y )
+        piece = self.getPiece( pos )
+
+        if piece is None:
+          continue
+        if piece.getColor() == currPiece.getColor():
+          continue
+
+        eatMoves = self.getEatMoves( pos )
+
+        for move in eatMoves:
+          if currPos in move.getPosPair():
+            inDanger = True
+            break
+
+    return inDanger
+
+  def isLastPiece(self, kingPos):
+    king = self.getPiece( kingPos )
+
+    for y in range(0,self.getNumRows()):
+      for x in range(0,self.getNumCols()):
+        pos = ( x, y )
+        piece = self.getPiece( pos )
+
+        if piece is None:
+          continue
+        if piece == king:
+          continue
+        if piece.getColor() == king.getColor():
+          return False
+
+    return True
+
+  def isKingTrapped(self, kingPos):
+    king = self.getPiece( kingPos )
+    for y in range(0,self.getNumRows()):
+      for x in range(0,self.getNumCols()):
+        pos = ( x, y )
+        piece = self.getPiece( pos )
+        if piece is None:
+          continue
+        if piece.getColor() != king.getColor():
+          continue
+
+        if not self.cannotStopCheck( pos, king ):
+          return False
+
+    return True
+
+  def cannotStopCheck(self, piecePos, king):
+    moves = self.getAllMoves( piecePos )
+
+    for move in moves:
+      self.move( move )
+      inDanger = self.isInDanger( king.getPos() )
+      self.undo( move )
+
+      if not inDanger:
+        return False
+
+    return True

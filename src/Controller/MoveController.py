@@ -30,7 +30,10 @@ class MoveController:
             for m in moves:
               if ( self.prevPos, self.currPos ) == m.getPosPair():
                 board.move( m )
-                game.advanceTurn()
+                if board.isInDanger( board.getKing( self.currPiece.getColor() ).getPos() ):
+                  board.undo( m )
+                else:
+                  game.advanceTurn()
                 break
 
         self.currPiece = None

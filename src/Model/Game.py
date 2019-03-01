@@ -3,6 +3,9 @@ from PieceColor import PieceColor
 class Game:
   def __init__(self, startingColor = PieceColor.LIGHT):
     self.turnColor = startingColor
+    self.init()
+
+  def init(self):
     self.gameOver = False
     self.isDraw = False
     self.isCheckMate = False
@@ -10,6 +13,9 @@ class Game:
     self.turnsEnabled = False
     self.inCheck = None
     self.inCheckMate = None
+
+  def reset(self):
+    self.init()
 
   def getTurnColor(self):
     return self.turnColor
@@ -34,13 +40,16 @@ class Game:
 
   def setGameOver(self, b):
     if not self.gameOver:
-      print ( "GAME OVER" )
+      #print ( "GAME OVER" )
+      pass
     self.gameOver = b
 
   def isGameOver(self):
     return self.gameOver
 
   def update(self, board, gameRules):
+    self.reset()
+
     kings= board.getKings()
 
     lightKingPos = kings[ PieceColor.LIGHT ].getPos()
