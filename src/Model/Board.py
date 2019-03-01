@@ -1,5 +1,6 @@
 from GetSimpleMovement import GetSimpleMovement
 from GetEatMovement import GetEatMovement
+from GetCollisionMovement import GetCollisionMovement
 from BoardOrientation import BoardOrientation
 from PieceColor import PieceColor
 from Pon import Pon
@@ -15,6 +16,7 @@ class Board:
     self.numCols = numCols
     self.orientation = orientation
     self.board = self.initBoard()
+    self.kings = {}
 
   def setup(self):
     self.addPiece( ( 0, 7 ), Rook( PieceColor.LIGHT ) )
@@ -49,6 +51,9 @@ class Board:
     self.addPiece( ( 5, 1 ), Pon( PieceColor.DARK ) )
     self.addPiece( ( 6, 1 ), Pon( PieceColor.DARK ) )
     self.addPiece( ( 7, 1 ), Pon( PieceColor.DARK ) )
+
+    self.kings[ PieceColor.LIGHT ] = self.getPiece( ( 4, 7 ) )
+    self.kings[ PieceColor.DARK ] = self.getPiece( ( 4, 0 ) )
 
   def __str__(self):
     return self.toString()
@@ -90,6 +95,15 @@ class Board:
   def getOrientation(self):
     return self.orientation
 
+  def getBoard(self):
+    return self.board
+
+  def getKings(self):
+    return self.kings
+
+  def getTurnKing(self, turnColor):
+    return self.getKings()[ turnColor ]
+
   def initBoard(self):
     board = []
     for y in range(0, self.numRows):
@@ -103,6 +117,8 @@ class Board:
   def addPiece(self, pos, piece):
     x, y = pos
     self.board[ y ][ x ] = piece
+    if piece is not None:
+      piece.setPos( pos )
 
   def removePiece(self, pos):
     x, y = pos
@@ -140,6 +156,9 @@ class Board:
 
   def getEatMoves(self, pos):
     return GetEatMovement().getMoves( self, pos )
+
+  def getCollisionMoves(self, pos):
+    return GetCollisionMovement().getMoves( self, pos )
 
   def getSpecialMoves(self, pos):
     return self.getPiece( pos ).getSpecialMoves( self, pos )

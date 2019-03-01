@@ -11,7 +11,7 @@ class Controller:
     self.board = Model.getBoard()
     self.Clock = ConsoleClock( fpsSpec = { "FPS" : 60 } )
     self.MoveController = MoveController()
-    self.InputController = ConsoleInputController( ConsoleInputReader( { "getCurrPos" : self.MoveController.getCurrPos } ) )
+    self.InputController = ConsoleInputController( ConsoleInputReader( { "getCurrPos" : self.MoveController.getCurrPos, "isGameOver" : self.Model.isGameOver, "getTurnColor" : self.Model.getTurnColor } ) )
 
   def run(self):
     try:
@@ -20,7 +20,9 @@ class Controller:
 
         pos = self.InputController.pollUserInput()
 
-        self.MoveController.handleInput( self.board, pos )
+        self.MoveController.handleInput( self.board, self.Model.getGame(), pos )
+
+        self.updateModel()
 
         self.Clock.tick()
     except GameExitException as e:
@@ -38,3 +40,6 @@ class Controller:
       self.View.display( self.board )
     else:
       self.View.display( self.board, moves )
+
+  def updateModel(self):
+    self.Model.update()
