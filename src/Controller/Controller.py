@@ -8,11 +8,14 @@ class Controller:
   def __init__(self, View, Model):
     self.View = View
     self.Model = Model
-    self.board = Model.getBoard()
-    self.Game = Model.getGame()
     self.Clock = ConsoleClock( fpsSpec = { "FPS" : 60 } )
     self.MoveController = MoveController()
-    self.InputController = ConsoleInputController( ConsoleInputReader( { "getCurrPos" : self.MoveController.getCurrPos, "isGameOver" : self.Model.isGameOver, "getTurnColor" : self.Model.getTurnColor } ) )
+    self.InputController = ConsoleInputController( 
+                             ConsoleInputReader( {
+                               "getCurrPos" : self.MoveController.getCurrPos, 
+                               "isGameOver" : self.Model.isGameOver, 
+                               "getTurnColor" : self.Model.getTurnColor 
+                             } ) )
 
   def run(self):
     try:
@@ -21,7 +24,7 @@ class Controller:
 
         pos = self.InputController.pollUserInput()
 
-        self.MoveController.handleInput( self.board, self.Model.getGame(), pos )
+        self.MoveController.handleInput( self.Model.getBoard(), self.Model.getGame(), pos )
 
         self.updateModel()
 
@@ -38,9 +41,9 @@ class Controller:
     moves = self.MoveController.getMoves()
 
     if moves is None:
-      self.View.display( self.board, self.Game )
+      self.View.display( self.Model.getBoard(), self.Model.getGame() )
     else:
-      self.View.display( self.board, self.Game, moves )
+      self.View.display( self.Model.getBoard(), self.Model.getGame(), moves )
 
   def updateModel(self):
     self.Model.update()

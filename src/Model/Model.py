@@ -19,7 +19,7 @@ class Model:
     return self.Game
 
   def update(self):
-    self.Game.update( self.board, self.GameRules )
+    self.Game.update( self.board, self.Game, self.GameRules )
 
   def isGameOver(self):
     return self.Game.isGameOver()

@@ -224,3 +224,16 @@ class Board:
         return False
 
     return True
+
+  # This method should only be called after a move is made to verify the
+  # integrity of the board.
+  def isInInconsistentState(self, currPieceColor):
+    # Do not allow any move that places own king in check
+    if self.isInDanger( self.getKing( currPieceColor ).getPos() ):
+      return True
+    # Do not allow any king to be eaten
+    for color,king in self.getKings().items():
+      if self.getPiece( king.getPos() ) != king:
+        return True
+
+    return False

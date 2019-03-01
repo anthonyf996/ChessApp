@@ -12,6 +12,7 @@ from Board import Board
 from CastleLeftCommand import CastleLeftCommand
 from CastleRightCommand import CastleRightCommand
 from BoardOrientation import BoardOrientation
+from Game import Game
 from GameRules import GameRules
 from SimpleMove import SimpleMove
 
@@ -20,6 +21,7 @@ class TestCastle(unittest.TestCase):
     self.color = PieceColor.LIGHT
     self.otherColor = PieceColor.DARK
     self.board = Board( 8, 8 )
+    self.game = Game()
     self.rules = GameRules()
 
   def test_isInCheck(self):
@@ -76,17 +78,23 @@ class TestCastle(unittest.TestCase):
     kingPos2 = ( 7, 0 )
     self.board.addPiece( kingPos2, King( self.otherColor ) )
 
-    self.assertFalse( self.rules.isDraw( self.board, kingPos, kingPos2 ) )
+    self.assertFalse( self.rules.isDraw( self.board, self.game, kingPos, kingPos2 ) )
 
     self.board.addPiece( ( 1, 6 ), Queen( self.otherColor ) )
 
-    self.assertTrue( self.rules.isDraw( self.board, kingPos, kingPos2 ) )
+    self.assertTrue( self.rules.isDraw( self.board, self.game, kingPos, kingPos2 ) )
     self.assertFalse( self.rules.isInCheck( self.board, kingPos ) )
     self.assertFalse( self.rules.isInCheckMate( self.board, kingPos ) )
 
     self.board.addPiece( ( 7, 7 ), Rook( self.color ) )
 
-    self.assertFalse( self.rules.isDraw( self.board, kingPos, kingPos2 ) )
+    self.assertFalse( self.rules.isDraw( self.board, self.game, kingPos, kingPos2 ) )
+    self.assertFalse( self.rules.isInCheck( self.board, kingPos ) )
+    self.assertFalse( self.rules.isInCheckMate( self.board, kingPos ) )
+
+    self.game.turnCount = 100
+
+    self.assertTrue( self.rules.isDraw( self.board, self.game, kingPos, kingPos2 ) )
     self.assertFalse( self.rules.isInCheck( self.board, kingPos ) )
     self.assertFalse( self.rules.isInCheckMate( self.board, kingPos ) )
 

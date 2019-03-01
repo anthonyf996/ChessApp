@@ -30,7 +30,8 @@ class MoveController:
             for m in moves:
               if ( self.prevPos, self.currPos ) == m.getPosPair():
                 board.move( m )
-                if board.isInDanger( board.getKing( self.currPiece.getColor() ).getPos() ):
+                #if board.isInDanger( board.getKing( self.currPiece.getColor() ).getPos() ):
+                if board.isInInconsistentState( self.currPiece.getColor() ):
                   board.undo( m )
                 else:
                   game.advanceTurn()

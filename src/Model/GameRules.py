@@ -2,7 +2,7 @@ from King import King
 
 class GameRules:
   def __init__(self):
-    pass
+    self.TURN_COUNT_FOR_DRAW = 50
 
   def isInCheck(self, board, kingPos):
     return board.isInDanger( kingPos )
@@ -12,7 +12,10 @@ class GameRules:
     return self.isInCheck( board, kingPos ) and \
            board.isKingTrapped( kingPos )
 
-  def isDraw(self, board, firstKingPos, secondKingPos):
+  def isDraw(self, board, game, firstKingPos, secondKingPos):
+    if game.getTurnCount() // 2 >= self.TURN_COUNT_FOR_DRAW:
+      return True
+
     firstKingColor = board.getPiece( firstKingPos ).getColor()
     secondKingColor = board.getPiece( secondKingPos ).getColor()
 
