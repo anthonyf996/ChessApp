@@ -3,6 +3,8 @@ from ConsoleInputController import ConsoleInputController
 from ConsoleInputReader import ConsoleInputReader
 from GameExitException import GameExitException
 from ConsoleClock import ConsoleClock
+from ExceptionHandler import ExceptionHandler
+from GameResetException import GameResetException
 
 class Controller:
   def __init__(self, View, Model):
@@ -10,13 +12,18 @@ class Controller:
     self.Model = Model
     self.Clock = ConsoleClock( fpsSpec = { "FPS" : 60 } )
     self.MoveController = MoveController()
-    self.InputController = ConsoleInputController( 
-                             ConsoleInputReader( {
+    self.InputReader = ConsoleInputReader( { 
                                "getCurrPos" : self.MoveController.getCurrPos, 
                                "isGameOver" : self.Model.isGameOver, 
                                "getTurnColor" : self.Model.getTurnColor 
-                             } ) )
-
+                             } )
+    self.InputController = ConsoleInputController( 
+                             self.InputReader,
+                             ExceptionHandler( 
+                               self.InputReader.read, 
+                               [ GameResetException() ],
+                               self.Model.getBoard().reset
+                             ) )
   def run(self):
     try:
       while True:
@@ -38,7 +45,7 @@ class Controller:
     pass
 
   def updateView(self):
-    moves = self.MoveController.getMoves()
+    moves = self.MoveController.getMoves( self.Model.getBoard() )
 
     if moves is None:
       self.View.display( self.Model.getBoard(), self.Model.getGame() )

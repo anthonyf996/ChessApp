@@ -38,3 +38,11 @@ class EnPassantCommand(Command):
     else:
       self.newPonPos = ( targetX, targetY + 1 )
     return self.ponPos, self.newPonPos
+
+  def getStartPos(self):
+    start, end = self.getPosPair()
+    return start
+
+  def getEndPos(self):
+    start, end = self.getPosPair()
+    return end

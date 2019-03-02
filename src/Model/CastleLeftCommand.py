@@ -29,3 +29,11 @@ class CastleLeftCommand(CastleCommand):
 
   def getPosPair(self):
     return self.kingPos, self.getKingNewPos()
+
+  def getStartPos(self):
+    start, end = self.getPosPair()
+    return start
+
+  def getEndPos(self):
+    start, end = self.getPosPair()
+    return end

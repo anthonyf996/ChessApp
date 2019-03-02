@@ -3,43 +3,62 @@ class MoveController:
     self.currPos = None
     self.prevPos = None
     self.currPiece = None
-    self.moves = None
 
   def getCurrPos(self):
     return self.currPos
 
-  def getMoves(self):
-    return self.moves
+  def getMoves(self, board):
+    if self.currPiece is not None:
+      return board.getAllMoves( self.currPos )
+    return None
 
   def handleInput(self, board, game, pos):
-    if board.isValidMove( pos ):
+    if self.isValidMove( board, pos ):
       self.updatePos( pos )
-      self.checkToMove( board, game )
+      if self.readyToMove( game ):
+        self.performMove( board, game, self.getMove( board ) )
+      self.toggleCurrPiece( board )
+
+  def isValidMove(self, board, pos):
+    if pos is not None:
+      if board.isValidMove( pos ):
+        return True
+
+    return False
 
   def updatePos(self, pos):
     self.prevPos = self.currPos
     self.currPos = pos
 
-  def checkToMove(self, board, game):
-    if self.currPos is not None:
-      if self.currPiece is not None:
-        moves = board.getAllMoves( self.prevPos )
+  def readyToMove(self, game):
+    if self.currPiece is not None:
+      return self.canMove( game )
 
-        if not game.isGameOver():
-          if not game.getTurnsEnabled() or self.currPiece.getColor() == game.getTurnColor():
-            for m in moves:
-              if ( self.prevPos, self.currPos ) == m.getPosPair():
-                board.move( m )
-                #if board.isInDanger( board.getKing( self.currPiece.getColor() ).getPos() ):
-                if board.isInInconsistentState( self.currPiece.getColor() ):
-                  board.undo( m )
-                else:
-                  game.advanceTurn()
-                break
+    return False
+  
+  def canMove(self, game):
+    if not game.isGameOver():
+      if not game.getTurnsEnabled() or self.currPiece.getColor() == game.getTurnColor():
+        return True
 
-        self.currPiece = None
-        self.moves = None
-      else:
-        self.currPiece = board.getPiece( self.currPos )
-        if self.currPiece is not None:
-          self.moves = board.getAllMoves( self.currPos )
+    return False
+
+  def performMove(self, board, game, move):
+    if move is not None:
+      successful = board.move( move )
+
+      if successful:
+        game.advanceTurn()
+
+  def toggleCurrPiece(self, board):
+    if self.currPiece is None:
+      self.currPiece = board.getPiece( self.currPos )
+    else:
+      self.currPiece = None
+
+  def getMove(self, board):
+    for m in board.getAllMoves( self.prevPos ):
+      if ( self.prevPos, self.currPos ) == m.getPosPair():
+        return m
+
+    return None

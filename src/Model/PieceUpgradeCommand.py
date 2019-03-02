@@ -28,3 +28,9 @@ class PieceUpgradeCommand(Command):
 
   def undo(self):
     self.board.addPiece( self.currPiecePos, self.currPiece )
+
+  def getStartPos(self):
+    return self.currPiecePos
+
+  def getEndPos(self):
+    return self.getStartPos()

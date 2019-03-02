@@ -4,8 +4,8 @@ from Game import Game
 from GameRules import GameRules
 
 class Model:
-  def __init__(self):
-    self.board = Board( 8, 8 )
+  def __init__(self, boardconfigFileName = ""):
+    self.board = Board( 8, 8, boardconfigFileName )
     self.Game = Game()
     self.GameRules = GameRules()
 

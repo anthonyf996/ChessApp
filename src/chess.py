@@ -7,8 +7,7 @@ from Model import Model
 from Controller import Controller
 
 view = View()
-model = Model()
-model.board.setup()
+model = Model( boardconfigFileName = "Model/StandardConfig.json" )
 controller = Controller( view, model )
 
 controller.run()
