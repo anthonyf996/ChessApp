@@ -27,6 +27,9 @@ class King( Piece ):
     rightRook = None
     leftRook = None
 
+    if board.isInDanger( currPos ):
+      return moves
+
     if currPiece.getColor() == PieceColor.DARK:
       temp = leftRookPos
       leftRookPos = rightRookPos
@@ -40,10 +43,18 @@ class King( Piece ):
     if leftRook is not None and not currPiece.getHasMoved() and not leftRook.getHasMoved():
       # Try to castle left
       if currPos in GetCollisionMovement().getMoves( board, leftRookPos ):
-        moves.add( CastleLeftCommand( board, currPos ) )
+        castleCommand = CastleLeftCommand( board, currPos )
+        if board.stillInCheckAfterMove( currPiece, castleCommand ) or \
+           board.stillInCheckAfterMove( leftRook, castleCommand ):
+          return moves
+        moves.add( castleCommand )
     if rightRook is not None and not currPiece.getHasMoved() and not rightRook.getHasMoved():
       # Try to castle right
       if currPos in GetCollisionMovement().getMoves( board, rightRookPos ):
-        moves.add( CastleRightCommand( board, currPos ) )
+        castleCommand = CastleRightCommand( board, currPos )
+        if board.stillInCheckAfterMove( currPiece, castleCommand ) or \
+           board.stillInCheckAfterMove( rightRook, castleCommand ):
+          return moves
+        moves.add( castleCommand )
 
     return moves
