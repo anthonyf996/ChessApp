@@ -1,5 +1,8 @@
 class MoveController:
   def __init__(self):
+    self.reset()
+
+  def reset(self):
     self.currPos = None
     self.prevPos = None
     self.currPiece = None
@@ -10,7 +13,7 @@ class MoveController:
   def getMoves(self, board):
     if self.currPiece is not None:
       return board.getAllMoves( self.currPos )
-    return None
+    return set()
 
   def handleInput(self, board, game, pos):
     if self.isValidMove( board, pos ):

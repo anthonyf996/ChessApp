@@ -2,7 +2,7 @@ class View:
   def __init__(self):
     pass
 
-  def display(self, board, game, moves = None):
+  def display(self, board, game, moves = set()):
     self.displayBoard( board, game, moves )
 
     if game.getIsCheckMate():
@@ -22,7 +22,7 @@ class View:
   def displayDraw(self, lightKing, darkKing):
     print ( "Draw at %s and %s" % ( lightKing.getPos(), darkKing.getPos() ) )
 
-  def displayBoard(self, board, game = None, moves = None):
+  def displayBoard(self, board, game = None, moves = set()):
     moveArr = board.getMovesEndPos( moves )
 
     s = ""

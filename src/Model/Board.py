@@ -2,13 +2,11 @@ from GetSimpleMovement import GetSimpleMovement
 from GetEatMovement import GetEatMovement
 from GetCollisionMovement import GetCollisionMovement
 from PieceColor import PieceColor
-from Pon import Pon
-from Knight import Knight
-from Bishop import Bishop
-from Rook import Rook
-from Queen import Queen
 from King import King
 from BoardFromFile import BoardFromFile
+from BoardQueryIsInDanger import BoardQueryIsInDanger 
+from BoardQueryIsLastPiece import BoardQueryIsLastPiece 
+from BoardQueryIsKingTrapped import BoardQueryIsKingTrapped 
 
 class Board:
   def __init__(self, numRows, numCols, boardconfigFileName = ""):
@@ -58,17 +56,13 @@ class Board:
   def getKing(self, color):
     if color in self.kings:
       return self.getKings()[ color ]
-
     return None
 
   def getMovesEndPos(self, moves):
     moveArr = []
 
-    if moves is not None:
-      for m in moves:
-        start, end = m.getPosPair()
-
-        moveArr.append( end )
+    for m in moves:
+      moveArr.append( m.getEndPos() )
 
     return moveArr
 
@@ -103,12 +97,9 @@ class Board:
     return currPiece.getColor() != otherPiece.getColor()
 
   def getAllMoves(self, pos):
-    moves = set()
-
-    moves = moves.union( self.getMoves( pos ) )
+    moves = self.getMoves( pos )
     moves = moves.union( self.getEatMoves( pos ) )
     moves = moves.union( self.getSpecialMoves( pos ) )
-
     return moves
 
   def getMoves(self, pos):
@@ -138,7 +129,14 @@ class Board:
     move.undo()
 
   def isInDanger(self, currPos):
-    inDanger = False
+    return BoardQueryIsInDanger().queryBoard( self, currPos )
+  def isLastPiece(self, kingPos):
+    return BoardQueryIsLastPiece().queryBoard( self, kingPos )
+  def isKingTrapped(self, kingPos):
+    return BoardQueryIsKingTrapped().queryBoard( self, kingPos )
+
+  """
+  def isInDanger(self, currPos):
     currPiece = self.getPiece( currPos )
 
     for y in range(0,self.getNumRows()):
@@ -146,19 +144,14 @@ class Board:
         pos = ( x, y )
         piece = self.getPiece( pos )
 
-        if piece is None:
-          continue
-        if piece.getColor() == currPiece.getColor():
+        if piece is None or piece.getColor() == currPiece.getColor():
           continue
 
-        eatMoves = self.getEatMoves( pos )
-
-        for move in eatMoves:
+        for move in self.getEatMoves( pos ):
           if currPos in move.getPosPair():
-            inDanger = True
-            break
+            return True
 
-    return inDanger
+    return False
 
   def isLastPiece(self, kingPos):
     king = self.getPiece( kingPos )
@@ -168,11 +161,7 @@ class Board:
         pos = ( x, y )
         piece = self.getPiece( pos )
 
-        if piece is None:
-          continue
-        if piece == king:
-          continue
-        if piece.getColor() == king.getColor():
+        if piece is None or piece == King or piece.getColor() == king.getColor():
           return False
 
     return True
@@ -183,28 +172,28 @@ class Board:
       for x in range(0,self.getNumCols()):
         pos = ( x, y )
         piece = self.getPiece( pos )
-        if piece is None:
-          continue
-        if piece.getColor() != king.getColor():
+
+        if piece is None or piece.getColor() != king.getColor():
           continue
 
-        if not self.cannotStopCheck( pos, king ):
+        if self.canStopCheck( pos, king ):
           return False
 
     return True
+  """
 
-  def cannotStopCheck(self, piecePos, king):
-    moves = self.getAllMoves( piecePos )
+  def canStopCheck(self, piecePos, king):
+    for move in self.getAllMoves( piecePos ):
+      if not self.stillInCheckAfterMove( king, move ):
+        return True
 
-    for move in moves:
-      self.move( move )
-      inDanger = self.isInDanger( king.getPos() )
-      self.undo( move )
+    return False
 
-      if not inDanger:
-        return False
-
-    return True
+  def stillInCheckAfterMove(self, king, move):
+    self.move( move )
+    stillInCheck = self.isInDanger( king.getPos() )
+    self.undo( move )
+    return stillInCheck
 
   # This method should only be called after a move is made to verify the
   # integrity of the board.

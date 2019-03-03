@@ -10,5 +10,4 @@ class GetSimpleMovement(GetMovement):
 
   def checkToAddMove(self, board, moves, currPos, potentialMove):
     moves.add( SimpleMove( board, currPos, potentialMove ) )
-
     return moves

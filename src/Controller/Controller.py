@@ -22,7 +22,7 @@ class Controller:
                              ExceptionHandler( 
                                self.InputReader.read, 
                                [ GameResetException() ],
-                               self.Model.getBoard().reset
+                               self.reset
                              ) )
   def run(self):
     try:
@@ -44,13 +44,12 @@ class Controller:
   def finish(self):
     pass
 
-  def updateView(self):
-    moves = self.MoveController.getMoves( self.Model.getBoard() )
+  def reset(self):
+    self.Model.getBoard().reset()
+    self.MoveController.reset()
 
-    if moves is None:
-      self.View.display( self.Model.getBoard(), self.Model.getGame() )
-    else:
-      self.View.display( self.Model.getBoard(), self.Model.getGame(), moves )
+  def updateView(self):
+    self.View.display( self.Model.getBoard(), self.Model.getGame(), self.MoveController.getMoves( self.Model.getBoard() ) )
 
   def updateModel(self):
     self.Model.update()
