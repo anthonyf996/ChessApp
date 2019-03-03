@@ -8,4 +8,4 @@ class SimpleMoveCommand(Command):
     self.simpleMove.perform()
 
   def undo(self):
-    
+   pass 

@@ -11,7 +11,6 @@ class GetMovement:
     piece = board.getPiece( pos )
     currX, currY = pos
 
-    #movementVector = piece.getMovementVectors()
     movementVector = self.getMovementVectors( piece )
     stepLimit = self.getStepLimit( piece )
 
@@ -30,11 +29,9 @@ class GetMovement:
         if board.isCollision( potentialMove ):
           moves = self.checkToAddCollision( board, moves, pos, potentialMove )
           if board.isOpponentPiece( piece, board.getPiece( potentialMove ) ):
-            #moves.add( Move( pos, potentialMove, MoveType.EAT ) )
             moves = self.checkToAddEat( board, moves, pos, potentialMove )
           break
 
-        #moves.add( Move( pos, potentialMove ) )
         moves = self.checkToAddMove( board, moves, pos, potentialMove )
 
     return moves

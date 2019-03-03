@@ -49,7 +49,6 @@ class MoveController:
   def performMove(self, board, game, move):
     if move is not None:
       successful = board.move( move )
-
       if successful:
         game.advanceTurn()
 

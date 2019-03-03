@@ -3,11 +3,11 @@ from PieceColor import PieceColor
 class Game:
   def __init__(self, startingColor = PieceColor.LIGHT):
     self.startingColor = startingColor
+    self.turnColor = self.startingColor
+    self.turnCount = 0
     self.init()
 
   def init(self):
-    self.turnColor = self.startingColor
-    self.turnCount = 0
     self.gameOver = False
     self.isDraw = False
     self.isCheckMate = False
@@ -17,6 +17,8 @@ class Game:
     self.inCheckMate = None
 
   def reset(self):
+    self.turnColor = self.startingColor
+    self.turnCount = 0
     self.init()
 
   def getTurnColor(self):
@@ -57,7 +59,7 @@ class Game:
     self.turnCount += 1
 
   def update(self, board, game, gameRules):
-    self.reset()
+    self.init()
 
     kings = board.getKings()
 

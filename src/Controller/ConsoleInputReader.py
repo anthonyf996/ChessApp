@@ -11,16 +11,19 @@ class ConsoleInputReader(InputReader):
     posX, posY = "", ""
     turnStr = self.getTurnStr( self.callbacks[ "getTurnColor" ]() )
 
-    while not posX.isnumeric():
-      posX = input( "[ %s ] Enter posX or 'q' to quit ( %s ): " % ( turnStr, str( self.callbacks[ "getCurrPos" ]() ) ) )
-      self.checkToQuitGame( posX )
-      self.checkToResetGame( posX )
-    while not posY.isnumeric():
-      posY = input( "[ %s ] Enter posY or 'q' to quit ( ( %s, _ ) ): " % ( turnStr, posX ) )
-      self.checkToQuitGame( posY )
-      self.checkToResetGame( posY )
+    posX = self.promptUserInputCoord( "[ %s ] Enter posX or 'q' to quit ( %s ): " % 
+                                      ( turnStr, str( self.callbacks[ "getCurrPos" ]() ) ) )
+    posY = self.promptUserInputCoord( "[ %s ] Enter posY or 'q' to quit ( ( %s, _ ) ): " % 
+                                      ( turnStr, posX ) )
 
     return int( posX ), int( posY )
+
+  def promptUserInputCoord(self, promptStr ):
+    coord = ""
+    while not coord.isnumeric():
+      coord = input( promptStr )
+      self.checkToRaiseException( coord )
+    return coord
 
   def checkToQuitGame(self, coord):
     if coord.lower() == "q":
@@ -29,6 +32,10 @@ class ConsoleInputReader(InputReader):
   def checkToResetGame(self, coord):
     if coord.lower() == "r":
       raise GameResetException
+
+  def checkToRaiseException(self, coord):
+    self.checkToQuitGame( coord )
+    self.checkToResetGame( coord )
 
   def getTurnStr(self, turnColor):
     if turnColor == PieceColor.LIGHT:
