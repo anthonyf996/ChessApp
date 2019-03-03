@@ -1,4 +1,5 @@
 from Piece import Piece
+from PieceType import PieceType
 
 class Queen( Piece ):
   def __init__(self, color, stepLimit = 8):
@@ -7,3 +8,6 @@ class Queen( Piece ):
 
   def __str__(self):
     return "Q"
+
+  def getType(self):
+    return PieceType.QUEEN

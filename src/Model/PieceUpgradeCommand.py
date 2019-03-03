@@ -12,6 +12,19 @@ class PieceUpgradeCommand(Command):
     self.currPiece = board.getPiece( currPiecePos )
     self.upgradeType = upgradeType
 
+  def __repr__(self):
+    return "PieceUpgradeCommand(%s,%s)" % ( str( self.currPiecePos ), str( upgradeType ) )
+
+  def __eq__(self, other):
+    if isinstance(other, PieceUpgradeCommand):
+      return ( self.currPiecePos == other.currPiecePos and \
+               self.upgradeType == other.upgradeType )
+    else:
+      return False
+
+  def __hash__(self):
+    return hash( self.__repr__() )
+
   def execute(self):
     newPiece = None
 

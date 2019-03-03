@@ -1,4 +1,5 @@
 from Piece import Piece
+from PieceType import PieceType
 from PieceColor import PieceColor
 from GetCollisionMovement import GetCollisionMovement
 from CastleLeftCommand import CastleLeftCommand
@@ -11,6 +12,9 @@ class King( Piece ):
 
   def __str__(self):
     return "K"
+
+  def getType(self):
+    return PieceType.KING
 
   def getSpecialMoves(self, board, currPos):
     moves = set()

@@ -8,6 +8,7 @@ from TestPieceUpgradeCommand import TestPieceUpgradeCommand
 from TestPieces import TestPieces
 from TestSimpleMove import TestSimpleMove
 from TestGameRules import TestGameRules
+from TestSetEnPassant import TestSetEnPassant
 
 if __name__ == "__main__":
   unittest.main()

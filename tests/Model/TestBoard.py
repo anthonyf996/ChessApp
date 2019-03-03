@@ -15,6 +15,8 @@ from MoveType import MoveType
 from EnPassantCommand import EnPassantCommand
 from CastleRightCommand import CastleRightCommand
 from CastleLeftCommand import CastleLeftCommand
+from MoveWithSideEffects import MoveWithSideEffects
+from SetEnPassantCommand import SetEnPassantCommand
 
 class TestBoard(unittest.TestCase):
   def setUp(self):
@@ -73,18 +75,34 @@ class TestBoard(unittest.TestCase):
 
     return moves
 
+  """
+  def pairsToMoveWithSideEffects(self, startPos, pairsSet ):
+    moves = set()
+
+    for p in pairsSet:
+      moves.add( MoveWithSideEffects( SimpleMove( self.board, startPos, p ), [] ) )
+
+    return moves
+  """
+
   def test_getMoves_Pon(self):
     startPos = ( 1, 1 )
     self.board.addPiece( startPos, Pon( self.otherColor ) ) 
     pairsSet = { ( 1, 2 ), ( 1, 3 ) }
-    self.assertEqual( self.board.getMoves( startPos ), self.pairsToMoves( startPos, pairsSet ) )
+    #moves.add( MoveWithSideEffects( SimpleMove( self.board, startPos, p ), [] ) )
+    self.assertEqual( self.board.getAllMoves( startPos ), { 
+      SimpleMove( self.board, startPos, ( 1, 2 ) ),
+      MoveWithSideEffects( SimpleMove( self.board, startPos, ( 1, 3 ) ), [ SetEnPassantCommand( self.board, ( 1, 3 ) ) ] )
+    } )
 
+  """
   def test_getMoves_Pon_CanEnPassant(self):
     startPos = ( 1, 1 )
     self.board.addPiece( startPos, Pon( self.otherColor ) ) 
     self.board.getPiece( startPos ).setCanEnPassant( True )
-    self.assertFalse( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { SimpleMove( self.board, ( 1, 1 ), ( 1, 2 ) ), SimpleMove( self.board, ( 1, 1 ), ( 1, 3 ) ) } ) )
-    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 2 ), ( 1, 3 ), ( 2, 2 ), ( 0, 2 ) } ) )
+    self.assertTrue( self.board.getSpecialMoves( startPos ) == self.pairsToEnPassantMoves( startPos, set() ) )
+    self.assertTrue( self.board.getSpecialMoves( startPos ) == self.pairsToEnPassantMoves( startPos, { ( 2, 2 ), ( 0, 2 ) } ) )
+  """
 
   def test_getMoves_Knight(self):
     startPos = ( 2, 2 )
@@ -128,7 +146,10 @@ class TestBoard(unittest.TestCase):
     self.assertFalse( pon.getHasMoved() )
     startPos = ( 1, 1 )
     self.board.addPiece( startPos, pon )
-    self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 2 ), ( 1, 3 ) } ) )
+    self.assertEqual( self.board.getAllMoves( startPos ), { 
+      SimpleMove( self.board, startPos, ( 1, 2 ) ),
+      MoveWithSideEffects( SimpleMove( self.board, startPos, ( 1, 3 ) ), [ SetEnPassantCommand( self.board, ( 1, 3 ) ) ] )
+    } )
     self.board.move( SimpleMove( self.board, ( 1, 1 ), ( 1, 2 ) ) )
     startPos = ( 1, 2 )
     self.assertTrue( self.board.getMoves( startPos ) == self.pairsToMoves( startPos, { ( 1, 3 ) } ) )
@@ -232,6 +253,7 @@ class TestBoard(unittest.TestCase):
 
     self.board.addPiece( pos, pon )
     self.board.addPiece( targetPos, target )
+    pon.setHasMoved( True )
 
     self.assertEqual( self.board.getSpecialMoves( pos ), set() )
 

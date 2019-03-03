@@ -10,6 +10,18 @@ class CastleCommand(Command):
     self.prevKingHasMoved = None
     self.prevRookHasMoved = None
 
+  def __repr__(self):
+    return "CastleCommand(%s)" % ( str( self.kingPos ) )
+
+  def __eq__(self, other):
+    if isinstance(other, CastleCommand):
+      return ( self.kingPos == other.kingPos )
+    else:
+      return False
+
+  def __hash__(self):
+    return hash( self.__repr__() )
+
   def execute(self):
     self.kingNewPos = self.getKingNewPos()
     self.rookPos = self.getRookPos()

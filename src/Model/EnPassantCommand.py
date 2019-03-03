@@ -9,6 +9,19 @@ class EnPassantCommand(Command):
     self.newPonPos = None
     self.target = None
 
+  def __repr__(self):
+    return "EnPassantCommand(%s,%s)" % ( str( self.ponPos ), str( self.targetPos ) )
+
+  def __eq__(self, other):
+    if isinstance(other, EnPassantCommand):
+      return ( self.ponPos == other.ponPos and \
+               self.targetPos == other.targetPos )
+    else:
+      return False
+
+  def __hash__(self):
+    return hash( self.__repr__() )
+
   def execute(self):
     pon = self.board.getPiece( self.ponPos )
     self.target = self.board.getPiece( self.targetPos )
