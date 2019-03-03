@@ -2,11 +2,12 @@ from PieceColor import PieceColor
 
 class Game:
   def __init__(self, startingColor = PieceColor.LIGHT):
-    self.turnColor = startingColor
-    self.turnCount = 0
+    self.startingColor = startingColor
     self.init()
 
   def init(self):
+    self.turnColor = self.startingColor
+    self.turnCount = 0
     self.gameOver = False
     self.isDraw = False
     self.isCheckMate = False
@@ -43,21 +44,22 @@ class Game:
     return self.isCheck
 
   def setGameOver(self, b):
-    if not self.gameOver:
-      #print ( "GAME OVER" )
-      pass
     self.gameOver = b
 
   def isGameOver(self):
     return self.gameOver
 
+  def advanceTurn(self):
+    if self.turnColor == PieceColor.LIGHT:
+      self.turnColor = PieceColor.DARK
+    else:
+      self.turnColor = PieceColor.LIGHT
+    self.turnCount += 1
+
   def update(self, board, game, gameRules):
     self.reset()
 
-    kings= board.getKings()
-
-    lightKingPos = kings[ PieceColor.LIGHT ].getPos()
-    darkKingPos = kings[ PieceColor.DARK ].getPos()
+    kings = board.getKings()
 
     for color,king in kings.items():
       if gameRules.isInCheckMate( board, king.getPos() ):
@@ -68,14 +70,9 @@ class Game:
       if gameRules.isInCheck( board, king.getPos() ):
         self.isCheck = True
         self.inCheck = king
+        break
 
-    if gameRules.isDraw( board, game, lightKingPos, darkKingPos ):
+    if gameRules.isDraw( board, game, kings[ PieceColor.LIGHT ].getPos(), 
+                         kings[ PieceColor.DARK ].getPos() ):
       self.isDraw = True
       self.setGameOver( True )
-
-  def advanceTurn(self):
-    if self.turnColor == PieceColor.LIGHT:
-      self.turnColor = PieceColor.DARK
-    else:
-      self.turnColor = PieceColor.LIGHT
-    self.turnCount += 1

@@ -16,7 +16,7 @@ from Game import Game
 from GameRules import GameRules
 from SimpleMove import SimpleMove
 
-class TestCastle(unittest.TestCase):
+class TestGameRules(unittest.TestCase):
   def setUp(self):
     self.color = PieceColor.LIGHT
     self.otherColor = PieceColor.DARK
@@ -81,6 +81,12 @@ class TestCastle(unittest.TestCase):
     self.assertFalse( self.rules.isDraw( self.board, self.game, kingPos, kingPos2 ) )
 
     self.board.addPiece( ( 1, 6 ), Queen( self.otherColor ) )
+
+    self.assertTrue( self.rules.isDraw( self.board, self.game, kingPos, kingPos2 ) )
+    self.assertFalse( self.rules.isInCheck( self.board, kingPos ) )
+    self.assertFalse( self.rules.isInCheckMate( self.board, kingPos ) )
+
+    self.board.move( SimpleMove( self.board, enemyPos, ( 1, 3 ) ) )
 
     self.assertTrue( self.rules.isDraw( self.board, self.game, kingPos, kingPos2 ) )
     self.assertFalse( self.rules.isInCheck( self.board, kingPos ) )

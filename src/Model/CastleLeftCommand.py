@@ -1,19 +1,15 @@
 from CastleCommand import CastleCommand
-from BoardOrientation import BoardOrientation
 from PieceColor import PieceColor
 
 class CastleLeftCommand(CastleCommand):
   def getKingNewPos(self):
     kingX, kingY = self.kingPos
-
-    #if self.board.getOrientation() == BoardOrientation.LIGHT_TILE_RIGHT:
     if self.board.getPiece( self.kingPos ).getColor() == PieceColor.LIGHT:
       return ( kingX - 2, kingY )
     else:
       return ( kingX + 2, kingY )
 
   def getRookPos(self):
-    #if self.board.getOrientation() == BoardOrientation.LIGHT_TILE_RIGHT:
     if self.board.getPiece( self.kingPos ).getColor() == PieceColor.LIGHT:
       return ( 0, self.board.getNumRows() - 1 )
     else:
@@ -21,7 +17,6 @@ class CastleLeftCommand(CastleCommand):
 
   def getRookNewPos(self):
     kingX, kingY = self.getKingNewPos()
-    #if self.board.getOrientation() == BoardOrientation.LIGHT_TILE_RIGHT:
     if self.board.getPiece( self.kingPos ).getColor() == PieceColor.LIGHT:
       return ( kingX + 1, kingY )
     else:

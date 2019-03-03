@@ -7,6 +7,7 @@ from BoardFromFile import BoardFromFile
 from BoardQueryIsInDanger import BoardQueryIsInDanger 
 from BoardQueryIsLastPiece import BoardQueryIsLastPiece 
 from BoardQueryIsKingTrapped import BoardQueryIsKingTrapped 
+from BoardQueryNoMovesLeft import BoardQueryNoMovesLeft 
 
 class Board:
   def __init__(self, numRows, numCols, boardconfigFileName = ""):
@@ -128,14 +129,39 @@ class Board:
   def undo(self, move):
     move.undo()
 
+  def unprotectedMove(self, move):
+    move.execute()
+
   def isInDanger(self, currPos):
     return BoardQueryIsInDanger().queryBoard( self, currPos )
+
   def isLastPiece(self, kingPos):
     return BoardQueryIsLastPiece().queryBoard( self, kingPos )
+
   def isKingTrapped(self, kingPos):
     return BoardQueryIsKingTrapped().queryBoard( self, kingPos )
 
+  def noMovesLeft(self, kingPos):
+    return BoardQueryNoMovesLeft().queryBoard( self, kingPos )
+
   """
+  def noMovesLeft(self, currPos):
+    currPiece = self.getPiece( currPos )
+
+    for y in range(0,self.getNumRows()):
+      for x in range(0,self.getNumCols()):
+        pos = ( x, y )
+        piece = self.getPiece( pos )
+
+        if piece is None or piece.getColor() != currPiece.getColor():
+          continue
+
+        for move in self.getAllMoves( pos ):
+          if not self.stillInCheckAfterMove( currPiece, move ):
+            return False
+
+    return True
+
   def isInDanger(self, currPos):
     currPiece = self.getPiece( currPos )
 
@@ -190,7 +216,7 @@ class Board:
     return False
 
   def stillInCheckAfterMove(self, king, move):
-    self.move( move )
+    self.unprotectedMove( move )
     stillInCheck = self.isInDanger( king.getPos() )
     self.undo( move )
     return stillInCheck

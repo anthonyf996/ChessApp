@@ -1,5 +1,3 @@
-from King import King
-
 class GameRules:
   def __init__(self):
     self.TURN_COUNT_FOR_DRAW = 50
@@ -16,24 +14,16 @@ class GameRules:
     if game.getTurnCount() // 2 >= self.TURN_COUNT_FOR_DRAW:
       return True
 
-    firstKingColor = board.getPiece( firstKingPos ).getColor()
-    secondKingColor = board.getPiece( secondKingPos ).getColor()
-
-    isDraw = False
-
-    firstKingDraw = board.isKingTrapped( firstKingPos ) and \
-           not self.isInCheck( board, firstKingPos ) and \
-           board.isLastPiece( firstKingPos )
+    firstKingDraw = board.noMovesLeft( firstKingPos ) and \
+           not self.isInCheck( board, firstKingPos )
 
     if firstKingDraw:
       return True
 
-    secondKingDraw = board.isKingTrapped( secondKingPos ) and \
-           not self.isInCheck( board, secondKingPos ) and \
-           board.isLastPiece( secondKingPos )
+    secondKingDraw = board.noMovesLeft( secondKingPos ) and \
+           not self.isInCheck( board, secondKingPos )
 
     if secondKingDraw:
       return True
 
     return board.isLastPiece( firstKingPos ) and board.isLastPiece( secondKingPos )
-
