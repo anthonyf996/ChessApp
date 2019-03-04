@@ -46,6 +46,7 @@ class Controller:
 
   def reset(self):
     self.Model.getBoard().reset()
+    self.Model.getGame().reset()
     self.MoveController.reset()
 
   def updateView(self):

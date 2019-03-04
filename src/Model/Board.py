@@ -8,6 +8,8 @@ from BoardQueryIsInDanger import BoardQueryIsInDanger
 from BoardQueryIsLastPiece import BoardQueryIsLastPiece 
 from BoardQueryIsKingTrapped import BoardQueryIsKingTrapped 
 from BoardQueryNoMovesLeft import BoardQueryNoMovesLeft 
+from MoveWithSideEffects import MoveWithSideEffects
+from UnsetEnPassantCommand import UnsetEnPassantCommand
 
 class Board:
   def __init__(self, numRows, numCols, boardconfigFileName = ""):
@@ -15,6 +17,7 @@ class Board:
     self.numCols = numCols
     self.boardconfigFileName = boardconfigFileName
     self.kings = {}
+    self.canEnPassant = []
     self.board = self.getInitBoard()
     self.setupBoard()
 
@@ -33,6 +36,7 @@ class Board:
 
   def reset(self):
     self.kings = {}
+    self.canEnPassant = []
     self.board = self.getInitBoard()
     self.setupBoard()
 
@@ -118,6 +122,8 @@ class Board:
   def move(self, move):
     startPiece = self.getPiece( move.getStartPos() )
 
+    move = self.checkToWrapMoveToUnsetEnPassant( move )
+
     move.execute()
 
     if self.isInInconsistentState( startPiece.getColor() ):
@@ -131,6 +137,18 @@ class Board:
 
   def unprotectedMove(self, move):
     move.execute()
+
+  # Always unset canEnPassant following the move after it was set
+  def checkToWrapMoveToUnsetEnPassant(self, move):
+    if len( self.canEnPassant ) > 0:
+      move = MoveWithSideEffects( move, [ UnsetEnPassantCommand( self, self.canEnPassant ) ] )
+    return move
+
+  def registerCanEnPassant(self, piece):
+    self.canEnPassant.append( piece )
+
+  def clearCanEnPassant(self):
+    self.canEnPassant = []
 
   def isInDanger(self, currPos):
     return BoardQueryIsInDanger().queryBoard( self, currPos )

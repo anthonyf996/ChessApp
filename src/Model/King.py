@@ -18,9 +18,7 @@ class King( Piece ):
 
   def getSpecialMoves(self, board, currPos):
     moves = set()
-
     moves = self.tryToGetCastleMove(board, currPos, moves)
-
     return moves
 
   def tryToGetCastleMove(self, board, currPos, moves):

@@ -24,28 +24,13 @@ class Pon( Piece ):
   def setCanEnPassant(self, b):
     self.canEnPassant = b
 
-  """
-  def getMovementVectors(self):
-    extraMoves = set()
-
-    #if not self.getHasMoved():
-    #  extraMoves.add( ( 0, 2 ) )
-
-    #if not self.getHasMoved() and self.getCanEnPassant():
-    #  extraMoves = extraMoves.union( { ( 1, 1 ), ( -1, 1 ) } )
-
-    return self.movementVectors.union( extraMoves )
-  """
-
   def getEatVectors(self):
     return { ( 1, 1 ), ( -1, 1 ) }
 
   def getSpecialMoves(self, board, currPos):
     moves = set()
-
     moves = self.tryToGetEnPassantMove( board, currPos, moves )
     moves = self.tryToGetDoubleMove( board, currPos, moves )
-
     return moves
 
   def tryToGetEnPassantMove(self, board, currPos, moves):
@@ -70,7 +55,7 @@ class Pon( Piece ):
         endPos = ( currX, currY - 2 )
       else:
         endPos = ( currX, currY + 2 )
-      #moves.add( SimpleMove( board, currPos, endPos ) )
+
       if board.isValidMove( endPos ):
         moves.add( MoveWithSideEffects( SimpleMove( board, currPos, endPos ),
                    [ SetEnPassantCommand( board, endPos ) ] ) )

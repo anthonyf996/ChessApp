@@ -20,18 +20,18 @@ class SetEnPassantCommand(Command):
 
   def execute(self):
     currX, currY = self.currPos
-    pos = currX - 1, currY 
-    if self.board.isValidMove( pos ):
-      self.checkToSetEnPassant( self.board.getPiece( pos ), True )
-    pos = currX + 1, currY 
-    if self.board.isValidMove( pos ):
-      self.checkToSetEnPassant( self.board.getPiece( pos ), True )
+    self.checkToSetEnPassant( ( currX - 1, currY ), True )
+    self.checkToSetEnPassant( ( currX + 1, currY ), True )
 
   def undo(self):
     currX, currY = self.currPos
-    self.checkToSetEnPassant( self.board.getPiece( ( currX - 1, currY ) ), False )
-    self.checkToSetEnPassant( self.board.getPiece( ( currX + 1, currY ) ), False )
+    self.checkToSetEnPassant( ( currX - 1, currY ), False )
+    self.checkToSetEnPassant( ( currX + 1, currY ), False )
+    self.board.clearCanEnPassant()
     
-  def checkToSetEnPassant(self, piece, b):
-    if piece is not None and piece.getType() == PieceType.PON:
-      piece.setCanEnPassant( b )
+  def checkToSetEnPassant(self, pos, b):
+    if self.board.isValidMove( pos ):
+      piece = self.board.getPiece( pos )
+      if piece is not None and piece.getType() == PieceType.PON:
+        piece.setCanEnPassant( b )
+        self.board.registerCanEnPassant( piece )
