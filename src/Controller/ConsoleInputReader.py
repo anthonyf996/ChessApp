@@ -2,6 +2,7 @@ from InputReader import InputReader
 from GameExitException import GameExitException
 from GameResetException import GameResetException
 from PieceColor import PieceColor
+from PieceType import PieceType
 
 class ConsoleInputReader(InputReader):
   def read(self):
@@ -25,6 +26,10 @@ class ConsoleInputReader(InputReader):
       self.checkToRaiseException( coord )
     return coord
 
+  def checkToRaiseException(self, coord):
+    self.checkToQuitGame( coord )
+    self.checkToResetGame( coord )
+
   def checkToQuitGame(self, coord):
     if coord.lower() == "q":
       raise GameExitException
@@ -33,12 +38,23 @@ class ConsoleInputReader(InputReader):
     if coord.lower() == "r":
       raise GameResetException
 
-  def checkToRaiseException(self, coord):
-    self.checkToQuitGame( coord )
-    self.checkToResetGame( coord )
-
   def getTurnStr(self, turnColor):
     if turnColor == PieceColor.LIGHT:
       return "LIGHT"
     else:
       return "DARK"
+
+  def promptUpgradeType(self):
+    upgradeType = ""
+    while upgradeType.upper() not in [ "N", "B", "R", "Q" ]:
+      print( "Pon Upgrade Selection" )
+      upgradeType = input( "Enter corresponding letter ( N | B | R | Q ): " ).upper()
+
+    if upgradeType == "N":
+      return PieceType.KNIGHT
+    elif upgradeType == "B":
+      return PieceType.BISHOP
+    elif upgradeType == "R":
+      return PieceType.ROOK
+    else:
+      return PieceType.QUEEN

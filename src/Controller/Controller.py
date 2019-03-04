@@ -24,6 +24,8 @@ class Controller:
                                [ GameResetException() ],
                                self.reset
                              ) )
+    self.Model.registerRequestUpgradeTypeCallback( self.InputReader.promptUpgradeType )
+
   def run(self):
     try:
       while True:

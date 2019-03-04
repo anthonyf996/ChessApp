@@ -48,3 +48,6 @@ class PieceUpgradeCommand(Command):
 
   def getEndPos(self):
     return self.getStartPos()
+
+  def setUpgradeType(self, upgradeType):
+    self.upgradeType = upgradeType

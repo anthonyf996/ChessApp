@@ -31,6 +31,11 @@ class MoveWithSideEffects(MetaCommand):
   def getMove(self):
     return self.move
 
+  def getCommand(self, index):
+    if 0 <= index < len( self.commands ):
+      return self.commands[ index ]
+    return None
+
   def getPosPair(self):
     return self.move.getPosPair()
 

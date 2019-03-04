@@ -7,6 +7,7 @@ from BoardQueryIsKingTrapped import BoardQueryIsKingTrapped
 from BoardQueryNoMovesLeft import BoardQueryNoMovesLeft 
 from MoveWithSideEffects import MoveWithSideEffects
 from UnsetEnPassantCommand import UnsetEnPassantCommand
+from PieceUpgradeCommand import PieceUpgradeCommand
 
 class Board:
   def __init__(self, numRows, numCols, boardconfigFileName = ""):
@@ -17,6 +18,7 @@ class Board:
     self.canEnPassant = []
     self.board = self.getInitBoard()
     self.setupBoard()
+    self.requestUpgradeTypeCallback = None
 
   def getInitBoard(self):
     board = []
@@ -118,7 +120,10 @@ class Board:
 
   def move(self, move):
     startPiece = self.getPiece( move.getStartPos() )
+
     move = self.checkToWrapMoveToUnsetEnPassant( move )
+
+    self.checkToPromptUpgradeType( move )
 
     move.execute()
 
@@ -140,11 +145,23 @@ class Board:
       move = MoveWithSideEffects( move, [ UnsetEnPassantCommand( self, self.canEnPassant ) ] )
     return move
 
+  def checkToPromptUpgradeType(self, move):
+    if isinstance( move, MoveWithSideEffects ):
+      innerCommand = move.getCommand( 0 )
+      if isinstance( innerCommand, PieceUpgradeCommand ):
+        innerCommand.setUpgradeType( self.requestUpgradeType() )
+
   def registerCanEnPassant(self, piece):
     self.canEnPassant.append( piece )
 
   def clearCanEnPassant(self):
     self.canEnPassant = []
+
+  def registerRequestUpgradeTypeCallback(self, callback):
+    self.requestUpgradeTypeCallback = callback
+
+  def requestUpgradeType(self):
+    return self.requestUpgradeTypeCallback()
 
   def isInDanger(self, currPos):
     return BoardQueryIsInDanger().queryBoard( self, currPos )

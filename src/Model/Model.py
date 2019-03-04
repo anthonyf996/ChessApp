@@ -26,3 +26,6 @@ class Model:
 
   def getTurnColor(self):
     return self.Game.getTurnColor()
+
+  def registerRequestUpgradeTypeCallback(self, callback):
+    self.board.registerRequestUpgradeTypeCallback( callback )
