@@ -2,9 +2,13 @@ from Piece import Piece
 from EnPassantCommand import EnPassantCommand
 from SetEnPassantCommand import SetEnPassantCommand
 from SimpleMove import SimpleMove
+from EatMove import EatMove
 from MoveWithSideEffects import MoveWithSideEffects
 from PieceColor import PieceColor
 from PieceType import PieceType
+from PieceUpgradeCommand import PieceUpgradeCommand
+from GetSimpleMovement import GetSimpleMovement
+from GetEatMovement import GetEatMovement
 
 class Pon( Piece ):
   def __init__(self, color, stepLimit = 1):
@@ -26,6 +30,22 @@ class Pon( Piece ):
 
   def getEatVectors(self):
     return { ( 1, 1 ), ( -1, 1 ) }
+
+  def getMoves(self, board, currPos):
+    newMoves = set()
+    moves = GetSimpleMovement().getMoves( board, currPos )
+    for move in moves:
+      move = self.tryToGetUpgradeMove( board, currPos, move )
+      newMoves.add( move )
+    return newMoves
+
+  def getEatMoves(self, board, currPos):
+    newMoves = set()
+    moves = GetEatMovement().getMoves( board, currPos )
+    for move in moves:
+      move = self.tryToGetUpgradeMove( board, currPos, move )
+      newMoves.add( move )
+    return newMoves
 
   def getSpecialMoves(self, board, currPos):
     moves = set()
@@ -60,3 +80,10 @@ class Pon( Piece ):
         moves.add( MoveWithSideEffects( SimpleMove( board, currPos, endPos ),
                    [ SetEnPassantCommand( board, endPos ) ] ) )
     return moves
+
+  def tryToGetUpgradeMove(self, board, currPos, move):
+    endX, endY = move.getEndPos()
+    if endY == board.getNumRows() - 1 or endY == 0:
+      return MoveWithSideEffects( move, [ PieceUpgradeCommand( board, 
+                                            ( endX, endY ), PieceType.QUEEN ) ] )
+    return move

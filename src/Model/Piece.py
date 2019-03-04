@@ -1,3 +1,7 @@
+from GetSimpleMovement import GetSimpleMovement
+from GetEatMovement import GetEatMovement
+from GetCollisionMovement import GetCollisionMovement
+
 class Piece:
   def __init__(self, color, stepLimit ):
     self.pos = None
@@ -32,6 +36,15 @@ class Piece:
 
   def setHasMoved(self, b = True):
     self.hasMoved = b
+
+  def getMoves(self, board, currPos):
+    return GetSimpleMovement().getMoves( board, currPos )
+
+  def getEatMoves(self, board, currPos):
+    return GetEatMovement().getMoves( board, currPos )
+
+  def getCollisionMoves(self, board, currPos):
+    return GetCollisionMovement().getMoves( board, currPos )
 
   def getSpecialMoves(self, board, currPos):
     return set()

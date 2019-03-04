@@ -59,8 +59,8 @@ class MoveController:
       self.currPiece = None
 
   def getMove(self, board):
-    for m in board.getAllMoves( self.prevPos ):
-      if ( self.prevPos, self.currPos ) == m.getPosPair():
-        return m
+    for move in board.getAllMoves( self.prevPos ):
+      if ( self.prevPos, self.currPos ) == move.getPosPair():
+        return move
 
     return None

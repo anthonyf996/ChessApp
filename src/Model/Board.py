@@ -108,13 +108,13 @@ class Board:
     return moves
 
   def getMoves(self, pos):
-    return GetSimpleMovement().getMoves( self, pos )
+    return self.getPiece( pos ).getMoves( self, pos )
 
   def getEatMoves(self, pos):
-    return GetEatMovement().getMoves( self, pos )
+    return self.getPiece( pos ).getEatMoves( self, pos )
 
   def getCollisionMoves(self, pos):
-    return GetCollisionMovement().getMoves( self, pos )
+    return self.getPiece( pos ).getCollisionMoves( self, pos )
 
   def getSpecialMoves(self, pos):
     return self.getPiece( pos ).getSpecialMoves( self, pos )

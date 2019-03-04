@@ -9,11 +9,11 @@ class PieceUpgradeCommand(Command):
   def __init__(self, board, currPiecePos, upgradeType):
     self.board = board
     self.currPiecePos = currPiecePos
-    self.currPiece = board.getPiece( currPiecePos )
+    self.currPiece = None
     self.upgradeType = upgradeType
 
   def __repr__(self):
-    return "PieceUpgradeCommand(%s,%s)" % ( str( self.currPiecePos ), str( upgradeType ) )
+    return "PieceUpgradeCommand(%s,%s)" % ( str( self.currPiecePos ), str( self.upgradeType ) )
 
   def __eq__(self, other):
     if isinstance(other, PieceUpgradeCommand):
@@ -26,6 +26,7 @@ class PieceUpgradeCommand(Command):
     return hash( self.__repr__() )
 
   def execute(self):
+    self.currPiece = self.board.getPiece( self.currPiecePos )
     newPiece = None
 
     if self.upgradeType == PieceType.KNIGHT:
