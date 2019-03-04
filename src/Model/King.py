@@ -22,41 +22,28 @@ class King( Piece ):
     return moves
 
   def tryToGetCastleMove(self, board, currPos, moves):
-    currPiece = board.getPiece( currPos )
-    currX, currY = currPos
-    rightRookPos = board.getNumCols() - 1, currY
-    leftRookPos = 0, currY
-    rightRook = None
-    leftRook = None
+    if not board.isInDanger( currPos ):
+      currPiece = board.getPiece( currPos )
+      currX, currY = currPos
 
-    if board.isInDanger( currPos ):
-      return moves
+      if currPiece.getColor() == PieceColor.LIGHT:
+        rightRookPos = board.getNumCols() - 1, currY
+        leftRookPos = 0, currY
+      else:
+        leftRookPos = board.getNumCols() - 1, currY
+        rightRookPos = 0, currY
 
-    if currPiece.getColor() == PieceColor.DARK:
-      temp = leftRookPos
-      leftRookPos = rightRookPos
-      rightRookPos = temp
+      self.tryToAddCastleMove( board, moves, currPiece, leftRookPos, 
+                                 CastleLeftCommand( board, currPos ) )
+      self.tryToAddCastleMove( board, moves, currPiece, rightRookPos, 
+                                 CastleRightCommand( board, currPos ) )
+    return moves
 
-    if board.isOccupied( rightRookPos ):
-      rightRook = board.getPiece( rightRookPos )
-    if board.isOccupied( leftRookPos ):
-      leftRook = board.getPiece( leftRookPos )
-
-    if leftRook is not None and not currPiece.getHasMoved() and not leftRook.getHasMoved():
-      # Try to castle left
-      if currPos in GetCollisionMovement().getMoves( board, leftRookPos ):
-        castleCommand = CastleLeftCommand( board, currPos )
-        if board.stillInCheckAfterMove( currPiece, castleCommand ) or \
-           board.stillInCheckAfterMove( leftRook, castleCommand ):
-          return moves
-        moves.add( castleCommand )
-    if rightRook is not None and not currPiece.getHasMoved() and not rightRook.getHasMoved():
-      # Try to castle right
-      if currPos in GetCollisionMovement().getMoves( board, rightRookPos ):
-        castleCommand = CastleRightCommand( board, currPos )
-        if board.stillInCheckAfterMove( currPiece, castleCommand ) or \
-           board.stillInCheckAfterMove( rightRook, castleCommand ):
-          return moves
-        moves.add( castleCommand )
-
+  def tryToAddCastleMove(self, board, moves, currPiece, rookPos, castleCommand):
+    rook = board.getPiece( rookPos )
+    if rook is not None and not currPiece.getHasMoved() and not rook.getHasMoved():
+      if currPiece.getPos() in GetCollisionMovement().getMoves( board, rook.getPos() ):
+        if not ( board.stillInCheckAfterMove( currPiece, castleCommand ) or \
+           board.stillInCheckAfterMove( rook, castleCommand ) ):
+          moves.add( castleCommand )
     return moves

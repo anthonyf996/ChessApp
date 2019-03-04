@@ -32,20 +32,12 @@ class Pon( Piece ):
     return { ( 1, 1 ), ( -1, 1 ) }
 
   def getMoves(self, board, currPos):
-    newMoves = set()
     moves = GetSimpleMovement().getMoves( board, currPos )
-    for move in moves:
-      move = self.tryToGetUpgradeMove( board, currPos, move )
-      newMoves.add( move )
-    return newMoves
+    return self.tryToGetUpgradeMoves( board, currPos, moves )
 
   def getEatMoves(self, board, currPos):
-    newMoves = set()
     moves = GetEatMovement().getMoves( board, currPos )
-    for move in moves:
-      move = self.tryToGetUpgradeMove( board, currPos, move )
-      newMoves.add( move )
-    return newMoves
+    return self.tryToGetUpgradeMoves( board, currPos, moves )
 
   def getSpecialMoves(self, board, currPos):
     moves = set()
@@ -56,16 +48,15 @@ class Pon( Piece ):
   def tryToGetEnPassantMove(self, board, currPos, moves):
     if self.getCanEnPassant():
       currX, currY = currPos
-      leftPos = ( currX - 1, currY )
-      rightPos = ( currX + 1, currY )
+      leftPos, rightPos = ( currX - 1, currY ), ( currX + 1, currY )
+      self.tryToAddEnPassantMove( board, currPos, moves, leftPos )
+      self.tryToAddEnPassantMove( board, currPos, moves, rightPos )
+    return moves
 
-      if board.isValidMove( leftPos ):
-        if board.getPiece( leftPos ) is not None:
-          moves.add( EnPassantCommand( board, currPos, leftPos ) )
-      if board.isValidMove( rightPos ):
-        if board.getPiece( rightPos ) is not None:
-          moves.add( EnPassantCommand( board, currPos, rightPos ) )
-
+  def tryToAddEnPassantMove(self, board, currPos, moves, pos):
+    if board.isValidMove( pos ):
+      if board.getPiece( pos ) is not None:
+        moves.add( EnPassantCommand( board, currPos, pos ) )
     return moves
 
   def tryToGetDoubleMove(self, board, currPos, moves):
@@ -80,6 +71,13 @@ class Pon( Piece ):
         moves.add( MoveWithSideEffects( SimpleMove( board, currPos, endPos ),
                    [ SetEnPassantCommand( board, endPos ) ] ) )
     return moves
+
+  def tryToGetUpgradeMoves(self, board, currPos, moves):
+    newMoves = set()
+    for move in moves:
+      move = self.tryToGetUpgradeMove( board, currPos, move )
+      newMoves.add( move )
+    return newMoves
 
   def tryToGetUpgradeMove(self, board, currPos, move):
     endX, endY = move.getEndPos()

@@ -1,6 +1,3 @@
-from GetSimpleMovement import GetSimpleMovement
-from GetEatMovement import GetEatMovement
-from GetCollisionMovement import GetCollisionMovement
 from PieceColor import PieceColor
 from King import King
 from BoardFromFile import BoardFromFile
@@ -121,7 +118,6 @@ class Board:
 
   def move(self, move):
     startPiece = self.getPiece( move.getStartPos() )
-
     move = self.checkToWrapMoveToUnsetEnPassant( move )
 
     move.execute()
@@ -161,70 +157,6 @@ class Board:
 
   def noMovesLeft(self, kingPos):
     return BoardQueryNoMovesLeft().queryBoard( self, kingPos )
-
-  """
-  def noMovesLeft(self, currPos):
-    currPiece = self.getPiece( currPos )
-
-    for y in range(0,self.getNumRows()):
-      for x in range(0,self.getNumCols()):
-        pos = ( x, y )
-        piece = self.getPiece( pos )
-
-        if piece is None or piece.getColor() != currPiece.getColor():
-          continue
-
-        for move in self.getAllMoves( pos ):
-          if not self.stillInCheckAfterMove( currPiece, move ):
-            return False
-
-    return True
-
-  def isInDanger(self, currPos):
-    currPiece = self.getPiece( currPos )
-
-    for y in range(0,self.getNumRows()):
-      for x in range(0,self.getNumCols()):
-        pos = ( x, y )
-        piece = self.getPiece( pos )
-
-        if piece is None or piece.getColor() == currPiece.getColor():
-          continue
-
-        for move in self.getEatMoves( pos ):
-          if currPos in move.getPosPair():
-            return True
-
-    return False
-
-  def isLastPiece(self, kingPos):
-    king = self.getPiece( kingPos )
-
-    for y in range(0,self.getNumRows()):
-      for x in range(0,self.getNumCols()):
-        pos = ( x, y )
-        piece = self.getPiece( pos )
-
-        if piece is None or piece == King or piece.getColor() == king.getColor():
-          return False
-
-    return True
-
-  def isKingTrapped(self, kingPos):
-    king = self.getPiece( kingPos )
-    for y in range(0,self.getNumRows()):
-      for x in range(0,self.getNumCols()):
-        pos = ( x, y )
-        piece = self.getPiece( pos )
-
-        if piece is None or piece.getColor() != king.getColor():
-          continue
-
-        if self.canStopCheck( pos, king ):
-          return False
-
-    return True
-  """
 
   def canStopCheck(self, piecePos, king):
     for move in self.getAllMoves( piecePos ):
