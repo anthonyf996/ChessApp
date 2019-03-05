@@ -1,4 +1,5 @@
 from Command import Command
+from MoveType import MoveType
 
 class Move(Command):
   def __init__(self, board, startPos, endPos):
@@ -18,6 +19,9 @@ class Move(Command):
 
   def __hash__(self):
     return hash( self.__repr__() )
+
+  def getMoveType(self):
+    return MoveType.MOVE
 
   def getStartPos(self):
     return self.startPos

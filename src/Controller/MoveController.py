@@ -4,7 +4,6 @@ class MoveController:
 
   def reset(self):
     self.currPos = None
-    self.prevPos = None
     self.currPiece = None
 
   def getCurrPos(self):
@@ -30,8 +29,10 @@ class MoveController:
     return False
 
   def updatePos(self, pos):
-    self.prevPos = self.currPos
-    self.currPos = pos
+    if self.currPos is not None and self.currPiece is None:    
+      self.currPos = None
+    else:
+      self.currPos = pos
 
   def readyToMove(self, game):
     if self.currPiece is not None:
@@ -55,13 +56,15 @@ class MoveController:
 
   def toggleCurrPiece(self, board):
     if self.currPiece is None:
-      self.currPiece = board.getPiece( self.currPos )
+      if self.currPos is not None:
+        self.currPiece = board.getPiece( self.currPos )
     else:
       self.currPiece = None
+      self.currPos = None
 
   def getMove(self, board):
-    for move in board.getAllMoves( self.prevPos ):
-      if ( self.prevPos, self.currPos ) == move.getPosPair():
+    for move in board.getAllMoves( self.currPiece.getPos() ):
+      if ( self.currPiece.getPos(), self.currPos ) == move.getPosPair():
         return move
 
     return None

@@ -1,9 +1,10 @@
 from MetaCommand import MetaCommand
 
 class MoveWithSideEffects(MetaCommand):
-  def __init__(self, move, commands):
+  def __init__(self, move, commands, moveType = None):
     super().__init__(commands)
     self.move = move
+    self.moveType = moveType
 
   def __repr__(self):
     return "MoveWithSideEffects(%s,%s)" % ( self.getMove(), self.commands )
@@ -30,6 +31,12 @@ class MoveWithSideEffects(MetaCommand):
 
   def getMove(self):
     return self.move
+
+  def getMoveType(self):
+    if self.moveType is None:
+      return self.move.getMoveType()
+    else:
+      return self.moveType
 
   def getCommand(self, index):
     if 0 <= index < len( self.commands ):

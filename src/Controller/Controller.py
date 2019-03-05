@@ -63,7 +63,7 @@ class Controller:
     self.MoveController.reset()
 
   def updateView(self):
-    self.View.display( self.Model.getBoard(), self.Model.getGame(), self.MoveController.getMoves( self.Model.getBoard() ) )
+    self.View.display( self.Model.getBoard(), self.Model.getGame(), self.MoveController.getMoves( self.Model.getBoard() ), self.MoveController.getCurrPos() )
 
   def updateModel(self):
     self.Model.update()

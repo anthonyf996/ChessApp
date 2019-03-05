@@ -4,6 +4,7 @@ from Knight import Knight
 from Bishop import Bishop
 from Rook import Rook
 from Queen import Queen
+from MoveType import MoveType
 
 class PieceUpgradeCommand(Command):
   def __init__(self, board, currPiecePos, upgradeType):

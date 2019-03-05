@@ -13,6 +13,7 @@ from EnPassantCommand import EnPassantCommand
 from BoardOrientation import BoardOrientation
 from PieceColor import PieceColor
 from SetEnPassantCommand import SetEnPassantCommand
+from EnPassantDirection import EnPassantDirection
 
 class TestSetEnPassant(unittest.TestCase):
   def setUp(self):
@@ -27,15 +28,15 @@ class TestSetEnPassant(unittest.TestCase):
     self.board.addPiece( ( 1, 1 ), pon )
     self.board.addPiece( ( 0, 1 ), pon2 )
     self.board.addPiece( ( 2, 1 ), pon3 )
-    self.assertFalse( pon2.getCanEnPassant() )
-    self.assertFalse( pon3.getCanEnPassant() )
+    self.assertEqual( pon2.getCanEnPassant(), EnPassantDirection.NONE )
+    self.assertEqual( pon3.getCanEnPassant(), EnPassantDirection.NONE )
     setEnPassant = SetEnPassantCommand( self.board, pon.getPos() )
     setEnPassant.execute()
-    self.assertTrue( pon2.getCanEnPassant() )
-    self.assertTrue( pon3.getCanEnPassant() )
+    self.assertEqual( pon2.getCanEnPassant(), EnPassantDirection.RIGHT )
+    self.assertEqual( pon3.getCanEnPassant(), EnPassantDirection.LEFT )
     setEnPassant.undo()
-    self.assertFalse( pon2.getCanEnPassant() )
-    self.assertFalse( pon3.getCanEnPassant() )
+    self.assertEqual( pon2.getCanEnPassant(), EnPassantDirection.NONE )
+    self.assertEqual( pon3.getCanEnPassant(), EnPassantDirection.NONE )
 
 if __name__ == "__main__":
   unittest.main()

@@ -32,3 +32,4 @@ class GUITile:
                         w - ( 2 * self.borderWSize ), h - ( 2 * self.borderHSize ),\
                         self.getBorderColor( color )
     display.fill( color, rect = [ x, y, w, h ] )
+    self.resetColor()

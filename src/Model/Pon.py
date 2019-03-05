@@ -9,12 +9,14 @@ from PieceType import PieceType
 from PieceUpgradeCommand import PieceUpgradeCommand
 from GetSimpleMovement import GetSimpleMovement
 from GetEatMovement import GetEatMovement
+from MoveType import MoveType
+from EnPassantDirection import EnPassantDirection
 
 class Pon( Piece ):
   def __init__(self, color, stepLimit = 1):
     super().__init__( color, stepLimit )
     self.movementVectors = { ( 0, 1 ) }
-    self.canEnPassant = False
+    self.enPassantDirection = EnPassantDirection.NONE
 
   def __str__(self):
     return "P"
@@ -23,10 +25,10 @@ class Pon( Piece ):
     return PieceType.PON
 
   def getCanEnPassant(self):
-    return self.canEnPassant
+    return self.enPassantDirection
 
-  def setCanEnPassant(self, b):
-    self.canEnPassant = b
+  def setCanEnPassant(self, d):
+    self.enPassantDirection = d
 
   def getEatVectors(self):
     return { ( 1, 1 ), ( -1, 1 ) }
@@ -46,10 +48,11 @@ class Pon( Piece ):
     return moves
 
   def tryToGetEnPassantMove(self, board, currPos, moves):
-    if self.getCanEnPassant():
-      currX, currY = currPos
-      leftPos, rightPos = ( currX - 1, currY ), ( currX + 1, currY )
+    currX, currY = currPos
+    leftPos, rightPos = ( currX - 1, currY ), ( currX + 1, currY )
+    if self.getCanEnPassant() == EnPassantDirection.LEFT:
       self.tryToAddEnPassantMove( board, currPos, moves, leftPos )
+    if self.getCanEnPassant() == EnPassantDirection.RIGHT:
       self.tryToAddEnPassantMove( board, currPos, moves, rightPos )
     return moves
 
@@ -63,11 +66,12 @@ class Pon( Piece ):
     if not self.getHasMoved():
       currX, currY = currPos
       if board.getPiece( currPos ).getColor() == PieceColor.LIGHT:
-        endPos = ( currX, currY - 2 )
+        middlePos, endPos = ( currX, currY - 1 ), ( currX, currY - 2 )
       else:
-        endPos = ( currX, currY + 2 )
+        middlePos, endPos = ( currX, currY + 1 ), ( currX, currY + 2 )
 
-      if board.isValidMove( endPos ):
+      if board.isValidMove( endPos ) and board.getPiece( middlePos ) is None and\
+           board.getPiece( endPos ) is None:
         moves.add( MoveWithSideEffects( SimpleMove( board, currPos, endPos ),
                    [ SetEnPassantCommand( board, endPos ) ] ) )
     return moves
@@ -83,5 +87,5 @@ class Pon( Piece ):
     endX, endY = move.getEndPos()
     if endY == board.getNumRows() - 1 or endY == 0:
       return MoveWithSideEffects( move, [ PieceUpgradeCommand( board, 
-                                            ( endX, endY ), PieceType.QUEEN ) ] )
+                                            ( endX, endY ), PieceType.QUEEN ) ], MoveType.PROMOTION )
     return move

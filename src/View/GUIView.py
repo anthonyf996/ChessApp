@@ -6,6 +6,7 @@ from GUIBoard import GUIBoard
 from ColorPalette import ColorPalette
 from SpriteSheet import SpriteSheet
 from GUIImage import GUIImage
+from MoveType import MoveType
 
 class GUIView(View):
   BOARD_LABEL_FONT = "Arial"
@@ -24,10 +25,8 @@ class GUIView(View):
     self.spritePos = { PieceType.KING : 0, PieceType.QUEEN : 1, PieceType.BISHOP : 2,
                        PieceType.KNIGHT : 3, PieceType.ROOK : 4, PieceType.PON : 5 }
     self.spriteColorPos = { PieceColor.LIGHT : 0, PieceColor.DARK : 1 }
-
     self.images = {}
     self.spriteSheets = {}
-
     self.regImages()
 
     self.ColorPalette = ColorPalette()
@@ -47,10 +46,45 @@ class GUIView(View):
   def setAppIcon(self, img):
     pygame.display.set_icon( img )
 
-  def display(self, board, game, moves = set()):
+  def display(self, board, game, moves = set(), currPos = None):
+    self.Board.setHighlightTileClicked( currPos )
+    self.displayMoves( moves )
+    self.displayGameState( game )
     self.Board.draw( self.gameDisplay, self.spriteSheets[ "PIECES" ], board.getBoard() )
-
     pygame.display.update()
+
+  def displayMoves(self, moves):
+    for move in moves:
+      moveType = move.getMoveType()
+      if moveType == MoveType.EAT:
+        self.Board.setHighlightPotentialEat( move.getEndPos() )
+      elif moveType == MoveType.PROMOTION:
+        self.Board.setHighlightPotentialPromotion( move.getEndPos() )
+      elif moveType == MoveType.CASTLE:
+        self.Board.setHighlightPotentialCastle( move.getEndPos() )
+      else:
+        self.Board.setHighlightPotentialMove( move.getEndPos() )
+
+  def displayGameState(self, game):
+    if game.getIsCheckMate():
+      self.displayCheckMate( game.getInCheckMate() )
+    elif game.getIsDraw():
+      kings = board.getKingsPair()
+      self.displayDraw( *kings )
+    elif game.getIsCheck():
+      self.displayCheck( game.getInCheck() )
+
+  def displayCheck(self, piece):
+    #print ( "Check at %s [ %s ]" % ( piece.getPos(), piece.getColor() ) )
+    self.Board.setHighlightInCheck( piece.getPos() )
+
+  def displayCheckMate(self, piece):
+    #print ( "CheckMate at %s [ %s ]" % ( piece.getPos(), piece.getColor() ) )
+    self.Board.setHighlightInCheckMate( piece.getPos() )
+
+  def displayDraw(self, lightKing, darkKing):
+    #print ( "Draw at %s and %s" % ( lightKing.getPos(), darkKing.getPos() ) )
+    self.Board.setHighlightDraw( piece.getPos() )
 
   # Board label offset is subtracted from the x pos index so that the entire board is
   # effectively shifted right by the value of the board label size, making room for
@@ -64,56 +98,3 @@ class GUIView(View):
     x , y = x // self.TILE_SIZE, y // self.TILE_SIZE
 
     return ( x, y )
-
-    """
-    self.displayBoard( board, game, moves )
-
-    if game.getIsCheckMate():
-      self.displayCheckMate( game.getInCheckMate() )
-    elif game.getIsDraw():
-      kings = board.getKingsPair()
-      self.displayDraw( *kings )
-    elif game.getIsCheck():
-      self.displayCheck( game.getInCheck() )
-    """
-
-  def displayCheck(self, piece):
-    print ( "Check at %s [ %s ]" % ( piece.getPos(), piece.getColor() ) )
-
-  def displayCheckMate(self, piece):
-    print ( "CheckMate at %s [ %s ]" % ( piece.getPos(), piece.getColor() ) )
-
-  def displayDraw(self, lightKing, darkKing):
-    print ( "Draw at %s and %s" % ( lightKing.getPos(), darkKing.getPos() ) )
-
-  def displayBoard(self, board, game = None, moves = set()):
-    moveArr = board.getMovesEndPos( moves )
-
-    s = ""
-    for y in range(0,board.numRows):
-      for x in range(0,board.numCols):
-        pos = ( x, y )
-        p = board.getPiece( pos )
-
-        if pos in moveArr:
-          if p is None:
-            s += "||||||||||"
-          else:
-            s += self.pieceToStr( board, game, p ).replace( " ", "|" )
-        elif p is None:
-          s += "|         "
-        else:
-            s += self.pieceToStr( board, game, p )
-      s += "|\n"
-
-    print( s )
-
-  def pieceToStr(self, board, game, piece):
-    if  game.getIsCheckMate() and piece == game.getInCheckMate():
-      return "|{{{{%s}}}}" % ( str( piece ) )
-    elif game.getIsDraw() and piece in board.getKingsPair():
-      return "|((((%s))))" % ( str( piece ) )
-    elif game.getIsCheck() and piece == game.getInCheck():
-      return "|<<<<%s>>>>" % ( str( piece ) )
-    else:
-      return "|    %s    " % ( str( piece ) )

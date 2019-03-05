@@ -58,3 +58,32 @@ class GUIBoard:
           pieceType, color = piece.getType(), piece.getColor()
           spriteSheet.drawSprite( display, x * self.tileSize + self.boardLabelSize,
                                     y * self.tileSize, pieceType, color )
+
+  def setHighlightPotentialMove(self, pos):
+    self.setTileColor( pos, self.ColorPalette.TILE_MOVE_AVAILABLE_COLOR )
+
+  def setHighlightPotentialEat(self, pos):
+    self.setTileColor( pos, self.ColorPalette.TILE_EAT_AVAILABLE_COLOR )
+
+  def setHighlightPotentialPromotion(self, pos):
+    self.setTileColor( pos, self.ColorPalette.TILE_PROMOTION_AVAILABLE_COLOR )
+
+  def setHighlightPotentialCastle(self, pos):
+    self.setTileColor( pos, self.ColorPalette.TILE_CASTLE_AVAILABLE_COLOR )
+
+  def setHighlightInCheck(self, pos):
+    self.setTileColor( pos, self.ColorPalette.TILE_CHECK_COLOR )
+
+  def setHighlightInCheckMate(self, pos):
+    self.setTileColor( pos, self.ColorPalette.TILE_CHECK_MATE_COLOR )
+
+  def setHighlightDraw(self, pos):
+    self.setTileColor( pos, self.ColorPalette.TILE_DRAW_COLOR )
+
+  def setHighlightTileClicked(self, pos):
+    self.setTileColor( pos, self.ColorPalette.TILE_CLICKED_COLOR )
+
+  def setTileColor(self, pos, color):
+    if pos is not None:
+      x, y = pos
+      self.tiles[ y ][ x ].setColor( color )

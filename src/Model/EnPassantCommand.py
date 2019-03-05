@@ -1,5 +1,6 @@
 from Command import Command
 from PieceColor import PieceColor
+from MoveType import MoveType
 
 class EnPassantCommand(Command):
   def __init__(self, board, ponPos, targetPos):
@@ -42,6 +43,9 @@ class EnPassantCommand(Command):
     self.board.addPiece( self.ponPos, pon )
     self.board.addPiece( self.targetPos, self.target )
     self.board.removePiece( self.newPonPos )
+
+  def getMoveType(self):
+    return MoveType.EAT
 
   def getPosPair(self):
     pon = self.board.getPiece( self.ponPos )

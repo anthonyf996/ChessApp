@@ -1,4 +1,5 @@
 from Command import Command
+from MoveType import MoveType
 
 class CastleCommand(Command):
   def __init__(self, board, kingPos):
@@ -52,6 +53,9 @@ class CastleCommand(Command):
 
     king.setHasMoved( self.prevKingHasMoved )
     rook.setHasMoved( self.prevRookHasMoved )
+
+  def getMoveType(self):
+    return MoveType.CASTLE
 
   def getPosPair(self):
     raise NotImplementedError

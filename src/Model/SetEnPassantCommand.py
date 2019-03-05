@@ -1,5 +1,6 @@
 from Command import Command
 from PieceType import PieceType
+from EnPassantDirection import EnPassantDirection
 
 class SetEnPassantCommand(Command):
   def __init__(self, board, currPos):
@@ -20,18 +21,20 @@ class SetEnPassantCommand(Command):
 
   def execute(self):
     currX, currY = self.currPos
-    self.checkToSetEnPassant( ( currX - 1, currY ), True )
-    self.checkToSetEnPassant( ( currX + 1, currY ), True )
+    self.checkToSetEnPassant( ( currX - 1, currY ), EnPassantDirection.RIGHT )
+    self.checkToSetEnPassant( ( currX + 1, currY ), EnPassantDirection.LEFT )
 
   def undo(self):
     currX, currY = self.currPos
-    self.checkToSetEnPassant( ( currX - 1, currY ), False )
-    self.checkToSetEnPassant( ( currX + 1, currY ), False )
+    self.checkToSetEnPassant( ( currX - 1, currY ), EnPassantDirection.NONE )
+    self.checkToSetEnPassant( ( currX + 1, currY ), EnPassantDirection.NONE )
     self.board.clearCanEnPassant()
     
-  def checkToSetEnPassant(self, pos, b):
+  def checkToSetEnPassant(self, pos, d):
     if self.board.isValidMove( pos ):
       piece = self.board.getPiece( pos )
-      if piece is not None and piece.getType() == PieceType.PON:
-        piece.setCanEnPassant( b )
+      currPiece = self.board.getPiece( self.currPos )
+      if piece is not None and piece.getType() == PieceType.PON and\
+        piece.getColor() != currPiece.getColor():
+        piece.setCanEnPassant( d )
         self.board.registerCanEnPassant( piece )
