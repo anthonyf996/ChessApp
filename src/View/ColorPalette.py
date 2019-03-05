@@ -1,3 +1,5 @@
+from RelativeColor import RelativeColor
+
 class ColorPalette:
   LIGHT_TILE_COLOR = ( 200, 200, 220 )
   DARK_TILE_COLOR = ( 100, 100, 120 )
@@ -10,6 +12,7 @@ class ColorPalette:
   TILE_CHECK_COLOR = ( 255, 200, 200 )
   TILE_CHECK_MATE_COLOR = ( 255, 100, 100 )
   TILE_DRAW_COLOR = ( 100, 255, 100 )
+  DARK_MENU_COLOR = RelativeColor().getColor( DARK_TILE_COLOR, ( -50, -50, -22 ) )
 
   def __init__(self):
     pass

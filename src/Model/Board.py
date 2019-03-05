@@ -149,7 +149,7 @@ class Board:
     if isinstance( move, MoveWithSideEffects ):
       innerCommand = move.getCommand( 0 )
       if isinstance( innerCommand, PieceUpgradeCommand ):
-        innerCommand.setUpgradeType( self.requestUpgradeType() )
+        innerCommand.setUpgradeType( self.requestUpgradeType( self.getPiece( move.getStartPos() ) ) )
 
   def registerCanEnPassant(self, piece):
     self.canEnPassant.append( piece )
@@ -160,8 +160,8 @@ class Board:
   def registerRequestUpgradeTypeCallback(self, callback):
     self.requestUpgradeTypeCallback = callback
 
-  def requestUpgradeType(self):
-    return self.requestUpgradeTypeCallback()
+  def requestUpgradeType(self, pon):
+    return self.requestUpgradeTypeCallback( pon.getColor() )
 
   def isInDanger(self, currPos):
     return BoardQueryIsInDanger().queryBoard( self, currPos )

@@ -44,6 +44,8 @@ class MoveController:
     if not game.isGameOver():
       if not game.getTurnsEnabled() or self.currPiece.getColor() == game.getTurnColor():
         return True
+      elif game.getTurnsEnabled():
+        print( "%s's turn!" % ( game.getTurnColor() ) )
 
     return False
 

@@ -12,9 +12,10 @@ class Game:
     self.isDraw = False
     self.isCheckMate = False
     self.isCheck= False
-    self.turnsEnabled = False
     self.inCheck = None
     self.inCheckMate = None
+
+    self.turnsEnabled = False
 
   def reset(self):
     self.turnColor = self.startingColor

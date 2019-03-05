@@ -7,6 +7,7 @@ from ColorPalette import ColorPalette
 from SpriteSheet import SpriteSheet
 from GUIImage import GUIImage
 from MoveType import MoveType
+from GUIUpgradeMenu import GUIUpgradeMenu
 
 class GUIView(View):
   BOARD_LABEL_FONT = "Arial"
@@ -34,8 +35,13 @@ class GUIView(View):
     self.Board = GUIBoard( self.ColorPalette, self.TILE_SIZE, self.NUM_TILES,
                              self.BOARD_LABEL_SIZE, self.BOARD_LABEL_FONT )
 
+    self.upgradeMenu = None
+
   def finish(self):
     pygame.quit()
+
+  def update(self):
+    pygame.display.update()
 
   def regImages(self):
     self.images[ "PIECES" ] = GUIImage( "../img/sprites/450px-Chess_Pieces_Sprite.svg.png" )
@@ -49,9 +55,8 @@ class GUIView(View):
   def display(self, board, game, moves = set(), currPos = None):
     self.Board.setHighlightTileClicked( currPos )
     self.displayMoves( moves )
-    self.displayGameState( game )
+    self.displayGameState( board, game )
     self.Board.draw( self.gameDisplay, self.spriteSheets[ "PIECES" ], board.getBoard() )
-    pygame.display.update()
 
   def displayMoves(self, moves):
     for move in moves:
@@ -65,7 +70,7 @@ class GUIView(View):
       else:
         self.Board.setHighlightPotentialMove( move.getEndPos() )
 
-  def displayGameState(self, game):
+  def displayGameState(self, board, game):
     if game.getIsCheckMate():
       self.displayCheckMate( game.getInCheckMate() )
     elif game.getIsDraw():
@@ -84,7 +89,45 @@ class GUIView(View):
 
   def displayDraw(self, lightKing, darkKing):
     #print ( "Draw at %s and %s" % ( lightKing.getPos(), darkKing.getPos() ) )
-    self.Board.setHighlightDraw( piece.getPos() )
+    self.Board.setHighlightDraw( lightKing.getPos(), darkKing.getPos() )
+
+  #def pollUpgradeMenuButtons(self, cursor):
+  #  if self.upgradeMenu:
+  #    return self.upgradeMenu.pollUpgradeMenuButtons( cursor )
+  #  return None
+
+  def removeUpgradeMenu(self):
+    self.upgradeMenu = None
+
+  def showUpgradeMenu(self, color):
+    if self.upgradeMenu is None:
+      w, h = 400, 200
+      x, y = self.DISP_WIDTH // 2 - ( w // 2 ), self.DISP_HEIGHT // 2 - ( h // 2 )
+      c = self.ColorPalette.DARK_MENU_COLOR
+      self.upgradeMenu = GUIUpgradeMenu( w, h, x, y, color, c )
+
+    self.upgradeMenu.draw( self.gameDisplay, self.spriteSheets, self.TILE_SIZE )
+
+  def promptUpgradeType(self, cursor):
+    #return PieceType.QUEEN
+    #if self.upgradeMenu:
+    #  return self.upgradeMenu.pollUpgradeMenuButtons( cursor )
+    #upgradeType = None
+    #upgradeType = PieceType.QUEEN
+    """
+    w, h = 400, 200
+    x, y = self.DISP_WIDTH // 2 - ( w // 2 ), self.DISP_HEIGHT // 2 - ( h // 2 )
+    c = self.ColorPalette.DARK_MENU_COLOR
+    menu = GUIUpgradeMenu( w, h, x, y, color, c )
+    menu.draw( self.gameDisplay, self.spriteSheets, self.TILE_SIZE )
+    #while upgradeType is None:
+    #  
+    menu.removeUpgradeMenuButtons()
+    """
+    #return upgradeType
+    if self.upgradeMenu:
+      return self.upgradeMenu.pollUpgradeMenuButtons( cursor )
+    return None
 
   # Board label offset is subtracted from the x pos index so that the entire board is
   # effectively shifted right by the value of the board label size, making room for

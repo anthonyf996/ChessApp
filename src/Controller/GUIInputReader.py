@@ -19,12 +19,12 @@ class GUIInputReader(InputReader):
       elif event.type == pygame.MOUSEBUTTONDOWN:
         cursor, click = pygame.mouse.get_pos(), pygame.mouse.get_pressed()
         pos = self.callbacks[ "getPosPairFromCursor" ]( cursor )
-        print( "Click: %s    %s" % ( cursor, pos ) )
-        return pos
+        print( "Click: %s --> %s" % ( cursor, pos ) )
+        return cursor
       return None
 
-  def promptUpgradeType(self):
-    pass
+  def promptUpgradeType(self, color):
+    return self.callbacks[ "promptUpgradeType" ]( color )
 
   """
   def promptUserInput(self):

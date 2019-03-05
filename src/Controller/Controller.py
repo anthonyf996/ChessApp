@@ -23,6 +23,7 @@ class Controller:
     """
     self.InputReader = GUIInputReader( {
                                "getPosPairFromCursor" : self.View.getPosPairFromCursor,
+                               "promptUpgradeType" : self.promptUpgradeType,
                                "getCurrPos" : self.MoveController.getCurrPos, 
                                "isGameOver" : self.Model.isGameOver, 
                                "getTurnColor" : self.Model.getTurnColor 
@@ -42,7 +43,7 @@ class Controller:
       while True:
         self.updateView()
 
-        pos = self.InputController.pollUserInput()
+        pos = self.View.getPosPairFromCursor( self.InputController.pollUserInput() )
 
         self.MoveController.handleInput( self.Model.getBoard(), self.Model.getGame(), pos )
 
@@ -62,8 +63,22 @@ class Controller:
     self.Model.getGame().reset()
     self.MoveController.reset()
 
+  def promptUpgradeType(self, color):
+    upgradeType = None
+ 
+    while upgradeType is None:
+      cursor = self.InputController.pollUserInput()
+      upgradeType = self.View.promptUpgradeType( cursor )
+      self.View.showUpgradeMenu( color )
+      self.View.update()
+      self.Clock.tick()
+    self.View.removeUpgradeMenu()
+
+    return upgradeType
+
   def updateView(self):
     self.View.display( self.Model.getBoard(), self.Model.getGame(), self.MoveController.getMoves( self.Model.getBoard() ), self.MoveController.getCurrPos() )
+    self.View.update()
 
   def updateModel(self):
     self.Model.update()

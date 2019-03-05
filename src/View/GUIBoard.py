@@ -77,8 +77,9 @@ class GUIBoard:
   def setHighlightInCheckMate(self, pos):
     self.setTileColor( pos, self.ColorPalette.TILE_CHECK_MATE_COLOR )
 
-  def setHighlightDraw(self, pos):
-    self.setTileColor( pos, self.ColorPalette.TILE_DRAW_COLOR )
+  def setHighlightDraw(self, lightKingPos, darkKingPos):
+    self.setTileColor( lightKingPos, self.ColorPalette.TILE_DRAW_COLOR )
+    self.setTileColor( darkKingPos, self.ColorPalette.TILE_DRAW_COLOR )
 
   def setHighlightTileClicked(self, pos):
     self.setTileColor( pos, self.ColorPalette.TILE_CLICKED_COLOR )
