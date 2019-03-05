@@ -1,7 +1,7 @@
 from InputController import InputController
 from ExceptionHandler import ExceptionHandler
-from ConsoleInputReader import ConsoleInputReader
-from GameResetException import GameResetException
+#from ConsoleInputReader import ConsoleInputReader
+#from GameResetException import GameResetException
 
 class ConsoleInputController(InputController):
   def __init__(self, inputReader, exceptionHandler):

@@ -1,23 +1,34 @@
 from MoveController import MoveController
-from ConsoleInputController import ConsoleInputController
-from ConsoleInputReader import ConsoleInputReader
+from InputController import InputController
+#from ConsoleInputReader import ConsoleInputReader
+from GUIInputReader import GUIInputReader
 from GameExitException import GameExitException
-from ConsoleClock import ConsoleClock
+#from ConsoleClock import ConsoleClock
 from ExceptionHandler import ExceptionHandler
 from GameResetException import GameResetException
 
 class Controller:
-  def __init__(self, View, Model):
+  def __init__(self, View, Model, Clock):
     self.View = View
     self.Model = Model
-    self.Clock = ConsoleClock( fpsSpec = { "FPS" : 60 } )
+    #self.Clock = ConsoleClock( fpsSpec = { "FPS" : 60 } )
+    self.Clock = Clock
     self.MoveController = MoveController()
+    """
     self.InputReader = ConsoleInputReader( { 
                                "getCurrPos" : self.MoveController.getCurrPos, 
                                "isGameOver" : self.Model.isGameOver, 
                                "getTurnColor" : self.Model.getTurnColor 
                              } )
-    self.InputController = ConsoleInputController( 
+    """
+    self.InputReader = GUIInputReader( {
+                               "getPosPairFromCursor" : self.View.getPosPairFromCursor,
+                               "getCurrPos" : self.MoveController.getCurrPos, 
+                               "isGameOver" : self.Model.isGameOver, 
+                               "getTurnColor" : self.Model.getTurnColor 
+                             } )
+    #self.InputController = ConsoleInputController( 
+    self.InputController = InputController( 
                              self.InputReader,
                              ExceptionHandler( 
                                self.InputReader.read, 
@@ -44,7 +55,7 @@ class Controller:
       self.finish()
 
   def finish(self):
-    pass
+    self.View.finish()
 
   def reset(self):
     self.Model.getBoard().reset()

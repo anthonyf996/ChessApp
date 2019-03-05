@@ -1,9 +1,9 @@
+from ExceptionHandler import ExceptionHandler
+
 class InputController:
-  def __init__(self):
-    pass
+  def __init__(self, inputReader, exceptionHandler):
+    self.InputReader = inputReader
+    self.ExceptionHandler = exceptionHandler
 
   def pollUserInput(self):
-    raise NotImplementedError
-
-  def handleInput(self, inputData):
-    raise NotImplementedError
+    return self.ExceptionHandler.executeFunc()

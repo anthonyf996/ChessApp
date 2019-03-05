@@ -50,6 +50,7 @@ class MoveController:
     if move is not None:
       successful = board.move( move )
       if successful:
+        print( move )
         game.advanceTurn()
 
   def toggleCurrPiece(self, board):
