@@ -1,7 +1,3 @@
-from MoveWithSideEffects import MoveWithSideEffects 
-from PieceUpgradeCommand import PieceUpgradeCommand
-from StateType import StateType
-
 class MoveController:
   def __init__(self):
     self.reset()
@@ -18,13 +14,11 @@ class MoveController:
       return board.getAllMoves( self.currPos )
     return set()
 
-  def handleInput(self, stateManager, board, game, pos):
+  def handleInput(self, board, game, pos):
     if self.isValidMove( board, pos ):
       self.updatePos( pos )
       if self.readyToMove( game ):
-        move = self.getMove( board )
-        if not self.checkToPromptUpgradeType( stateManager, move ):
-          self.performMove( board, game, move )
+        self.performMove( board, game, self.getMove( board ) )
       self.toggleCurrPiece( board )
 
   def isValidMove(self, board, pos):
@@ -53,17 +47,6 @@ class MoveController:
       elif game.getTurnsEnabled():
         print( "%s's turn!" % ( game.getTurnColor() ) )
 
-    return False
-
-  def checkToPromptUpgradeType(self, stateManager, move):
-    if isinstance( move, MoveWithSideEffects ):
-      command = move.getCommand( 0 )
-      if isinstance( command, PieceUpgradeCommand ):
-        if command.getUpgradeType() is None:
-          pieceUpgradeState = stateManager.getState( StateType.PIECE_UPGRADE )
-          pieceUpgradeState.update( move, command, self.currPiece.getColor() )
-          stateManager.setState( StateType.PIECE_UPGRADE )
-          return True
     return False
 
   def performMove(self, board, game, move):

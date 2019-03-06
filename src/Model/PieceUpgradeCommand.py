@@ -7,7 +7,7 @@ from Queen import Queen
 from MoveType import MoveType
 
 class PieceUpgradeCommand(Command):
-  def __init__(self, board, currPiecePos, upgradeType):
+  def __init__(self, board, currPiecePos, upgradeType = None):
     self.board = board
     self.currPiecePos = currPiecePos
     self.currPiece = None
@@ -49,6 +49,9 @@ class PieceUpgradeCommand(Command):
 
   def getEndPos(self):
     return self.getStartPos()
+
+  def getUpgradeType(self):
+    return self.upgradeType
 
   def setUpgradeType(self, upgradeType):
     self.upgradeType = upgradeType

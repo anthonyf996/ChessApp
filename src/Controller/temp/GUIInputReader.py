@@ -23,8 +23,8 @@ class GUIInputReader(InputReader):
         return cursor
       return None
 
-  #def promptUpgradeType(self, move, color):
-  #  return self.callbacks[ "promptUpgradeType" ]( move, color )
+  def promptUpgradeType(self, color):
+    return self.callbacks[ "promptUpgradeType" ]( color )
 
   """
   def promptUserInput(self):

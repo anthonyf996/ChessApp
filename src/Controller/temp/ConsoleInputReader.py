@@ -1,32 +1,13 @@
-import pygame
 from InputReader import InputReader
 from GameExitException import GameExitException
 from GameResetException import GameResetException
 from PieceColor import PieceColor
 from PieceType import PieceType
 
-class GUIInputReader(InputReader):
+class ConsoleInputReader(InputReader):
   def read(self):
-    #return self.promptUserInput()
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        raise GameExitException
-      elif event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_q:
-          raise GameExitException
-        elif event.key == pygame.K_r:
-          raise GameResetException
-      elif event.type == pygame.MOUSEBUTTONDOWN:
-        cursor, click = pygame.mouse.get_pos(), pygame.mouse.get_pressed()
-        pos = self.callbacks[ "getPosPairFromCursor" ]( cursor )
-        print( "Click: %s --> %s" % ( cursor, pos ) )
-        return cursor
-      return None
+    return self.promptUserInput()
 
-  #def promptUpgradeType(self, move, color):
-  #  return self.callbacks[ "promptUpgradeType" ]( move, color )
-
-  """
   def promptUserInput(self):
     posX, posY = "", ""
     turnStr = self.getTurnStr( self.callbacks[ "getTurnColor" ]() )
@@ -77,4 +58,3 @@ class GUIInputReader(InputReader):
       return PieceType.ROOK
     else:
       return PieceType.QUEEN
-  """

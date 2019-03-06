@@ -18,7 +18,6 @@ class Board:
     self.canEnPassant = []
     self.board = self.getInitBoard()
     self.setupBoard()
-    self.requestUpgradeTypeCallback = None
 
   def getInitBoard(self):
     board = []
@@ -123,8 +122,6 @@ class Board:
 
     move = self.checkToWrapMoveToUnsetEnPassant( move )
 
-    self.checkToPromptUpgradeType( move )
-
     move.execute()
 
     if self.isInInconsistentState( startPiece.getColor() ):
@@ -145,23 +142,11 @@ class Board:
       move = MoveWithSideEffects( move, [ UnsetEnPassantCommand( self, self.canEnPassant ) ] )
     return move
 
-  def checkToPromptUpgradeType(self, move):
-    if isinstance( move, MoveWithSideEffects ):
-      innerCommand = move.getCommand( 0 )
-      if isinstance( innerCommand, PieceUpgradeCommand ):
-        innerCommand.setUpgradeType( self.requestUpgradeType( self.getPiece( move.getStartPos() ) ) )
-
   def registerCanEnPassant(self, piece):
     self.canEnPassant.append( piece )
 
   def clearCanEnPassant(self):
     self.canEnPassant = []
-
-  def registerRequestUpgradeTypeCallback(self, callback):
-    self.requestUpgradeTypeCallback = callback
-
-  def requestUpgradeType(self, pon):
-    return self.requestUpgradeTypeCallback( pon.getColor() )
 
   def isInDanger(self, currPos):
     return BoardQueryIsInDanger().queryBoard( self, currPos )

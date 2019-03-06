@@ -30,6 +30,8 @@ class GUIView(View):
     self.spriteSheets = {}
     self.regImages()
 
+    self.setAppIcon( self.AppIcon.getImg() )
+
     self.ColorPalette = ColorPalette()
  
     self.Board = GUIBoard( self.ColorPalette, self.TILE_SIZE, self.NUM_TILES,
@@ -91,11 +93,6 @@ class GUIView(View):
     #print ( "Draw at %s and %s" % ( lightKing.getPos(), darkKing.getPos() ) )
     self.Board.setHighlightDraw( lightKing.getPos(), darkKing.getPos() )
 
-  #def pollUpgradeMenuButtons(self, cursor):
-  #  if self.upgradeMenu:
-  #    return self.upgradeMenu.pollUpgradeMenuButtons( cursor )
-  #  return None
-
   def removeUpgradeMenu(self):
     self.upgradeMenu = None
 
@@ -109,22 +106,6 @@ class GUIView(View):
     self.upgradeMenu.draw( self.gameDisplay, self.spriteSheets, self.TILE_SIZE )
 
   def promptUpgradeType(self, cursor):
-    #return PieceType.QUEEN
-    #if self.upgradeMenu:
-    #  return self.upgradeMenu.pollUpgradeMenuButtons( cursor )
-    #upgradeType = None
-    #upgradeType = PieceType.QUEEN
-    """
-    w, h = 400, 200
-    x, y = self.DISP_WIDTH // 2 - ( w // 2 ), self.DISP_HEIGHT // 2 - ( h // 2 )
-    c = self.ColorPalette.DARK_MENU_COLOR
-    menu = GUIUpgradeMenu( w, h, x, y, color, c )
-    menu.draw( self.gameDisplay, self.spriteSheets, self.TILE_SIZE )
-    #while upgradeType is None:
-    #  
-    menu.removeUpgradeMenuButtons()
-    """
-    #return upgradeType
     if self.upgradeMenu:
       return self.upgradeMenu.pollUpgradeMenuButtons( cursor )
     return None

@@ -87,5 +87,5 @@ class Pon( Piece ):
     endX, endY = move.getEndPos()
     if endY == board.getNumRows() - 1 or endY == 0:
       return MoveWithSideEffects( move, [ PieceUpgradeCommand( board, 
-                                            ( endX, endY ), PieceType.QUEEN ) ], MoveType.PROMOTION )
+                                            ( endX, endY ) ) ], MoveType.PROMOTION )
     return move

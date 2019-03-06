@@ -8,12 +8,14 @@ from Model import Model
 from Controller import Controller
 #from ConsoleClock import ConsoleClock
 from GUIClock import GUIClock
+from GUIInputReader import GUIInputReader
 
 clock = GUIClock( fpsSpec = { "FPS" : 20 } )
 #clock = ConsoleClock( fpsSpec = { "FPS" : 60 } )
 #view = ConsoleView()
 view = GUIView()
 model = Model( boardconfigFileName = "Model/StandardConfig.json" )
-controller = Controller( view, model, clock )
+inputReader = GUIInputReader()
+controller = Controller( view, model, clock, inputReader )
 
 controller.run()

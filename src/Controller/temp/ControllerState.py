@@ -6,34 +6,29 @@ from GameExitException import GameExitException
 #from ConsoleClock import ConsoleClock
 from ExceptionHandler import ExceptionHandler
 from GameResetException import GameResetException
-from ControllerStateManager import ControllerStateManager
 
-class Controller:
-  def __init__(self, View, Model, Clock, InputReader):
+class ControllerState:
+  def __init__(self, View, Model, Clock):
     self.View = View
     self.Model = Model
     #self.Clock = ConsoleClock( fpsSpec = { "FPS" : 60 } )
     self.Clock = Clock
     self.MoveController = MoveController()
-    self.InputReader = InputReader
-    self.InputReader.addCallback( "getPosPairFromCursor", self.View.getPosPairFromCursor )
-    self.InputReader.addCallback( "getCurrPos", self.MoveController.getCurrPos )
-    self.InputReader.addCallback( "isGameOver", self.Model.isGameOver )
-    self.InputReader.addCallback( "getTurnColor", self.Model.getTurnColor )
-
     """
     self.InputReader = ConsoleInputReader( { 
                                "getCurrPos" : self.MoveController.getCurrPos, 
                                "isGameOver" : self.Model.isGameOver, 
                                "getTurnColor" : self.Model.getTurnColor 
                              } )
+    """
     self.InputReader = GUIInputReader( {
                                "getPosPairFromCursor" : self.View.getPosPairFromCursor,
+                               "promptUpgradeType" : self.promptUpgradeType,
                                "getCurrPos" : self.MoveController.getCurrPos, 
                                "isGameOver" : self.Model.isGameOver, 
                                "getTurnColor" : self.Model.getTurnColor 
                              } )
-    """
+    #self.InputController = ConsoleInputController( 
     self.InputController = InputController( 
                              self.InputReader,
                              ExceptionHandler( 
@@ -41,17 +36,16 @@ class Controller:
                                [ GameResetException() ],
                                self.reset
                              ) )
-
-    self.StateManager = ControllerStateManager( self.View, self.Model, self.MoveController )
+    self.Model.registerRequestUpgradeTypeCallback( self.InputReader.promptUpgradeType )
 
   def run(self):
     try:
       while True:
-        self.StateManager.updateView()
+        self.updateView()
 
-        cursor = self.InputController.pollUserInput()
+        pos = self.View.getPosPairFromCursor( self.InputController.pollUserInput() )
 
-        self.StateManager.updateModel( cursor )
+        self.updateModel()
 
         self.Clock.tick()
     except GameExitException as e:
@@ -66,4 +60,24 @@ class Controller:
     self.Model.getBoard().reset()
     self.Model.getGame().reset()
     self.MoveController.reset()
-    self.StateManager.reset()
+
+  def promptUpgradeType(self, color):
+    upgradeType = None
+ 
+    while upgradeType is None:
+      cursor = self.InputController.pollUserInput()
+      upgradeType = self.View.promptUpgradeType( cursor )
+      self.View.showUpgradeMenu( color )
+      self.View.update()
+      self.Clock.tick()
+    self.View.removeUpgradeMenu()
+
+    return upgradeType
+
+  def updateView(self):
+    self.View.display( self.Model.getBoard(), self.Model.getGame(), self.MoveController.getMoves( self.Model.getBoard() ), self.MoveController.getCurrPos() )
+    self.View.update()
+
+  def updateModel(self):
+    self.MoveController.handleInput( self.Model.getBoard(), self.Model.getGame(), pos )
+    self.Model.update()
