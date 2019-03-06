@@ -44,6 +44,7 @@ class ConsoleInputReader(InputReader):
     else:
       return "DARK"
 
+  """
   def promptUpgradeType(self):
     upgradeType = ""
     while upgradeType.upper() not in [ "N", "B", "R", "Q" ]:
@@ -58,3 +59,4 @@ class ConsoleInputReader(InputReader):
       return PieceType.ROOK
     else:
       return PieceType.QUEEN
+  """

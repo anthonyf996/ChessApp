@@ -1,11 +1,12 @@
 from ControllerState import ControllerState
 from StateType import StateType
 
-class PieceUpgradeState(ControllerState):
-  def __init__(self, StateManager, View, MoveController, Board, Game):
+class GUIPieceUpgradeState(ControllerState):
+  def __init__(self, StateManager, View, MoveController, InputController, Board, Game):
     self.StateManager = StateManager
     self.View = View
     self.MoveController = MoveController
+    self.InputController = InputController
     self.Board = Board
     self.Game = Game
     self.clear()
@@ -24,6 +25,9 @@ class PieceUpgradeState(ControllerState):
   def updateView(self):
     self.View.showUpgradeMenu( self.color )
     self.View.update()
+
+  def pollUserInput(self):
+    return self.InputController.pollUserInput()
 
   def updateModel(self, cursor):
     self.upgradeType = self.View.promptUpgradeType( cursor )

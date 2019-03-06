@@ -54,7 +54,6 @@ class GUIUpgradeMenu:
     spriteSheets[ "PIECES" ].drawSprite( display, x + ( 4 * padding ) + ( 3 * offsetX ), 
       centerY, PieceType.QUEEN, pieceColor )
 
-    #if not menuActive:
     self.addButton( self.upgradeMenuButtonNames[0], x + ( 1 * padding ) + ( 0 * offsetX ),
       centerY, tileSize, tileSize )
     self.addButton( self.upgradeMenuButtonNames[1], x + ( 2 * padding ) + ( 1 * offsetX ),

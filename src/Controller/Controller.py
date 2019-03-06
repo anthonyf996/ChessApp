@@ -1,55 +1,24 @@
-from MoveController import MoveController
-from InputController import InputController
-#from ConsoleInputReader import ConsoleInputReader
-from GUIInputReader import GUIInputReader
 from GameExitException import GameExitException
-#from ConsoleClock import ConsoleClock
-from ExceptionHandler import ExceptionHandler
-from GameResetException import GameResetException
-from ControllerStateManager import ControllerStateManager
 
 class Controller:
-  def __init__(self, View, Model, Clock, InputReader):
-    self.View = View
-    self.Model = Model
-    #self.Clock = ConsoleClock( fpsSpec = { "FPS" : 60 } )
-    self.Clock = Clock
-    self.MoveController = MoveController()
-    self.InputReader = InputReader
-    self.InputReader.addCallback( "getPosPairFromCursor", self.View.getPosPairFromCursor )
-    self.InputReader.addCallback( "getCurrPos", self.MoveController.getCurrPos )
-    self.InputReader.addCallback( "isGameOver", self.Model.isGameOver )
-    self.InputReader.addCallback( "getTurnColor", self.Model.getTurnColor )
-
-    """
-    self.InputReader = ConsoleInputReader( { 
-                               "getCurrPos" : self.MoveController.getCurrPos, 
-                               "isGameOver" : self.Model.isGameOver, 
-                               "getTurnColor" : self.Model.getTurnColor 
-                             } )
-    self.InputReader = GUIInputReader( {
-                               "getPosPairFromCursor" : self.View.getPosPairFromCursor,
-                               "getCurrPos" : self.MoveController.getCurrPos, 
-                               "isGameOver" : self.Model.isGameOver, 
-                               "getTurnColor" : self.Model.getTurnColor 
-                             } )
-    """
-    self.InputController = InputController( 
-                             self.InputReader,
-                             ExceptionHandler( 
-                               self.InputReader.read, 
-                               [ GameResetException() ],
-                               self.reset
-                             ) )
-
-    self.StateManager = ControllerStateManager( self.View, self.Model, self.MoveController )
+  def __init__(self, Factory):
+    self.Factory = Factory
+    self.View = self.Factory.createView()
+    self.Model = self.Factory.createModel()
+    self.Clock = self.Factory.createClock()
+    self.MoveController = self.Factory.createMoveController()
+    self.InputReader = self.Factory.createInputReader( self.View, self.Model.getGame(),\
+                                                                 self.MoveController )
+    self.InputController = self.Factory.createInputController( self, self.InputReader )
+    self.StateManager = self.Factory.createStateManager( self.View, self.Model,\
+                                                         self.MoveController, self.InputController )
 
   def run(self):
     try:
       while True:
         self.StateManager.updateView()
 
-        cursor = self.InputController.pollUserInput()
+        cursor = self.StateManager.pollUserInput()
 
         self.StateManager.updateModel( cursor )
 

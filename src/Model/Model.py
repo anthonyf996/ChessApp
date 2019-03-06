@@ -20,12 +20,3 @@ class Model:
 
   def update(self):
     self.Game.update( self.board, self.Game, self.GameRules )
-
-  def isGameOver(self):
-    return self.Game.isGameOver()
-
-  def getTurnColor(self):
-    return self.Game.getTurnColor()
-
-  def registerRequestUpgradeTypeCallback(self, callback):
-    self.board.registerRequestUpgradeTypeCallback( callback )

@@ -1,4 +1,5 @@
 from View import View
+from PieceType import PieceType
 
 class ConsoleView(View):
   def __init__(self):
@@ -58,3 +59,18 @@ class ConsoleView(View):
       return "|<<<<%s>>>>" % ( str( piece ) )
     else:
       return "|    %s    " % ( str( piece ) )
+
+  def promptUpgradeType(self):
+    upgradeType = ""
+    while upgradeType.upper() not in [ "N", "B", "R", "Q" ]:
+      print( "Pon Upgrade Selection" )
+      upgradeType = input( "Enter corresponding letter ( N | B | R | Q ): " ).upper()
+
+    if upgradeType == "N":
+      return PieceType.KNIGHT
+    elif upgradeType == "B":
+      return PieceType.BISHOP
+    elif upgradeType == "R":
+      return PieceType.ROOK
+    else:
+      return PieceType.QUEEN
