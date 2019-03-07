@@ -3,6 +3,7 @@ from ColorPalette import ColorPalette
 from PieceColor import PieceColor
 from PieceType import PieceType
 from SpriteSheet import SpriteSheet
+from GUIBoardLabel import GUIBoardLabel
 
 class GUIBoard:
   def __init__(self, colorPalette, tileSize, numTiles, boardLabelSize, boardLabelFont):
@@ -14,6 +15,14 @@ class GUIBoard:
     self.numRows = self.numTiles
     self.numCols = self.numTiles
     self.tiles = []
+
+    self.fileLabelsText = [ "a", "b", "c", "d", "e", "f", "g", "h" ]
+    self.rankLabelsText = [ "1", "2", "3", "4", "5", "6", "7", "8" ]
+
+    self.fileLabels = GUIBoardLabel( boardLabelSize, boardLabelFont,\
+      self.fileLabelsText, self.ColorPalette.BOARD_LABEL_TEXT_COLOR )
+    self.rankLabels = GUIBoardLabel( boardLabelSize, boardLabelFont,\
+      self.rankLabelsText[::-1], self.ColorPalette.BOARD_LABEL_TEXT_COLOR )
 
     self.initTiles()
 
@@ -44,6 +53,7 @@ class GUIBoard:
   def draw(self, display, spriteSheet, board):
     self.drawTiles( display )
     self.drawPieces( display, spriteSheet, board )
+    self.drawBoardLabels( display )
 
   def drawTiles(self, display):
     for row in self.tiles:
@@ -58,6 +68,21 @@ class GUIBoard:
           pieceType, color = piece.getType(), piece.getColor()
           spriteSheet.drawSprite( display, x * self.tileSize + self.boardLabelSize,
                                     y * self.tileSize, pieceType, color )
+
+  def drawBoardLabels(self, display):
+    x, y, w, h = 0 * self.tileSize, 8 * self.tileSize, 9 * self.tileSize,\
+                 self.boardLabelSize
+    self.fileLabels.drawPanel( display, self.ColorPalette.BOARD_LABEL_COLOR,\
+                               x, y, w, h )
+    x, y, w, h = 0 * self.tileSize, 0 * self.tileSize, self.boardLabelSize,\
+                 8 * self.tileSize
+    self.rankLabels.drawPanel( display, self.ColorPalette.BOARD_LABEL_COLOR,\
+                               x, y, w, h )
+
+    self.fileLabels.drawLabels( display, self.tileSize, self.boardLabelSize,\
+      0, 8 * self.tileSize, self.tileSize // 2, self.boardLabelSize // 2 )
+    self.rankLabels.drawLabels( display, 0, 0, self.tileSize, 0,\
+      self.boardLabelSize // 2, self.tileSize // 2 )
 
   def setHighlightPotentialMove(self, pos):
     self.setTileColor( pos, self.ColorPalette.TILE_MOVE_AVAILABLE_COLOR )
