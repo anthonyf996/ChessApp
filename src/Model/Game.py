@@ -31,6 +31,12 @@ class Game:
   def getTurnColor(self):
     return self.turnColor
 
+  def getOpponentColor(self):
+    if self.turnColor == PieceColor.LIGHT:
+      return PieceColor.DARK
+    else:
+      return PieceColor.LIGHT
+
   def getTurnCount(self):
     return self.turnCount
 

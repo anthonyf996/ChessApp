@@ -10,7 +10,7 @@ class GUIAIState(ControllerState):
     self.Model = Model
     self.MoveController = MoveController
     self.InputController = InputController
-    self.AI = AI( self.Model.getBoard(), self.Model.getGame(),\
+    self.AI = AI( self.Model, self.Model.getBoard(), self.Model.getGame(),\
                   self.Model.getGame().getAIColor() )
 
   def updateView(self):

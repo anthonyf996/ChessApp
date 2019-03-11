@@ -4,46 +4,64 @@ from PieceColor import PieceColor
 import random
 
 class AI:
-  def __init__(self, Board, Game, color):
+  def __init__(self, Model, Board, Game, color):
+    self.Model = Model
     self.Board = Board
     self.Game = Game
     self.color = color
     self.encourageForwardMovementRate = 0.01
 
-  def getMove(self, color = None):
-    if color is None:
-      color = self.color
+  def performMove(self, move):
+    move.execute()
+    self.Model.update()
+
+  def undoMove(self, move):
+    move.undo()
+    self.Model.update()
+
+  def getMove(self):
     weightedMoves = []
     for row in self.Board.getBoard():
       for piece in row:
-        if piece is not None and piece.getColor() == color:
+        if piece is not None and piece.getColor() == self.color:
           for move in self.Board.getAllMoves( piece.getPos() ):
-            weightedMoves.append( self.tryMove( self.Board, self.Game, move ) )
+            weightedMoves.append( self.getWeightedMove( self.Board, self.Game, move ) )
 
     return self.getMaxMove( weightedMoves )
 
-  def tryMove(self, board, game, move):
+  def getWeightedMove(self, board, game, move):
     weight = 0
-    startPos = move.getStartPos()
-    currPiece = board.getPiece( move.getStartPos() )
-    currColor = currPiece.getColor()
-    if currColor == PieceColor.LIGHT:
-      otherColor = PieceColor.DARK
-    else:
-      otherColor = PieceColor.LIGHT
 
+    weight += self.calculateForwardMovementScore( move )
+    weight += self.calculateCaptureScore( board, move )
+
+    self.performMove( move )
+
+    weight += self.calculateInconsistentStateScore( board )
+    weight += self.calculatePlaceOpponentInCheckScore( game )
+    weight += self.calculateSacrificePieceScore( board )
+
+    self.undoMove( move )
+
+    return ( weight, move )
+
+  def calculateForwardMovementScore(self, move):
+    weight = 0
     # Encourage forward movements randomly
     if random.random() <= self.encourageForwardMovementRate:
       x1, y1 = move.getStartPos()
       x2, y2 = move.getEndPos()
-      if currColor == PieceColor.LIGHT:
+      if self.color == PieceColor.LIGHT:
         if ( y2 < y1 ):
           weight += 20
       else:
         if ( y2 > y1 ):
           weight += 20
 
-    # Encourage eating enemy pieces
+    return weight
+
+  def calculateCaptureScore(self, board, move):
+    weight = 0
     if isinstance( move, EatMove ):
       target = board.getPiece( move.getEndPos() )
       if target.getType() == PieceType.QUEEN:
@@ -56,22 +74,28 @@ class AI:
         weight += 40
       elif target.getType() == PieceType.PON:
         weight += 20
+    return weight
 
-    move.execute()
+  def calculateInconsistentStateScore(self, board):
+    if board.isInInconsistentState( self.color ):
+      return -10000
+    return 0
 
-    if board.isInInconsistentState( currColor ):
-      weight -= 500
-    # Encourage placing opponent in check
+  def calculatePlaceOpponentInCheckScore(self, game):
     if game.getIsCheck():
-      if game.getInCheck().getColor() == otherColor:
-        weight += 120
-    # Discourage losing own pieces
+      if game.getInCheck().getColor() == game.getOpponentColor():
+        return 20
+    return 0
+
+  def calculateSacrificePieceScore(self, board):
+    weight = 0
     for row in self.Board.getBoard():
       for piece in row:
-        if piece is not None and piece.getColor() == currColor:
+        if piece is not None and piece.getColor() == self.color:
           if board.isInDanger( piece.getPos() ):
+            # Discourage losing own piece
             if board.isProtected( piece.getPos() ):
-              print ( "PROTECTED %s %s" % ( str( piece.getPos() ), piece.getType() ) )
+              #print ( "PROTECTED %s %s" % ( str( piece.getPos() ), piece.getType() ) )
               if piece.getType() == PieceType.QUEEN:
                 weight -= 50
               elif piece.getType() == PieceType.ROOK:
@@ -82,8 +106,9 @@ class AI:
                 weight -= 20
               elif piece.getType() == PieceType.PON:
                 weight -= 10
+            # Discourage losing own piece without protection
             else:
-              print ( "NOT PROTECTED %s %s" % ( str( piece.getPos() ), piece.getType() ) )
+              #print ( "NOT PROTECTED %s %s" % ( str( piece.getPos() ), piece.getType() ) )
               if piece.getType() == PieceType.QUEEN:
                 weight -= 100
               elif piece.getType() == PieceType.ROOK:
@@ -94,40 +119,8 @@ class AI:
                 weight -= 40
               elif piece.getType() == PieceType.PON:
                 weight -= 20
-    """
-    if board.isInDanger( currPiece.getPos() ):
-      if currPiece.getType() == PieceType.QUEEN:
-        weight -= 100
-      elif currPiece.getType() == PieceType.ROOK:
-        weight -= 80
-      elif currPiece.getType() == PieceType.BISHOP:
-        weight -= 60
-      elif currPiece.getType() == PieceType.KNIGHT:
-        weight -= 40
-      elif currPiece.getType() == PieceType.PON:
-        weight -= 20
-    """
 
-    """
-    for row in self.Board.getBoard():
-      for piece in row:
-        if piece is not None and piece.getColor() == otherColor:
-          if board.isInDanger( piece.getPos() ):
-            if currPiece.getType() == PieceType.QUEEN:
-              weight += 100
-            elif currPiece.getType() == PieceType.ROOK:
-              weight += 80
-            elif currPiece.getType() == PieceType.BISHOP:
-              weight += 60
-            elif currPiece.getType() == PieceType.KNIGHT:
-              weight += 40
-            elif currPiece.getType() == PieceType.PON:
-              weight += 20
-    """
-
-    move.undo()
-
-    return ( weight, move )
+    return weight
 
   def getMaxMove(self, weightedMoves):
     maxWeight = -500
