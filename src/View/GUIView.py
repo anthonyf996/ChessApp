@@ -3,16 +3,21 @@ from View import View
 from PieceType import PieceType
 from PieceColor import PieceColor
 from GUIBoard import GUIBoard
-from ColorPalette import ColorPalette
+#from DefaultColorPalette import DefaultColorPalette
+from DarwinColorPalette import DarwinColorPalette
 from SpriteSheet import SpriteSheet
 from GUIImage import GUIImage
 from MoveType import MoveType
 from GUIUpgradeMenu import GUIUpgradeMenu
 
 class GUIView(View):
+  ENABLE_BOARD_LABEL = False
   BOARD_LABEL_FONT = "Arial"
   TILE_SIZE = 75
-  BOARD_LABEL_SIZE = TILE_SIZE // 2
+  if ENABLE_BOARD_LABEL:
+    BOARD_LABEL_SIZE = TILE_SIZE // 2
+  else:
+    BOARD_LABEL_SIZE = 0
   NUM_TILES = 8
   DISP_WIDTH = NUM_TILES * TILE_SIZE + BOARD_LABEL_SIZE
   DISP_HEIGHT = DISP_WIDTH
@@ -32,7 +37,8 @@ class GUIView(View):
 
     self.setAppIcon( self.AppIcon.getImg() )
 
-    self.ColorPalette = ColorPalette()
+    #self.ColorPalette = DefaultColorPalette()
+    self.ColorPalette = DarwinColorPalette()
  
     self.Board = GUIBoard( self.ColorPalette, self.TILE_SIZE, self.NUM_TILES,
                              self.BOARD_LABEL_SIZE, self.BOARD_LABEL_FONT )

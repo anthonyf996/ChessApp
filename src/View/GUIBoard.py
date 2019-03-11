@@ -53,7 +53,8 @@ class GUIBoard:
   def draw(self, display, spriteSheet, board):
     self.drawTiles( display )
     self.drawPieces( display, spriteSheet, board )
-    self.drawBoardLabels( display )
+    if self.boardLabelSize > 0:
+      self.drawBoardLabels( display )
 
   def drawTiles(self, display):
     for row in self.tiles:

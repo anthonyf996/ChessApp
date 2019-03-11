@@ -58,7 +58,9 @@ class Pon( Piece ):
 
   def tryToAddEnPassantMove(self, board, currPos, moves, pos):
     if board.isValidMove( pos ):
-      if board.getPiece( pos ) is not None:
+      piece = board.getPiece( pos )
+      currPiece = board.getPiece( currPos )
+      if piece is not None and piece.getColor != currPiece.getColor():
         moves.add( EnPassantCommand( board, currPos, pos ) )
     return moves
 

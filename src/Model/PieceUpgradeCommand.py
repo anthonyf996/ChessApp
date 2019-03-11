@@ -7,7 +7,7 @@ from Queen import Queen
 from MoveType import MoveType
 
 class PieceUpgradeCommand(Command):
-  def __init__(self, board, currPiecePos, upgradeType = None):
+  def __init__(self, board, currPiecePos, upgradeType = PieceType.QUEEN):
     self.board = board
     self.currPiecePos = currPiecePos
     self.currPiece = None

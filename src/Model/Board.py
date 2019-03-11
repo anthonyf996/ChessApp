@@ -2,6 +2,7 @@ from PieceColor import PieceColor
 from King import King
 from BoardFromFile import BoardFromFile
 from BoardQueryIsInDanger import BoardQueryIsInDanger 
+from BoardQueryIsProtected import BoardQueryIsProtected 
 from BoardQueryIsLastPiece import BoardQueryIsLastPiece 
 from BoardQueryIsKingTrapped import BoardQueryIsKingTrapped 
 from BoardQueryNoMovesLeft import BoardQueryNoMovesLeft 
@@ -150,6 +151,9 @@ class Board:
 
   def isInDanger(self, currPos):
     return BoardQueryIsInDanger().queryBoard( self, currPos )
+
+  def isProtected(self, currPos):
+    return BoardQueryIsProtected().queryBoard( self, currPos )
 
   def isLastPiece(self, kingPos):
     return BoardQueryIsLastPiece().queryBoard( self, kingPos )

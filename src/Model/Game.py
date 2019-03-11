@@ -1,8 +1,9 @@
 from PieceColor import PieceColor
 
 class Game:
-  def __init__(self, startingColor = PieceColor.LIGHT):
+  def __init__(self, startingColor = PieceColor.LIGHT, aiColor = PieceColor.DARK ):
     self.startingColor = startingColor
+    self.aiColor = aiColor
     self.turnColor = self.startingColor
     self.turnCount = 0
     self.init()
@@ -15,18 +16,32 @@ class Game:
     self.inCheck = None
     self.inCheckMate = None
 
-    self.turnsEnabled = False
+    self.turnsEnabled = True
+    self.multiPlayer = False
+    self.aiEnabled = self.turnsEnabled and not self.multiPlayer
 
   def reset(self):
     self.turnColor = self.startingColor
     self.turnCount = 0
     self.init()
 
+  def resetTurnCount(self):
+    self.turnCount = 0
+
   def getTurnColor(self):
     return self.turnColor
 
   def getTurnCount(self):
     return self.turnCount
+
+  def getAIColor(self):
+    return self.aiColor
+
+  def getIsAITurn(self):
+    return self.aiColor == self.turnColor
+
+  def getIsAIEnabled(self):
+    return self.aiEnabled
 
   def getTurnsEnabled(self):
     return self.turnsEnabled

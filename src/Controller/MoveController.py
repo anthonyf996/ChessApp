@@ -1,6 +1,10 @@
 from MoveWithSideEffects import MoveWithSideEffects 
 from PieceUpgradeCommand import PieceUpgradeCommand
 from StateType import StateType
+from EatMove import EatMove
+from PieceType import PieceType
+from SimpleMove import SimpleMove
+from EnPassantCommand import EnPassantCommand
 
 class MoveController:
   def __init__(self):
@@ -23,7 +27,7 @@ class MoveController:
       self.updatePos( pos )
       if self.readyToMove( game ):
         move = self.getMove( board )
-        if not self.checkToPromptUpgradeType( stateManager, move ):
+        if not self.checkToPromptUpgradeType( stateManager, board, game, move ):
           self.performMove( board, game, move )
       self.toggleCurrPiece( board )
 
@@ -55,23 +59,47 @@ class MoveController:
 
     return False
 
-  def checkToPromptUpgradeType(self, stateManager, move):
+  def checkToPromptUpgradeType(self, stateManager, board, game, move):
     if isinstance( move, MoveWithSideEffects ):
+      if not self.canPerformUpgradeMove( board, game, move.getMove()):
+        return False
       command = move.getCommand( 0 )
       if isinstance( command, PieceUpgradeCommand ):
-        if command.getUpgradeType() is None:
+        if not game.getIsAIEnabled() or not game.getIsAITurn():
           pieceUpgradeState = stateManager.getState( StateType.PIECE_UPGRADE )
           pieceUpgradeState.update( move, command, self.currPiece.getColor() )
           stateManager.setState( StateType.PIECE_UPGRADE )
           return True
     return False
 
+  def canPerformUpgradeMove(self, board, game, move):
+    king = board.getKing( game.getTurnColor() )
+    return not board.stillInCheckAfterMove( king, move )
+
   def performMove(self, board, game, move):
     if move is not None:
       successful = board.move( move )
       if successful:
         print( move )
+        self.checkToResetTurnCount( board, game, move )
         game.advanceTurn()
+
+  def checkToResetTurnCount(self, board, game, move ):
+    if isinstance( move, MoveWithSideEffects ):
+      innerMove = move.getMove()
+      command = move.getCommand( 0 )
+      if isinstance( command, PieceUpgradeCommand ):
+        game.resetTurnCount()
+    else:
+      innerMove = move
+
+    if isinstance( innerMove, EatMove ):
+      game.resetTurnCount()
+    else:
+      if isinstance( innerMove, SimpleMove ) or isinstance( innerMove, EnPassantCommand ):
+        piece = board.getPiece( innerMove.getEndPos() )
+        if piece.getType() == PieceType.PON:
+          game.resetTurnCount()
 
   def toggleCurrPiece(self, board):
     if self.currPiece is None:
