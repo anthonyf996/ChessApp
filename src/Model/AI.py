@@ -30,9 +30,7 @@ class AI:
     return self.getMaxMove( weightedMoves )
 
   def getWeightedMove(self, board, game, move):
-    weight = 0
-
-    weight += self.calculateForwardMovementScore( move )
+    weight = self.calculateForwardMovementScore( move )
     weight += self.calculateCaptureScore( board, move )
 
     self.performMove( move )
@@ -64,17 +62,17 @@ class AI:
     weight = 0
     if isinstance( move, EatMove ):
       target = board.getPiece( move.getEndPos() )
-      if target.getType() == PieceType.QUEEN:
-        weight += 100
-      elif target.getType() == PieceType.ROOK:
-        weight += 80
-      elif target.getType() == PieceType.BISHOP:
-        weight += 60
-      elif target.getType() == PieceType.KNIGHT:
-        weight += 40
-      elif target.getType() == PieceType.PON:
-        weight += 20
+      weightsDict = { PieceType.QUEEN : 100, PieceType.ROOK : 80,
+                      PieceType.BISHOP : 60, PieceType.KNIGHT : 40,
+                      PieceType.PON : 20 }
+      weight += self.getPieceTypeWeight( target, weightsDict )
+
     return weight
+
+  def getPieceTypeWeight(self, piece, weightsDict):
+    if piece.getType() not in weightsDict:
+      return 0
+    return weightsDict[ piece.getType() ]
 
   def calculateInconsistentStateScore(self, board):
     if board.isInInconsistentState( self.color ):
@@ -95,30 +93,16 @@ class AI:
           if board.isInDanger( piece.getPos() ):
             # Discourage losing own piece
             if board.isProtected( piece.getPos() ):
-              #print ( "PROTECTED %s %s" % ( str( piece.getPos() ), piece.getType() ) )
-              if piece.getType() == PieceType.QUEEN:
-                weight -= 50
-              elif piece.getType() == PieceType.ROOK:
-                weight -= 40
-              elif piece.getType() == PieceType.BISHOP:
-                weight -= 30
-              elif piece.getType() == PieceType.KNIGHT:
-                weight -= 20
-              elif piece.getType() == PieceType.PON:
-                weight -= 10
-            # Discourage losing own piece without protection
+              weightsDict = { PieceType.QUEEN : 90, PieceType.ROOK : 70,
+                              PieceType.BISHOP : 60, PieceType.KNIGHT : 50,
+                              PieceType.PON : 40 }
+              weight -= self.getPieceTypeWeight( piece, weightsDict )
+            # Further discourage losing own piece without protection
             else:
-              #print ( "NOT PROTECTED %s %s" % ( str( piece.getPos() ), piece.getType() ) )
-              if piece.getType() == PieceType.QUEEN:
-                weight -= 100
-              elif piece.getType() == PieceType.ROOK:
-                weight -= 80
-              elif piece.getType() == PieceType.BISHOP:
-                weight -= 60
-              elif piece.getType() == PieceType.KNIGHT:
-                weight -= 40
-              elif piece.getType() == PieceType.PON:
-                weight -= 20
+              weightsDict = { PieceType.QUEEN : 100, PieceType.ROOK : 80,
+                              PieceType.BISHOP : 60, PieceType.KNIGHT : 40,
+                              PieceType.PON : 20 }
+              weight -= self.getPieceTypeWeight( piece, weightsDict )
 
     return weight
 
@@ -132,11 +116,10 @@ class AI:
         maxMoves = [ move ]
       elif weight == maxWeight:
         maxMoves.append( move )
-    print( maxMoves )
-    
+
     if len( maxMoves ) == 0:
       move = None
     else:
       move = maxMoves[ random.randint( 0, len( maxMoves ) - 1 ) ]
-    print( move )
+
     return move
