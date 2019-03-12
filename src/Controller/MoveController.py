@@ -13,9 +13,13 @@ class MoveController:
   def reset(self):
     self.currPos = None
     self.currPiece = None
+    self.prevPos = None
 
   def getCurrPos(self):
     return self.currPos
+
+  def getPrevPos(self):
+    return self.prevPos
 
   def getMoves(self, board):
     if self.currPiece is not None:
@@ -83,6 +87,7 @@ class MoveController:
         print( "%s: %s" % ( game.getTurnColor(), str( move ) ) )
         self.checkToResetTurnCount( board, game, move )
         game.advanceTurn()
+        self.prevPos = move.getEndPos()
 
   def checkToResetTurnCount(self, board, game, move ):
     if isinstance( move, MoveWithSideEffects ):

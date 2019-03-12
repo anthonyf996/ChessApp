@@ -14,7 +14,8 @@ class GUIMainState(ControllerState):
   def updateView(self):
     self.View.display( self.Board, self.Game,\
                        self.MoveController.getMoves( self.Board ),\
-                       self.MoveController.getCurrPos() )
+                       self.MoveController.getCurrPos(),\
+                       self.MoveController.getPrevPos() )
     self.View.update()
 
   def pollUserInput(self):
