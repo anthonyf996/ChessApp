@@ -12,7 +12,8 @@ class ConsoleMainState(ControllerState):
 
   def updateView(self):
     self.View.display( self.Model.getBoard(), self.Model.getGame(),\
-                       self.MoveController.getMoves( self.Model.getBoard() ) )
+                       self.MoveController.getMoves( self.Model.getBoard() ),\
+                       self.MoveController.getPrevPos() )
 
   def pollUserInput(self):
     return self.InputController.pollUserInput()

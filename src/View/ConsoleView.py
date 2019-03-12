@@ -8,8 +8,8 @@ class ConsoleView(View):
   def finish(self):
     pass
 
-  def display(self, board, game, moves = set()):
-    self.displayBoard( board, game, moves )
+  def display(self, board, game, moves = set(), prevPos = None):
+    self.displayBoard( board, game, moves, prevPos )
 
     if game.getIsCheckMate():
       self.displayCheckMate( game.getInCheckMate() )
@@ -28,7 +28,7 @@ class ConsoleView(View):
   def displayDraw(self, lightKing, darkKing):
     print ( "Draw at %s and %s" % ( lightKing.getPos(), darkKing.getPos() ) )
 
-  def displayBoard(self, board, game = None, moves = set()):
+  def displayBoard(self, board, game = None, moves = set(), prevPos = None):
     moveArr = board.getMovesEndPos( moves )
 
     s = ""
@@ -44,6 +44,8 @@ class ConsoleView(View):
             s += self.pieceToStr( board, game, p ).replace( " ", "|" )
         elif p is None:
           s += "|         "
+        elif pos == prevPos:
+          s += "|----%s----" % ( str( p ) )
         else:
             s += self.pieceToStr( board, game, p )
       s += "|\n"
