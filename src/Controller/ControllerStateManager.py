@@ -2,12 +2,13 @@ from StateManager import StateManager
 from StateType import StateType
 
 class ControllerStateManager(StateManager):
-  def __init__(self, View, Model, MoveController, InputController):
+  def __init__(self, View, Model, MoveController, InputController, AI):
     super().__init__()
     self.View = View
     self.Model = Model
     self.MoveController = MoveController
     self.InputController = InputController 
+    self.AI = AI
 
   def reset(self):
     raise NotImplementedError

@@ -17,5 +17,8 @@ class ControllerFactory:
   def createMoveController(self):
     raise NotImplementedError
 
+  def createAI(self):
+    raise NotImplementedError
+
   def createControllerStateManager(self):
     raise NotImplementedError

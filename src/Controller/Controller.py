@@ -11,7 +11,8 @@ class Controller:
                                                                  self.MoveController )
     self.InputController = self.Factory.createInputController( self, self.InputReader )
     self.StateManager = self.Factory.createStateManager( self.View, self.Model,\
-                                                         self.MoveController, self.InputController )
+                          self.MoveController, self.InputController,\
+                          self.Factory.createAI( self.Model ) )
 
   def run(self):
     try:

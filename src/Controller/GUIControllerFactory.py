@@ -8,6 +8,7 @@ from MoveController import MoveController
 from GUIControllerStateManager import GUIControllerStateManager
 from ExceptionHandler import ExceptionHandler 
 from GameResetException import GameResetException 
+from AI import AI
 
 class GUIControllerFactory(ControllerFactory):
   def createModel(self):
@@ -39,5 +40,11 @@ class GUIControllerFactory(ControllerFactory):
   def createMoveController(self):
     return MoveController()
 
-  def createStateManager(self, View, Model, MoveController, InputController):
-    return GUIControllerStateManager( View, Model, MoveController, InputController )
+  def createAI(self, Model):
+    return AI( Model, Model.getBoard(), Model.getGame(),\
+                  Model.getGame().getAIColor() )
+
+  def createStateManager(self, View, Model, MoveController, InputController,\
+                         AI):
+    return GUIControllerStateManager( View, Model, MoveController,\
+                                      InputController, AI )
