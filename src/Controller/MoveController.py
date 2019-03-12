@@ -80,7 +80,7 @@ class MoveController:
     if move is not None:
       successful = board.move( move )
       if successful:
-        print( move )
+        print( "%s: %s" % ( game.getTurnColor(), str( move ) ) )
         self.checkToResetTurnCount( board, game, move )
         game.advanceTurn()
 

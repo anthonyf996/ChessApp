@@ -25,6 +25,7 @@ class GUIMainState(ControllerState):
     self.MoveController.handleInput( self.StateManager, self.Board,\
                                      self.Game, pos )
     self.Model.update()
+
     if not self.Game.isGameOver() and self.Game.getIsAIEnabled() and\
       self.Game.getIsAITurn():
       self.StateManager.setState( StateType.AI )
