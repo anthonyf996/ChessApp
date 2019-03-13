@@ -16,13 +16,19 @@ class ConsoleMainState(ControllerState):
                        self.MoveController.getPrevPos() )
 
   def pollUserInput(self):
-    return self.InputController.pollUserInput()
+    resp = None
+    if self.Game.getPlayersEnabled():
+      resp = self.InputController.pollUserInput()
+    return resp
 
   def updateModel(self, pos):
     self.MoveController.handleInput( self.StateManager, self.Model.getBoard(),\
                                      self.Model.getGame(), pos )
     self.Model.update()
 
-    if not self.Game.isGameOver() and self.Game.getIsAIEnabled() and\
-      self.Game.getIsAITurn():
-      self.StateManager.setState( StateType.AI )
+    if not self.Game.isGameOver():
+      if self.Game.getPlayersEnabled():
+        if self.Game.getIsAIEnabled() and self.Game.getIsAITurn():
+          self.StateManager.setState( StateType.AI )
+      else:
+        self.StateManager.setState( StateType.AI )
