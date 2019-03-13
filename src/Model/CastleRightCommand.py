@@ -23,7 +23,9 @@ class CastleRightCommand(CastleCommand):
       return ( kingX + 1, kingY )
 
   def getPosPair(self):
-    return self.kingPos, self.getKingNewPos()
+    if self.kingNewPos is None:
+      self.kingNewPos = self.getKingNewPos()
+    return self.kingPos, self.kingNewPos
 
   def getStartPos(self):
     start, end = self.getPosPair()

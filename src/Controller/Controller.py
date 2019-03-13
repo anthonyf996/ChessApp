@@ -23,7 +23,7 @@ class Controller:
 
         self.StateManager.updateModel( cursor )
 
-        self.Clock.tick()
+        self.tick()
     except GameExitException as e:
       print( e )
     finally:
@@ -37,3 +37,10 @@ class Controller:
     self.Model.getGame().reset()
     self.MoveController.reset()
     self.StateManager.reset()
+
+  def tick(self):
+    if self.Model.getGame().getPlayersEnabled():
+      self.Clock.tick()
+    else:
+      #self.Clock.tick( "AI_FPS" )
+      self.Clock.tick( "TESTING_FPS" )

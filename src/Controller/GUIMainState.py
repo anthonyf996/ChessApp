@@ -22,11 +22,16 @@ class GUIMainState(ControllerState):
     return self.InputController.pollUserInput()
 
   def updateModel(self, cursor):
-    pos = self.View.getPosPairFromCursor( cursor )
+    pos = None
+    if self.Game.getPlayersEnabled():
+      pos = self.View.getPosPairFromCursor( cursor )
     self.MoveController.handleInput( self.StateManager, self.Board,\
                                      self.Game, pos )
     self.Model.update()
 
-    if not self.Game.isGameOver() and self.Game.getIsAIEnabled() and\
-      self.Game.getIsAITurn():
-      self.StateManager.setState( StateType.AI )
+    if not self.Game.isGameOver():
+      if self.Game.getPlayersEnabled():
+        if self.Game.getIsAIEnabled() and self.Game.getIsAITurn():
+          self.StateManager.setState( StateType.AI )
+      else:
+        self.StateManager.setState( StateType.AI )

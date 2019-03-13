@@ -11,6 +11,9 @@ class AI:
     self.color = color
     self.encourageForwardMovementRate = 0.01
 
+  def setColor(self, color):
+    self.color = color
+
   def performMove(self, move):
     move.execute()
     self.Model.update()
@@ -55,7 +58,6 @@ class AI:
       else:
         if ( y2 > y1 ):
           weight += 20
-
     return weight
 
   def calculateCaptureScore(self, board, move):
@@ -66,7 +68,6 @@ class AI:
                       PieceType.BISHOP : 60, PieceType.KNIGHT : 40,
                       PieceType.PON : 20 }
       weight += self.getPieceTypeWeight( target, weightsDict )
-
     return weight
 
   def getPieceTypeWeight(self, piece, weightsDict):
@@ -103,7 +104,6 @@ class AI:
                               PieceType.BISHOP : 60, PieceType.KNIGHT : 40,
                               PieceType.PON : 20 }
               weight -= self.getPieceTypeWeight( piece, weightsDict )
-
     return weight
 
   def getMaxMove(self, weightedMoves):

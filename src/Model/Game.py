@@ -1,4 +1,10 @@
 from PieceColor import PieceColor
+from PieceType import PieceType
+from SimpleMove import SimpleMove
+from EatMove import EatMove
+from EnPassantCommand import EnPassantCommand
+from PieceUpgradeCommand import PieceUpgradeCommand
+from MoveWithSideEffects import MoveWithSideEffects 
 
 class Game:
   def __init__(self, startingColor = PieceColor.LIGHT, aiColor = PieceColor.DARK ):
@@ -19,6 +25,9 @@ class Game:
     self.turnsEnabled = True
     self.multiPlayer = False
     self.aiEnabled = self.turnsEnabled and not self.multiPlayer
+    self.playersEnabled = False
+    if not self.playersEnabled:
+      self.aiColor = self.startingColor
 
   def reset(self):
     self.turnColor = self.startingColor
@@ -49,6 +58,9 @@ class Game:
   def getIsAIEnabled(self):
     return self.aiEnabled
 
+  def getPlayersEnabled(self):
+    return self.playersEnabled
+
   def getTurnsEnabled(self):
     return self.turnsEnabled
 
@@ -69,6 +81,9 @@ class Game:
 
   def setGameOver(self, b):
     self.gameOver = b
+
+  def toggleAIColor(self):
+    self.aiColor = self.getOpponentColor()
 
   def isGameOver(self):
     return self.gameOver
@@ -100,3 +115,28 @@ class Game:
                          kings[ PieceColor.DARK ].getPos() ):
       self.isDraw = True
       self.setGameOver( True )
+
+  def checkToResetTurnCount(self, board, move ):
+    innerMove = move
+    if isinstance( move, MoveWithSideEffects ):
+      innerMove = move.getMove()
+    self.checkToResetTurnCountForPieceUpgrade( move )
+    self.checkToResetTurnCountForEat( innerMove )
+    self.checkToResetTurnCountForPonMovement( board, innerMove )
+
+  def checkToResetTurnCountForPieceUpgrade(self, move):
+    if isinstance( move, MoveWithSideEffects ):
+      command = move.getCommand( 0 )
+      if isinstance( command, PieceUpgradeCommand ):
+        self.resetTurnCount()
+
+  def checkToResetTurnCountForEat(self, move):
+    if isinstance( move, EatMove ):
+      self.resetTurnCount()
+
+  def checkToResetTurnCountForPonMovement(self, board, move):
+    if isinstance( move, SimpleMove ) or \
+      isinstance( move, EnPassantCommand ):
+      piece = board.getPiece( move.getEndPos() )
+      if piece.getType() == PieceType.PON:
+        self.resetTurnCount()

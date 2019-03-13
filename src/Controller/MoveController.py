@@ -39,7 +39,6 @@ class MoveController:
     if pos is not None:
       if board.isValidMove( pos ):
         return True
-
     return False
 
   def updatePos(self, pos):
@@ -51,16 +50,15 @@ class MoveController:
   def readyToMove(self, game):
     if self.currPiece is not None:
       return self.canMove( game )
-
     return False
   
   def canMove(self, game):
     if not game.isGameOver():
-      if not game.getTurnsEnabled() or self.currPiece.getColor() == game.getTurnColor():
+      if not game.getTurnsEnabled() or self.currPiece.getColor() == \
+        game.getTurnColor():
         return True
       elif game.getTurnsEnabled():
         print( "%s's turn!" % ( game.getTurnColor() ) )
-
     return False
 
   def checkToPromptUpgradeType(self, stateManager, board, game, move):
@@ -84,27 +82,10 @@ class MoveController:
     if move is not None:
       successful = board.move( move )
       if successful:
-        print( "%s: %s" % ( game.getTurnColor(), str( move ) ) )
-        self.checkToResetTurnCount( board, game, move )
+        print( "[ %s ]: %s" % ( game.getTurnColor(), str( move ) ) )
+        game.checkToResetTurnCount( board, move )
         game.advanceTurn()
         self.prevPos = move.getEndPos()
-
-  def checkToResetTurnCount(self, board, game, move ):
-    if isinstance( move, MoveWithSideEffects ):
-      innerMove = move.getMove()
-      command = move.getCommand( 0 )
-      if isinstance( command, PieceUpgradeCommand ):
-        game.resetTurnCount()
-    else:
-      innerMove = move
-
-    if isinstance( innerMove, EatMove ):
-      game.resetTurnCount()
-    else:
-      if isinstance( innerMove, SimpleMove ) or isinstance( innerMove, EnPassantCommand ):
-        piece = board.getPiece( innerMove.getEndPos() )
-        if piece.getType() == PieceType.PON:
-          game.resetTurnCount()
 
   def toggleCurrPiece(self, board):
     if self.currPiece is None:
@@ -118,5 +99,4 @@ class MoveController:
     for move in board.getAllMoves( self.currPiece.getPos() ):
       if ( self.currPiece.getPos(), self.currPos ) == move.getPosPair():
         return move
-
     return None

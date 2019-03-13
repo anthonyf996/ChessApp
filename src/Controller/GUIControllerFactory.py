@@ -18,7 +18,7 @@ class GUIControllerFactory(ControllerFactory):
     return GUIView()
 
   def createClock(self):
-    return GUIClock( fpsSpec = { "FPS" : 20 } )
+    return GUIClock( fpsSpec = { "FPS" : 20, "AI_FPS" : 2, "TESTING_FPS" : 500 } )
 
   def createInputReader(self, View, Game, MoveController):
     return GUIInputReader( {

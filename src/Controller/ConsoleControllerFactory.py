@@ -18,7 +18,7 @@ class ConsoleControllerFactory(ControllerFactory):
     return ConsoleView()
 
   def createClock(self):
-    return ConsoleClock( fpsSpec = { "FPS" : 60 } )
+    return ConsoleClock( fpsSpec = { "FPS" : 60, "AI_FPS" : 2, "TESTING_FPS" : 500 } )
 
   def createInputReader(self, View, Game, MoveController):
     return ConsoleInputReader( {
