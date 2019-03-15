@@ -48,6 +48,9 @@ class EnPassantCommand(Command):
     return MoveType.EAT
 
   def getPosPair(self):
+    if self.newPonPos is not None:
+      return self.ponPos, self.newPonPos
+
     pon = self.board.getPiece( self.ponPos )
     targetX, targetY = self.targetPos
     if pon.getColor() == PieceColor.LIGHT:

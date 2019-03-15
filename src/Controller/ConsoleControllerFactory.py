@@ -20,7 +20,7 @@ class ConsoleControllerFactory(ControllerFactory):
   def createClock(self):
     return ConsoleClock( fpsSpec = { "FPS" : 60, "AI_FPS" : 2, "TESTING_FPS" : 500 } )
 
-  def createInputReader(self, View, Game, MoveController):
+  def createInputReader(self, View, Game, MoveController, KeyHandler):
     return ConsoleInputReader( {
                                #"getPosPairFromCursor" : View.getPosPairFromCursor,
                                "getCurrPos" : MoveController.getCurrPos, 
@@ -39,6 +39,9 @@ class ConsoleControllerFactory(ControllerFactory):
 
   def createMoveController(self):
     return MoveController()
+
+  def createKeyHandler(self, Model):
+    return None
 
   def createAI(self, Model):
     return AI( Model, Model.getBoard(), Model.getGame(),\

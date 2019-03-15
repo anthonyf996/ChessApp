@@ -3,11 +3,14 @@ from StateType import StateType
 from GUIMainState import GUIMainState
 from GUIAIState import GUIAIState
 from GUIPieceUpgradeState import GUIPieceUpgradeState 
+from GUIPauseState import GUIPauseState 
 
 class GUIControllerStateManager(ControllerStateManager):
   def __init__(self, View, Model, MoveController, InputController, AI):
     super().__init__( View, Model, MoveController, InputController, AI)
     self.states[ StateType.MAIN ] = GUIMainState( self, self.View, self.Model,\
+                                      self.MoveController, self.InputController )
+    self.states[ StateType.PAUSE ] = GUIPauseState( self, self.View, self.Model,\
                                       self.MoveController, self.InputController )
     self.states[ StateType.AI ] = GUIAIState( self, self.View, self.Model,\
                                     self.MoveController, self.InputController,\

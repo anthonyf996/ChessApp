@@ -8,6 +8,7 @@ from MoveController import MoveController
 from GUIControllerStateManager import GUIControllerStateManager
 from ExceptionHandler import ExceptionHandler 
 from GameResetException import GameResetException 
+from GUIKeyHandler import GUIKeyHandler
 from AI import AI
 
 class GUIControllerFactory(ControllerFactory):
@@ -20,8 +21,9 @@ class GUIControllerFactory(ControllerFactory):
   def createClock(self):
     return GUIClock( fpsSpec = { "FPS" : 20, "AI_FPS" : 2, "TESTING_FPS" : 500 } )
 
-  def createInputReader(self, View, Game, MoveController):
+  def createInputReader(self, View, Game, MoveController, KeyHandler):
     return GUIInputReader( {
+                               "handleKeyPress" : KeyHandler.handleKeyPress,
                                "getPosPairFromCursor" : View.getPosPairFromCursor,
                                "getCurrPos" : MoveController.getCurrPos, 
                                "isGameOver" : Game.isGameOver, 
@@ -39,6 +41,9 @@ class GUIControllerFactory(ControllerFactory):
 
   def createMoveController(self):
     return MoveController()
+
+  def createKeyHandler(self, Model):
+    return GUIKeyHandler( Model.getGame() )
 
   def createAI(self, Model):
     return AI( Model, Model.getBoard(), Model.getGame(),\

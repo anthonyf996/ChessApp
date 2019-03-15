@@ -17,7 +17,8 @@ class ConsoleAIState(ControllerState):
 
   def updateView(self):
     self.View.display( self.Model.getBoard(), self.Model.getGame(),\
-                       self.MoveController.getMoves( self.Model.getBoard() ) )
+                       self.MoveController.getMoves( self.Model.getBoard() ),
+                       self.MoveController.getPrevPos() )
     #self.View.display( self.Model.getBoard(), self.Model.getGame(),\
     #                   self.MoveController.getMoves( self.Model.getBoard() ),\
     #                   self.MoveController.getCurrPos() )
@@ -27,7 +28,7 @@ class ConsoleAIState(ControllerState):
     pass
 
   def updateModel(self, cursor):
-    move = self.AI.getMove() 
+    move = self.AI.getMove( self.Model.getGame().getTurnColor() ) 
     self.MoveController.performMove( self.Model.getBoard(), self.Model.getGame(),\
                                      move )
     self.Model.update()

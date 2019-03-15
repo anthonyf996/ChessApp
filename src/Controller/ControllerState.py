@@ -8,5 +8,8 @@ class ControllerState:
   def pollUserInput(self):
     raise NotImplementedError
 
+  def handleUserInput(self):
+    raise NotImplementedError
+
   def updateModel(self, cursor):
     raise NotImplementedError

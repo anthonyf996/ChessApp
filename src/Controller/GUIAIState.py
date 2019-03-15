@@ -25,7 +25,7 @@ class GUIAIState(ControllerState):
     pass
 
   def updateModel(self, cursor):
-    move = self.AI.getMove() 
+    move = self.AI.getMove( self.Model.getGame().getTurnColor() ) 
     self.MoveController.performMove( self.Model.getBoard(), self.Model.getGame(),\
                                      move )
     self.Model.update()
@@ -33,6 +33,4 @@ class GUIAIState(ControllerState):
       if not self.Model.getGame().getIsAITurn():
         self.StateManager.setState( StateType.MAIN )
     else:
-      self.AI.setColor( self.Model.getGame().getOpponentColor() )
-      self.Model.getGame().toggleAIColor()
       self.StateManager.setState( StateType.MAIN )

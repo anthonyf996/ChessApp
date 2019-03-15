@@ -7,8 +7,9 @@ class Controller:
     self.Model = self.Factory.createModel()
     self.Clock = self.Factory.createClock()
     self.MoveController = self.Factory.createMoveController()
+    self.KeyHandler = self.Factory.createKeyHandler( self.Model )
     self.InputReader = self.Factory.createInputReader( self.View, self.Model.getGame(),\
-                                                                 self.MoveController )
+                                                       self.MoveController, self.KeyHandler )
     self.InputController = self.Factory.createInputController( self, self.InputReader )
     self.StateManager = self.Factory.createStateManager( self.View, self.Model,\
                           self.MoveController, self.InputController,\
@@ -42,5 +43,5 @@ class Controller:
     if self.Model.getGame().getPlayersEnabled():
       self.Clock.tick()
     else:
-      #self.Clock.tick( "AI_FPS" )
-      self.Clock.tick( "TESTING_FPS" )
+      self.Clock.tick( "AI_FPS" )
+      #self.Clock.tick( "TESTING_FPS" )

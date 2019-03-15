@@ -7,12 +7,15 @@ from PieceUpgradeCommand import PieceUpgradeCommand
 from MoveWithSideEffects import MoveWithSideEffects 
 
 class Game:
-  def __init__(self, startingColor = PieceColor.LIGHT, aiColor = PieceColor.DARK ):
+  def __init__(self, startingColor = PieceColor.LIGHT):
     self.startingColor = startingColor
-    self.aiColor = aiColor
+    self.aiColor = self.getOpponentColor( self.startingColor )
     self.turnColor = self.startingColor
     self.turnCount = 0
+    self.paused = False
     self.init()
+    if not self.playersEnabled:
+      self.paused = True
 
   def init(self):
     self.gameOver = False
@@ -24,14 +27,17 @@ class Game:
 
     self.turnsEnabled = True
     self.multiPlayer = False
-    self.aiEnabled = self.turnsEnabled and not self.multiPlayer
     self.playersEnabled = False
+    self.aiEnabled = self.turnsEnabled and not self.multiPlayer
     if not self.playersEnabled:
       self.aiColor = self.startingColor
 
   def reset(self):
     self.turnColor = self.startingColor
     self.turnCount = 0
+    self.paused = False
+    if not self.playersEnabled:
+      self.paused = True
     self.init()
 
   def resetTurnCount(self):
@@ -40,14 +46,17 @@ class Game:
   def getTurnColor(self):
     return self.turnColor
 
-  def getOpponentColor(self):
-    if self.turnColor == PieceColor.LIGHT:
+  def getOpponentColor(self, color):
+    if color == PieceColor.LIGHT:
       return PieceColor.DARK
     else:
       return PieceColor.LIGHT
 
   def getTurnCount(self):
     return self.turnCount
+
+  def getIsPaused(self):
+    return self.paused
 
   def getAIColor(self):
     return self.aiColor
@@ -82,8 +91,11 @@ class Game:
   def setGameOver(self, b):
     self.gameOver = b
 
-  def toggleAIColor(self):
-    self.aiColor = self.getOpponentColor()
+  #def toggleAIColor(self):
+  #  self.aiColor = self.getOpponentColor( self.aiColor )
+
+  def togglePause(self):
+    self.paused = not self.paused
 
   def isGameOver(self):
     return self.gameOver

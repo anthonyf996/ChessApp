@@ -1,7 +1,7 @@
 from ControllerState import ControllerState
 from StateType import StateType
 
-class GUIMainState(ControllerState):
+class GUIPauseState(ControllerState):
   def __init__(self, StateManager, View, Model, MoveController, InputController):
     self.StateManager = StateManager
     self.View = View
@@ -22,18 +22,7 @@ class GUIMainState(ControllerState):
     return self.InputController.pollUserInput()
 
   def updateModel(self, cursor):
-    pos = None
-    if self.Game.getPlayersEnabled():
-      pos = self.View.getPosPairFromCursor( cursor )
-    self.MoveController.handleInput( self.StateManager, self.Board,\
-                                     self.Game, pos )
-    self.Model.update()
+    self.MoveController.handleInput( self.StateManager, self.Board, self.Game, None )
 
-    if not self.Game.isGameOver():
-      if self.Game.getIsPaused():
-        self.StateManager.setState( StateType.PAUSE )
-      elif self.Game.getPlayersEnabled():
-        if self.Game.getIsAIEnabled() and self.Game.getIsAITurn():
-          self.StateManager.setState( StateType.AI )
-      else:
-        self.StateManager.setState( StateType.AI )
+    if not self.Game.getIsPaused():
+      self.StateManager.setState( StateType.MAIN )

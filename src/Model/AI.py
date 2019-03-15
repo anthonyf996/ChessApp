@@ -11,9 +11,6 @@ class AI:
     self.color = color
     self.encourageForwardMovementRate = 0.01
 
-  def setColor(self, color):
-    self.color = color
-
   def performMove(self, move):
     move.execute()
     self.Model.update()
@@ -22,37 +19,37 @@ class AI:
     move.undo()
     self.Model.update()
 
-  def getMove(self):
+  def getMove(self, color):
     weightedMoves = []
     for row in self.Board.getBoard():
       for piece in row:
-        if piece is not None and piece.getColor() == self.color:
+        if piece is not None and piece.getColor() == color:
           for move in self.Board.getAllMoves( piece.getPos() ):
-            weightedMoves.append( self.getWeightedMove( self.Board, self.Game, move ) )
+            weightedMoves.append( self.getWeightedMove( self.Board, self.Game, move, color ) )
 
     return self.getMaxMove( weightedMoves )
 
-  def getWeightedMove(self, board, game, move):
-    weight = self.calculateForwardMovementScore( move )
+  def getWeightedMove(self, board, game, move, color):
+    weight = self.calculateForwardMovementScore( move, color )
     weight += self.calculateCaptureScore( board, move )
 
     self.performMove( move )
 
-    weight += self.calculateInconsistentStateScore( board )
-    weight += self.calculatePlaceOpponentInCheckScore( game )
-    weight += self.calculateSacrificePieceScore( board )
+    weight += self.calculateInconsistentStateScore( board, color)
+    weight += self.calculatePlaceOpponentInCheckScore( game, color )
+    weight += self.calculateSacrificePieceScore( board, color )
 
     self.undoMove( move )
 
     return ( weight, move )
 
-  def calculateForwardMovementScore(self, move):
+  def calculateForwardMovementScore(self, move, color):
     weight = 0
     # Encourage forward movements randomly
     if random.random() <= self.encourageForwardMovementRate:
       x1, y1 = move.getStartPos()
       x2, y2 = move.getEndPos()
-      if self.color == PieceColor.LIGHT:
+      if color == PieceColor.LIGHT:
         if ( y2 < y1 ):
           weight += 20
       else:
@@ -75,22 +72,22 @@ class AI:
       return 0
     return weightsDict[ piece.getType() ]
 
-  def calculateInconsistentStateScore(self, board):
-    if board.isInInconsistentState( self.color ):
+  def calculateInconsistentStateScore(self, board, color):
+    if board.isInInconsistentState( color ):
       return -10000
     return 0
 
-  def calculatePlaceOpponentInCheckScore(self, game):
+  def calculatePlaceOpponentInCheckScore(self, game, color):
     if game.getIsCheck():
-      if game.getInCheck().getColor() == game.getOpponentColor():
+      if game.getInCheck().getColor() == game.getOpponentColor( color ):
         return 20
     return 0
 
-  def calculateSacrificePieceScore(self, board):
+  def calculateSacrificePieceScore(self, board, color):
     weight = 0
     for row in self.Board.getBoard():
       for piece in row:
-        if piece is not None and piece.getColor() == self.color:
+        if piece is not None and piece.getColor() == color:
           if board.isInDanger( piece.getPos() ):
             # Discourage losing own piece
             if board.isProtected( piece.getPos() ):
