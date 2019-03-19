@@ -14,21 +14,27 @@ class ConsoleInputReader(InputReader):
 
     posX = self.promptUserInputCoord( "[ %s ] Enter posX or 'q' to quit ( %s ): " % 
                                       ( turnStr, str( self.callbacks[ "getCurrPos" ]() ) ) )
+    if posX is None:
+      return None
     posY = self.promptUserInputCoord( "[ %s ] Enter posY or 'q' to quit ( ( %s, _ ) ): " % 
                                       ( turnStr, posX ) )
+
+    if posY is None:
+      return None
 
     return int( posX ), int( posY )
 
   def promptUserInputCoord(self, promptStr ):
-    coord = ""
-    while not coord.isnumeric():
-      coord = input( promptStr )
-      self.checkToRaiseException( coord )
+    coord = input( promptStr )
+    self.checkToRaiseException( coord )
+    if not coord.isnumeric():
+      return None
     return coord
 
   def checkToRaiseException(self, coord):
     self.checkToQuitGame( coord )
     self.checkToResetGame( coord )
+    self.callbacks[ "handleKeyPress" ]( coord.lower() )
 
   def checkToQuitGame(self, coord):
     if coord.lower() == "q":

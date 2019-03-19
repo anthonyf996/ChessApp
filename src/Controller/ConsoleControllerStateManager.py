@@ -5,10 +5,13 @@ from ConsolePieceUpgradeState import ConsolePieceUpgradeState
 from ConsoleAIState import ConsoleAIState
 
 class ConsoleControllerStateManager(ControllerStateManager):
-  def __init__(self, View, Model, MoveController, InputController, AI):
-    super().__init__( View, Model, MoveController, InputController, AI )
+  def __init__(self, View, Model, MoveController, InputController, AI,\
+                 HintManager):
+    super().__init__( View, Model, MoveController, InputController, AI,\
+                        HintManager )
     self.states[ StateType.MAIN ] = ConsoleMainState( self, self.View, self.Model,\
-                                               self.MoveController, self.InputController )
+                                               self.MoveController, self.InputController,\
+                                               self.HintManager )
     self.states[ StateType.AI ] = ConsoleAIState( self, self.View, self.Model,\
                                     self.MoveController, self.InputController,\
                                     self.AI )
@@ -20,3 +23,4 @@ class ConsoleControllerStateManager(ControllerStateManager):
 
   def reset(self):
     self.currState = self.states[ StateType.MAIN ]
+    self.HintManager.clearHint()

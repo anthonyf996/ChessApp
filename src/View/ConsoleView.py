@@ -8,8 +8,9 @@ class ConsoleView(View):
   def finish(self):
     pass
 
-  def display(self, board, game, moves = set(), prevPos = None):
-    self.displayBoard( board, game, moves, prevPos )
+  def display(self, board, game, moves = set(), prevPos = None, hintStart = None,\
+                hintEnd = None):
+    self.displayBoard( board, game, moves, prevPos, hintStart, hintEnd )
 
     if game.getIsCheckMate():
       self.displayCheckMate( game.getInCheckMate() )
@@ -28,7 +29,8 @@ class ConsoleView(View):
   def displayDraw(self, lightKing, darkKing):
     print ( "Draw at %s and %s" % ( lightKing.getPos(), darkKing.getPos() ) )
 
-  def displayBoard(self, board, game = None, moves = set(), prevPos = None):
+  def displayBoard(self, board, game = None, moves = set(), prevPos = None,\
+                     hintStart = None, hintEnd = None):
     moveArr = board.getMovesEndPos( moves )
 
     s = ""
@@ -37,30 +39,47 @@ class ConsoleView(View):
         pos = ( x, y )
         p = board.getPiece( pos )
 
+        if pos == hintStart or pos == hintEnd:
+          s += "|<"
+        else:
+          s += "| "
+
         if pos in moveArr:
           if p is None:
-            s += "||||||||||"
+            #s += "||||||||||"
+            s += "|||||||"
           else:
             s += self.pieceToStr( board, game, p ).replace( " ", "|" )
         elif p is None:
-          s += "|         "
+          #s += "|         "
+          s += "       "
         elif pos == prevPos:
-          s += "|----%s----" % ( str( p ) )
+          #s += "|----%s----" % ( str( p ) )
+          s += "---%s---" % ( str( p ) )
         else:
             s += self.pieceToStr( board, game, p )
+
+        if pos == hintStart or pos == hintEnd:
+          s += ">"
+        else:
+          s += " "
       s += "|\n"
 
     print( s )
 
   def pieceToStr(self, board, game, piece):
     if  game.getIsCheckMate() and piece == game.getInCheckMate():
-      return "|{{{{%s}}}}" % ( str( piece ) )
+      #return "|{{{{%s}}}}" % ( str( piece ) )
+      return "{{{%s}}}" % ( str( piece ) )
     elif game.getIsDraw() and piece in board.getKingsPair():
-      return "|((((%s))))" % ( str( piece ) )
+      #return "|((((%s))))" % ( str( piece ) )
+      return "(((%s)))" % ( str( piece ) )
     elif game.getIsCheck() and piece == game.getInCheck():
-      return "|<<<<%s>>>>" % ( str( piece ) )
+      #return "|<<<<%s>>>>" % ( str( piece ) )
+      return "<<<%s>>>" % ( str( piece ) )
     else:
-      return "|    %s    " % ( str( piece ) )
+      #return "|    %s    " % ( str( piece ) )
+      return "   %s   " % ( str( piece ) )
 
   def promptUpgradeType(self):
     upgradeType = ""

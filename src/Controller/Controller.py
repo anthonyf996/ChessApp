@@ -7,13 +7,16 @@ class Controller:
     self.Model = self.Factory.createModel()
     self.Clock = self.Factory.createClock()
     self.MoveController = self.Factory.createMoveController()
-    self.KeyHandler = self.Factory.createKeyHandler( self.Model )
+    self.AI = self.Factory.createAI( self.Model )
+    self.HintManager = self.Factory.createHintManager( self.Model.getGame(),\
+                         self.AI )
+    self.KeyHandler = self.Factory.createKeyHandler( self.Model, self.HintManager )
     self.InputReader = self.Factory.createInputReader( self.View, self.Model.getGame(),\
                                                        self.MoveController, self.KeyHandler )
     self.InputController = self.Factory.createInputController( self, self.InputReader )
     self.StateManager = self.Factory.createStateManager( self.View, self.Model,\
                           self.MoveController, self.InputController,\
-                          self.Factory.createAI( self.Model ) )
+                          self.AI, self.HintManager )
 
   def run(self):
     try:
@@ -43,5 +46,5 @@ class Controller:
     if self.Model.getGame().getPlayersEnabled():
       self.Clock.tick()
     else:
-      self.Clock.tick( "AI_FPS" )
-      #self.Clock.tick( "TESTING_FPS" )
+      #self.Clock.tick( "AI_FPS" )
+      self.Clock.tick( "TESTING_FPS" )

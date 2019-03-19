@@ -60,11 +60,13 @@ class GUIView(View):
   def setAppIcon(self, img):
     pygame.display.set_icon( img )
 
-  def display(self, board, game, moves = set(), currPos = None, prevPos = None):
+  def display(self, board, game, moves = set(), currPos = None, prevPos = None,\
+              hintStart = None, hintEnd = None):
     self.Board.setHighlightTileClicked( currPos )
     self.Board.setHighlightLastMove( prevPos )
     self.displayMoves( moves )
     self.displayGameState( board, game )
+    self.Board.setHighlightHint( hintStart, hintEnd )
     self.Board.draw( self.gameDisplay, self.spriteSheets[ "PIECES" ], board.getBoard() )
 
   def displayMoves(self, moves):

@@ -10,6 +10,7 @@ from ExceptionHandler import ExceptionHandler
 from GameResetException import GameResetException 
 from GUIKeyHandler import GUIKeyHandler
 from AI import AI
+from HintManager import HintManager
 
 class GUIControllerFactory(ControllerFactory):
   def createModel(self):
@@ -42,14 +43,17 @@ class GUIControllerFactory(ControllerFactory):
   def createMoveController(self):
     return MoveController()
 
-  def createKeyHandler(self, Model):
-    return GUIKeyHandler( Model.getGame() )
+  def createKeyHandler(self, Model, HintManager):
+    return GUIKeyHandler( Model.getGame(), HintManager )
+
+  def createHintManager(self, Game, AI):
+    return HintManager( Game, AI )
 
   def createAI(self, Model):
     return AI( Model, Model.getBoard(), Model.getGame(),\
                   Model.getGame().getAIColor() )
 
   def createStateManager(self, View, Model, MoveController, InputController,\
-                         AI):
+                         AI, HintManager):
     return GUIControllerStateManager( View, Model, MoveController,\
-                                      InputController, AI )
+                                      InputController, AI, HintManager )

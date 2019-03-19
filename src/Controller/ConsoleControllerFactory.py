@@ -8,7 +8,9 @@ from MoveController import MoveController
 from ConsoleControllerStateManager import ConsoleControllerStateManager 
 from ExceptionHandler import ExceptionHandler 
 from GameResetException import GameResetException 
+from ConsoleKeyHandler import ConsoleKeyHandler
 from AI import AI
+from HintManager import HintManager
 
 class ConsoleControllerFactory(ControllerFactory):
   def createModel(self):
@@ -23,6 +25,7 @@ class ConsoleControllerFactory(ControllerFactory):
   def createInputReader(self, View, Game, MoveController, KeyHandler):
     return ConsoleInputReader( {
                                #"getPosPairFromCursor" : View.getPosPairFromCursor,
+                               "handleKeyPress" : KeyHandler.handleKeyPress,
                                "getCurrPos" : MoveController.getCurrPos, 
                                "isGameOver" : Game.isGameOver, 
                                "getTurnColor" : Game.getTurnColor 
@@ -40,14 +43,17 @@ class ConsoleControllerFactory(ControllerFactory):
   def createMoveController(self):
     return MoveController()
 
-  def createKeyHandler(self, Model):
-    return None
+  def createKeyHandler(self, Model, HintManager):
+    return ConsoleKeyHandler( Model, HintManager )
+
+  def createHintManager(self, Game, AI):
+    return HintManager( Game, AI )
 
   def createAI(self, Model):
     return AI( Model, Model.getBoard(), Model.getGame(),\
                   Model.getGame().getAIColor() )
 
   def createStateManager(self, View, Model, MoveController, InputController,\
-                         AI):
+                         AI, HintManager):
     return ConsoleControllerStateManager( View, Model, MoveController,\
-                                            InputController, AI )
+                                            InputController, AI, HintManager )

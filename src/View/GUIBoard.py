@@ -113,6 +113,10 @@ class GUIBoard:
   def setHighlightLastMove(self, pos):
     self.setTileColor( pos, self.ColorPalette.TILE_LAST_MOVE_COLOR )
 
+  def setHighlightHint(self, startPos, endPos):
+    self.setTileColor( startPos, self.ColorPalette.TILE_HINT_COLOR )
+    self.setTileColor( endPos, self.ColorPalette.TILE_HINT_COLOR )
+
   def setTileColor(self, pos, color):
     if pos is not None:
       x, y = pos

@@ -27,13 +27,15 @@ class MoveController:
     return set()
 
   def handleInput(self, stateManager, board, game, pos):
+    success = False
     if self.isValidMove( board, pos ):
       self.updatePos( pos )
       if self.readyToMove( game ):
         move = self.getMove( board )
         if not self.checkToPromptUpgradeType( stateManager, board, game, move ):
-          self.performMove( board, game, move )
+          success = self.performMove( board, game, move )
       self.toggleCurrPiece( board )
+    return success
 
   def isValidMove(self, board, pos):
     if pos is not None:
@@ -86,6 +88,8 @@ class MoveController:
         game.checkToResetTurnCount( board, move )
         game.advanceTurn()
         self.prevPos = move.getEndPos()
+        return True
+    return False
 
   def toggleCurrPiece(self, board):
     if self.currPiece is None:
