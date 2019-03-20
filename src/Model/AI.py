@@ -40,6 +40,7 @@ class AI:
     if random.random() <= self.encourageForwardMovementRate:
       weight += self.calculateForwardMovementScore( move, color )
     weight += self.calculateCaptureScore( board, move )
+    weight += self.calculateProgressToUpgradePonScore( board, move, color )
 
     self.performMove( move )
 
@@ -47,7 +48,6 @@ class AI:
     if random.random() <= self.encourageCastlingRate:
       weight += self.calculateCastleScore( move )
     weight += self.calculateEnPassantScore( move )
-    weight += self.calculateProgressToUpgradePonScore( board, move, color )
     weight += self.calculateUpgradePieceScore( move )
     weight += self.calculatePlaceOpponentInCheckScore( game, color )
     weight += self.calculatePlaceOpponentInCheckMateScore( game, color )
@@ -107,8 +107,8 @@ class AI:
     return 0
 
   def calculateProgressToUpgradePonScore(self, board, move, color):
-    if board.getPiece( move.getEndPos() ).getType() == PieceType.PON:
-      currPos = move.getEndPos()
+    if board.getPiece( move.getStartPos() ).getType() == PieceType.PON:
+      currPos = move.getStartPos()
       if board.isEmptyFile( currPos, color ):
         return self.calculateForwardMovementScore( move, color )
     return 0
