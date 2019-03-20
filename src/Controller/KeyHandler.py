@@ -1,6 +1,7 @@
 class KeyHandler:
-  def __init__(self, Game, HintManager):
+  def __init__(self, Game, MoveController, HintManager):
     self.Game = Game
+    self.MoveController = MoveController
     self.HintManager = HintManager
 
   def handleKeyPress(self, k):

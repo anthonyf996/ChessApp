@@ -11,6 +11,7 @@ from GameResetException import GameResetException
 from ConsoleKeyHandler import ConsoleKeyHandler
 from AI import AI
 from HintManager import HintManager
+from MoveHistory import MoveHistory
 
 class ConsoleControllerFactory(ControllerFactory):
   def createModel(self):
@@ -40,11 +41,14 @@ class ConsoleControllerFactory(ControllerFactory):
                                Controller.reset
                              ) )
 
-  def createMoveController(self):
-    return MoveController()
+  def createMoveController(self, MoveHistory):
+    return MoveController( MoveHistory )
 
-  def createKeyHandler(self, Model, HintManager):
-    return ConsoleKeyHandler( Model, HintManager )
+  def createMoveHistory(self):
+    return MoveHistory()
+
+  def createKeyHandler(self, Model, MoveController, HintManager):
+    return ConsoleKeyHandler( Model.getGame(), MoveController, HintManager )
 
   def createHintManager(self, Game, AI):
     return HintManager( Game, AI )

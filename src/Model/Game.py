@@ -26,9 +26,9 @@ class Game:
     self.inCheckMate = None
 
     self.turnsEnabled = True
-    self.multiPlayer = False
-    self.playersEnabled = False
-    self.aiEnabled = self.turnsEnabled and not self.multiPlayer
+    self.multiplayer = True
+    self.playersEnabled = True
+    self.aiEnabled = self.turnsEnabled and not self.multiplayer
     if not self.playersEnabled:
       self.aiColor = self.startingColor
 
@@ -67,6 +67,9 @@ class Game:
   def getIsAIEnabled(self):
     return self.aiEnabled
 
+  def getIsMultiplayer(self):
+    return self.multiplayer
+
   def getPlayersEnabled(self):
     return self.playersEnabled
 
@@ -90,6 +93,12 @@ class Game:
 
   def setGameOver(self, b):
     self.gameOver = b
+
+  def setTurnCount(self, count):
+    self.turnCount = count
+
+  def setTurnColor(self, color):
+    self.turnColor = color
 
   #def toggleAIColor(self):
   #  self.aiColor = self.getOpponentColor( self.aiColor )

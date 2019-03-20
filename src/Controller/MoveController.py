@@ -7,8 +7,9 @@ from SimpleMove import SimpleMove
 from EnPassantCommand import EnPassantCommand
 
 class MoveController:
-  def __init__(self):
+  def __init__(self, MoveHistory):
     self.reset()
+    self.MoveHistory = MoveHistory
 
   def reset(self):
     self.currPos = None
@@ -85,11 +86,22 @@ class MoveController:
       successful = board.move( move )
       if successful:
         print( "[ %s ]: %s" % ( game.getTurnColor(), str( move ) ) )
+        self.MoveHistory.add( ( move, self.prevPos, game.getTurnCount(), game.getTurnColor() ) )
         game.checkToResetTurnCount( board, move )
         game.advanceTurn()
         self.prevPos = move.getEndPos()
         return True
     return False
+
+  def undoLastMove(self, game):
+    saveState = self.MoveHistory.pop()
+    if saveState is not None:
+      move, currPos, turnCount, turnColor = saveState
+      print( "( UNDO ) [ %s ]: %s" % ( game.getTurnColor(), str( move ) ) )
+      move.undo()
+      game.setTurnCount( turnCount )
+      game.setTurnColor( turnColor )
+      self.prevPos = currPos
 
   def toggleCurrPiece(self, board):
     if self.currPiece is None:
