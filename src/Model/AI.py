@@ -14,6 +14,7 @@ class AI:
     self.Game = Game
     self.color = color
     self.encourageForwardMovementRate = 0.01
+    self.encourageCastlingRate = 0.8
 
   def performMove(self, move):
     move.execute()
@@ -34,13 +35,17 @@ class AI:
     return self.getMaxMove( weightedMoves )
 
   def getWeightedMove(self, board, game, move, color):
-    weight = self.calculateForwardMovementScore( move, color )
+    weight = 0
+
+    if random.random() <= self.encourageForwardMovementRate:
+      weight += self.calculateForwardMovementScore( move, color )
     weight += self.calculateCaptureScore( board, move )
 
     self.performMove( move )
 
     weight += self.calculateInconsistentStateScore( board, color)
-    weight += self.calculateCastleScore( move )
+    if random.random() <= self.encourageCastlingRate:
+      weight += self.calculateCastleScore( move )
     weight += self.calculateEnPassantScore( move )
     weight += self.calculateProgressToUpgradePonScore( board, move, color )
     weight += self.calculateUpgradePieceScore( move )
@@ -53,18 +58,15 @@ class AI:
     return ( weight, move )
 
   def calculateForwardMovementScore(self, move, color):
-    weight = 0
-    # Encourage forward movements randomly
-    if random.random() <= self.encourageForwardMovementRate:
-      x1, y1 = move.getStartPos()
-      x2, y2 = move.getEndPos()
-      if color == PieceColor.LIGHT:
-        if ( y2 < y1 ):
-          weight += 20
-      else:
-        if ( y2 > y1 ):
-          weight += 20
-    return weight
+    x1, y1 = move.getStartPos()
+    x2, y2 = move.getEndPos()
+    if color == PieceColor.LIGHT:
+      if ( y2 < y1 ):
+        return 20
+    else:
+      if ( y2 > y1 ):
+        return 20
+    return 0
 
   def calculateCaptureScore(self, board, move):
     weight = 0
@@ -108,14 +110,7 @@ class AI:
     if board.getPiece( move.getEndPos() ).getType() == PieceType.PON:
       currPos = move.getEndPos()
       if board.isEmptyFile( currPos, color ):
-        x1, y1 = move.getStartPos()
-        x2, y2 = move.getEndPos()
-        if color == PieceColor.LIGHT:
-          if ( y2 < y1 ):
-            return 20
-        else:
-          if ( y2 > y1 ):
-            return 20
+        return self.calculateForwardMovementScore( move, color )
     return 0
 
   def calculateUpgradePieceScore(self, move):
