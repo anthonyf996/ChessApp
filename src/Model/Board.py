@@ -161,6 +161,20 @@ class Board:
   def isKingTrapped(self, kingPos):
     return BoardQueryIsKingTrapped().queryBoard( self, kingPos )
 
+  def isEmptyFile(self, currPos, currColor):
+    x, y = currPos
+    if currColor == PieceColor.LIGHT:
+      while y > 0:
+        y -= 1
+        if self.getPiece( ( x, y ) ) is not None:
+          return False
+    else:
+      while y < self.numRows - 1:
+        y += 1
+        if self.getPiece( ( x, y ) ) is not None:
+          return False
+    return True
+
   def noMovesLeft(self, kingPos):
     return BoardQueryNoMovesLeft().queryBoard( self, kingPos )
 

@@ -4,6 +4,7 @@ from PieceColor import PieceColor
 from CastleCommand import CastleCommand
 from EnPassantCommand import EnPassantCommand
 from MoveWithSideEffects import MoveWithSideEffects
+from PieceUpgradeCommand import PieceUpgradeCommand 
 import random
 
 class AI:
@@ -41,6 +42,8 @@ class AI:
     weight += self.calculateInconsistentStateScore( board, color)
     weight += self.calculateCastleScore( move )
     weight += self.calculateEnPassantScore( move )
+    weight += self.calculateProgressToUpgradePonScore( board, move, color )
+    weight += self.calculateUpgradePieceScore( move )
     weight += self.calculatePlaceOpponentInCheckScore( game, color )
     weight += self.calculatePlaceOpponentInCheckMateScore( game, color )
     weight += self.calculateSacrificePieceScore( board, color )
@@ -101,6 +104,27 @@ class AI:
       return 20
     return 0
 
+  def calculateProgressToUpgradePonScore(self, board, move, color):
+    if board.getPiece( move.getEndPos() ).getType() == PieceType.PON:
+      currPos = move.getEndPos()
+      if board.isEmptyFile( currPos, color ):
+        x1, y1 = move.getStartPos()
+        x2, y2 = move.getEndPos()
+        if color == PieceColor.LIGHT:
+          if ( y2 < y1 ):
+            return 20
+        else:
+          if ( y2 > y1 ):
+            return 20
+    return 0
+
+  def calculateUpgradePieceScore(self, move):
+    if isinstance( move, MoveWithSideEffects ):
+      command = move.getCommand( 0 )
+      if isinstance( command, PieceUpgradeCommand ):
+        return 20
+    return 0
+
   def calculatePlaceOpponentInCheckScore(self, game, color):
     if game.getIsCheck():
       if game.getInCheck().getColor() == game.getOpponentColor( color ):
@@ -127,9 +151,9 @@ class AI:
               weight -= self.getPieceTypeWeight( piece, weightsDict )
             # Further discourage losing own piece without protection
             else:
-              weightsDict = { PieceType.QUEEN : 100, PieceType.ROOK : 80,
-                              PieceType.BISHOP : 60, PieceType.KNIGHT : 40,
-                              PieceType.PON : 20 }
+              weightsDict = { PieceType.QUEEN : 120, PieceType.ROOK : 100,
+                              PieceType.BISHOP : 80, PieceType.KNIGHT : 60,
+                              PieceType.PON : 40 }
               weight -= self.getPieceTypeWeight( piece, weightsDict )
     return weight
 

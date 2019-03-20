@@ -25,9 +25,9 @@ class Game:
     self.inCheck = None
     self.inCheckMate = None
 
-    self.turnsEnabled = True
-    self.multiplayer = False
-    self.playersEnabled = False
+    self.turnsEnabled = False
+    self.multiplayer = True
+    self.playersEnabled = True
     self.aiEnabled = self.turnsEnabled and not self.multiplayer
     if not self.playersEnabled:
       self.aiColor = self.startingColor
