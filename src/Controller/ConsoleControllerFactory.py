@@ -48,7 +48,7 @@ class ConsoleControllerFactory(ControllerFactory):
     return MoveHistory()
 
   def createKeyHandler(self, Model, MoveController, HintManager):
-    return ConsoleKeyHandler( Model.getGame(), MoveController, HintManager )
+    return ConsoleKeyHandler( Model.getBoard(), Model.getGame(), MoveController, HintManager )
 
   def createHintManager(self, Game, AI):
     return HintManager( Game, AI )

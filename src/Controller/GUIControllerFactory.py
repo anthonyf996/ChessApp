@@ -48,7 +48,7 @@ class GUIControllerFactory(ControllerFactory):
     return MoveHistory()
 
   def createKeyHandler(self, Model, MoveController, HintManager):
-    return GUIKeyHandler( Model.getGame(), MoveController, HintManager )
+    return GUIKeyHandler( Model.getBoard(), Model.getGame(), MoveController, HintManager )
 
   def createHintManager(self, Game, AI):
     return HintManager( Game, AI )
