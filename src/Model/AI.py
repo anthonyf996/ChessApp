@@ -1,6 +1,9 @@
 from EatMove import EatMove
 from PieceType import PieceType
 from PieceColor import PieceColor
+from CastleCommand import CastleCommand
+from EnPassantCommand import EnPassantCommand
+from MoveWithSideEffects import MoveWithSideEffects
 import random
 
 class AI:
@@ -36,7 +39,10 @@ class AI:
     self.performMove( move )
 
     weight += self.calculateInconsistentStateScore( board, color)
+    weight += self.calculateCastleScore( move )
+    weight += self.calculateEnPassantScore( move )
     weight += self.calculatePlaceOpponentInCheckScore( game, color )
+    weight += self.calculatePlaceOpponentInCheckMateScore( game, color )
     weight += self.calculateSacrificePieceScore( board, color )
 
     self.undoMove( move )
@@ -77,10 +83,34 @@ class AI:
       return -10000
     return 0
 
+  def calculateCastleScore(self, move):
+    if isinstance( move, MoveWithSideEffects ):
+      innerMove = move.getMove()
+    else:
+      innerMove = move
+    if isinstance( innerMove, CastleCommand ):
+      return 20
+    return 0
+
+  def calculateEnPassantScore(self, move):
+    if isinstance( move, MoveWithSideEffects ):
+      innerMove = move.getMove()
+    else:
+      innerMove = move
+    if isinstance( innerMove, EnPassantCommand ):
+      return 20
+    return 0
+
   def calculatePlaceOpponentInCheckScore(self, game, color):
     if game.getIsCheck():
       if game.getInCheck().getColor() == game.getOpponentColor( color ):
         return 20
+    return 0
+
+  def calculatePlaceOpponentInCheckMateScore(self, game, color):
+    if game.getIsCheckMate():
+      if game.getInCheckMate().getColor() == game.getOpponentColor( color ):
+        return 1000
     return 0
 
   def calculateSacrificePieceScore(self, board, color):
