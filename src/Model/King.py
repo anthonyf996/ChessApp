@@ -11,7 +11,7 @@ class King( Piece ):
     self.movementVectors = { ( 1, 0 ), ( 0, 1 ), ( -1, 0 ), ( 0, -1 ), ( 1, 1 ), ( -1, 1 ), ( 1, -1 ), ( -1, -1 ) }
 
   def __str__(self):
-    return "K"
+    return "%s%s" % ( self.getColorStr(), "K" )
 
   def getType(self):
     return PieceType.KING

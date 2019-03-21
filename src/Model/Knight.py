@@ -7,7 +7,7 @@ class Knight( Piece ):
     self.movementVectors = { ( 1, 2 ), ( 2, 1 ), ( -1, 2 ), ( -2, 1 ), ( 1, -2 ), ( 2, -1 ), ( -1, -2 ), ( -2, -1 ) }
 
   def __str__(self):
-    return "N"
+    return "%s%s" % ( self.getColorStr(), "N" )
 
   def getType(self):
     return PieceType.KNIGHT

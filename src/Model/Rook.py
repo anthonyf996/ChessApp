@@ -7,7 +7,7 @@ class Rook( Piece ):
     self.movementVectors = { ( 1, 0 ), ( 0, 1 ), ( -1, 0 ), ( 0, -1 ) }
 
   def __str__(self):
-    return "R"
+    return "%s%s" % ( self.getColorStr(), "R" )
 
   def getType(self):
     return PieceType.ROOK

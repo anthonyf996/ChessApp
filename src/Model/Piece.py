@@ -1,6 +1,7 @@
 from GetSimpleMovement import GetSimpleMovement
 from GetEatMovement import GetEatMovement
 from GetCollisionMovement import GetCollisionMovement
+from PieceColor import PieceColor
 
 class Piece:
   def __init__(self, color, stepLimit ):
@@ -15,6 +16,12 @@ class Piece:
 
   def getColor(self):
     return self.color
+
+  def getColorStr(self):
+    if self.color == PieceColor.LIGHT:
+      return "L"
+    else:
+      return "B"
 
   def getMovementVectors(self):
     return self.movementVectors

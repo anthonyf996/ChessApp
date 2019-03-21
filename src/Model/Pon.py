@@ -19,7 +19,7 @@ class Pon( Piece ):
     self.enPassantDirection = EnPassantDirection.NONE
 
   def __str__(self):
-    return "P"
+    return "%s%s" % ( self.getColorStr(), "P" )
 
   def getType(self):
     return PieceType.PON

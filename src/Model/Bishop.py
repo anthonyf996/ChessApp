@@ -7,7 +7,7 @@ class Bishop( Piece ):
     self.movementVectors = { ( 1, 1 ), ( -1, 1 ), ( 1, -1 ), ( -1, -1 ) }
 
   def __str__(self):
-    return "B"
+    return "%s%s" % ( self.getColorStr(), "B" )
 
   def getType(self):
     return PieceType.BISHOP

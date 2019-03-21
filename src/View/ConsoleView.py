@@ -52,7 +52,7 @@ class ConsoleView(View):
             s += self.pieceToStr( board, game, p ).replace( " ", "|" )
         elif p is None:
           #s += "|         "
-          s += "       "
+          s += "        "
         elif pos == prevPos:
           #s += "|----%s----" % ( str( p ) )
           s += "---%s---" % ( str( p ) )

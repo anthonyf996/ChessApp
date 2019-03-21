@@ -7,7 +7,7 @@ class Queen( Piece ):
     self.movementVectors = { ( 1, 0 ), ( 0, 1 ), ( -1, 0 ), ( 0, -1 ), ( 1, 1 ), ( -1, 1 ), ( 1, -1 ), ( -1, -1 ) }
 
   def __str__(self):
-    return "Q"
+    return "%s%s" % ( self.getColorStr(), "Q" )
 
   def getType(self):
     return PieceType.QUEEN
