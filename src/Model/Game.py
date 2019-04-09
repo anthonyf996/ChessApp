@@ -27,7 +27,7 @@ class Game:
 
     self.turnsEnabled = True
     self.multiplayer = False
-    self.playersEnabled = False
+    self.playersEnabled = True
     self.aiEnabled = self.turnsEnabled and not self.multiplayer
     if not self.playersEnabled:
       self.aiColor = self.startingColor
