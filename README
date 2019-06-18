@@ -1,4 +1,4 @@
-NOTE: Pygame on Python version 3.7.1 and lower may not be compatible with MacOS Mojave.
+NOTE: At the moment, the pygame package is not be compatible with MacOS Mojave.
       More info about this issue can be found here: https://github.com/pygame/pygame/issues/555
-      Any users running MacOS Mojave are encouraged to update to Python 3.7.2 or later before
-      running any applications using the pygame package.
+      Unfortunately, any users running MacOS Mojave will not be able to run the app until a
+      fix is released.
