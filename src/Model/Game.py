@@ -11,11 +11,28 @@ class Game:
     self.startingColor = startingColor
     self.aiColor = self.getOpponentColor( self.startingColor )
     self.turnColor = self.startingColor
-    self.turnCount = 0
+    self.turnCount = 0 # Used by the MoveHistory class in the Controller/ directory to implement the undo feature
+    self.gameTurnCount = 0
     self.paused = False
+    self.defaultPlayersEnabled = True
+    self.defaultMultiplayer = False
     self.init()
     if not self.playersEnabled:
       self.paused = True
+
+  def __str__(self):
+    s = ""
+    s += "USER_INPUT_SHOW_CURRENT_GAME_STATE\n"
+    s += "PAUSE:           %20s\n" % ( self.getIsPaused() )
+    s += "MULTIPLAYER:     %20s\n" % ( self.getIsMultiplayer() )
+    s += "PLAYERS ENABLED: %20s\n" % ( self.getPlayersEnabled() )
+    s += "TURN NUM:        %20d\n" % ( self.getGameTurnCount() + 1 )
+    s += "TURN:            %20s\n" % ( self.getTurnColor() )
+    s += "CHECK:           %20s\n" % ( self.getIsCheck() )
+    s += "DRAW:            %20s\n" % ( self.getIsDraw() )
+    s += "CHECKMATE:       %20s\n" % ( self.getIsCheckMate() )
+    s += "GAMEOVER:        %20s" % ( self.isGameOver() )
+    return s
 
   def init(self):
     self.gameOver = False
@@ -26,19 +43,25 @@ class Game:
     self.inCheckMate = None
 
     self.turnsEnabled = True
-    self.multiplayer = False
-    self.playersEnabled = False
+    self.multiplayer = self.defaultMultiplayer
+    self.playersEnabled = self.defaultPlayersEnabled
     self.aiEnabled = self.turnsEnabled and not self.multiplayer
     if not self.playersEnabled:
       self.aiColor = self.startingColor
+    else:
+      self.aiColor = self.getOpponentColor( self.startingColor )
 
   def reset(self):
+    self.aiColor = self.getOpponentColor( self.startingColor )
     self.turnColor = self.startingColor
     self.turnCount = 0
+    self.gameTurnCount = 0
     self.paused = False
+    self.defaultPlayersEnabled = True
+    self.defaultMultiplayer = False
+    self.init()
     if not self.playersEnabled:
       self.paused = True
-    self.init()
 
   def resetTurnCount(self):
     self.turnCount = 0
@@ -51,6 +74,9 @@ class Game:
       return PieceColor.DARK
     else:
       return PieceColor.LIGHT
+
+  def getGameTurnCount(self):
+    return self.gameTurnCount
 
   def getTurnCount(self):
     return self.turnCount
@@ -106,6 +132,12 @@ class Game:
   def togglePause(self):
     self.paused = not self.paused
 
+  def toggleMultiplayer(self):
+    self.defaultMultiplayer = not self.defaultMultiplayer
+
+  def togglePlayersEnabled(self):
+    self.defaultPlayersEnabled = not self.defaultPlayersEnabled
+
   def isGameOver(self):
     return self.gameOver
 
@@ -115,6 +147,7 @@ class Game:
     else:
       self.turnColor = PieceColor.LIGHT
     self.turnCount += 1
+    self.gameTurnCount += 1
 
   def update(self, board, game, gameRules):
     self.init()

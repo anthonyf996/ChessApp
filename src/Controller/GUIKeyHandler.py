@@ -7,8 +7,16 @@ class GUIKeyHandler(KeyHandler):
 
   def handleKeyPress(self, k):
     if k == pygame.K_p:
-      print ( "USER_INPUT_TOGGLE_PAUSE" )
+      print ( "USER_INPUT_TOGGLE_PAUSE ( %s )" % ( "ON" if ( not self.Game.getIsPaused() ) else "OFF" ) )
       self.Game.togglePause()
+    elif k == pygame.K_m:
+      print ( "USER_INPUT_TOGGLE_MULTIPLAYER ( %s )" % ( "ON" if ( not self.Game.getIsMultiplayer() ) else "OFF" ) )
+      self.Game.toggleMultiplayer()
+    elif k == pygame.K_a:
+      print ( "USER_INPUT_TOGGLE_PLAYERS_ENABLED ( %s )" % ( "ON" if ( not self.Game.getPlayersEnabled() ) else "OFF" ) )
+      self.Game.togglePlayersEnabled()
+    elif k == pygame.K_s:
+      print ( self.Game )
     elif k == pygame.K_h:
       if self.Game.getPlayersEnabled():
         print ( "USER_INPUT_GET_HINT" )

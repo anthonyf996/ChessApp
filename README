@@ -1,0 +1,4 @@
+NOTE: At the moment, the pygame package is not be compatible with MacOS Mojave.
+      More info about this issue can be found here: https://github.com/pygame/pygame/issues/555
+      Unfortunately, any users running MacOS Mojave will not be able to run the app until a
+      fix is released.
