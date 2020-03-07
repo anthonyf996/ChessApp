@@ -41,7 +41,12 @@ class GUIMainState(ControllerState):
 
     self.Model.update()
 
-    if not self.Game.isGameOver():
+    if self.Game.isGameOver():
+      if self.Game.getIsTesting():
+        self.updateView()
+        self.Controller.reset()
+        sleep( 5 )
+    else:
       if self.Game.getIsPaused():
         self.StateManager.setState( StateType.PAUSE )
       elif self.Game.getPlayersEnabled():
@@ -49,6 +54,3 @@ class GUIMainState(ControllerState):
           self.StateManager.setState( StateType.AI )
       else:
         self.StateManager.setState( StateType.AI )
-    elif self.Game.getIsTesting():
-      self.Controller.reset()
-      sleep( 5 )

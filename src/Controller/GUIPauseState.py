@@ -25,4 +25,5 @@ class GUIPauseState(ControllerState):
     self.MoveController.handleInput( self.StateManager, self.Board, self.Game, None )
 
     if not self.Game.getIsPaused():
-      self.StateManager.setState( StateType.MAIN )
+      #self.StateManager.setState( StateType.MAIN )
+      self.StateManager.setPriorState()

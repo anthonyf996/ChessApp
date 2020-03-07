@@ -8,11 +8,10 @@ from PieceUpgradeCommand import PieceUpgradeCommand
 import random
 
 class AI:
-  def __init__(self, Model, Board, Game, color):
+  def __init__(self, Model, Board, Game):
     self.Model = Model
     self.Board = Board
     self.Game = Game
-    self.color = color
     self.encourageForwardMovementRate = 0.01
     self.encourageCastlingRate = 0.8
 

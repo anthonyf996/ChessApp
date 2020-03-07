@@ -15,6 +15,7 @@ class Game:
     self.gameTurnCount = 0
     self.gameCount = 0
     self.drawCount = 0
+    self.checkMateCount = 0
     self.paused = False
     self.defaultPlayersEnabled = True
     self.defaultMultiplayer = False
@@ -33,7 +34,7 @@ class Game:
     s += ( "-" * 38 ) + "\n"
     s += "DRAW COUNT:      %20d\n" % ( self.getDrawCount() )
     s += ( "-" * 38 ) + "\n"
-    s += "CHECKMATE COUNT: %20d\n" % ( self.getGameCount() - self.getDrawCount() )
+    s += "CHECKMATE COUNT: %20d\n" % ( self.getCheckMateCount() )
     s += ( "-" * 38 ) + "\n"
     if self.getGameCount() == 0:
       s += "DRAW PERCT:     %20d%%\n" % ( 0 )
@@ -41,9 +42,9 @@ class Game:
       s += "CHECKMATE PERCT:%20d%%\n" % ( 0 )
       s += ( "-" * 38 ) + "\n"
     else:
-      s += "DRAW PERCT:     %20d%%\n" % ( round( 100 * ( self.getDrawCount() / ( self.getGameCount() ) ) ) )
+      s += "DRAW PERCT:     %20d%%\n" % ( round( 100 * ( self.getDrawCount() / self.getGameCount() ) ) )
       s += ( "-" * 38 ) + "\n"
-      s += "CHECKMATE PERCT:%20d%%\n" % ( round( 100 * ( ( self.getGameCount() - self.getDrawCount() ) / ( self.getGameCount() ) ) ) )
+      s += "CHECKMATE PERCT:%20d%%\n" % ( round( 100 * ( self.getCheckMateCount() / self.getGameCount() ) ) )
       s += ( "-" * 38 ) + "\n"
     s += "PAUSE:           %20s\n" % ( self.getIsPaused() )
     s += ( "-" * 38 ) + "\n"
@@ -82,17 +83,19 @@ class Game:
     else:
       self.aiColor = self.getOpponentColor( self.startingColor )
     
-    if self.testing and self.gameOver:
-      self.reset()
-
   def reset(self):
-    self.aiColor = self.getOpponentColor( self.startingColor )
+    if self.gameOver:
+      self.gameCount = self.gameCount + 1
+    if self.isDraw:
+      self.drawCount = self.drawCount + 1
+    elif self.isCheckMate:
+      self.checkMateCount = self.checkMateCount + 1
+
+    print ( self )
+
     self.turnColor = self.startingColor
     self.turnCount = 0
     self.gameTurnCount = 0
-    self.gameCount = self.gameCount + 1
-    if self.isDraw:
-      self.drawCount = self.drawCount + 1
     self.paused = False
     if not self.testing:
       self.defaultPlayersEnabled = True
@@ -100,8 +103,6 @@ class Game:
     self.init()
     if not self.testing and not self.playersEnabled:
       self.paused = True
-    if self.testing:
-      print ( self )
 
   def resetTurnCount(self):
     self.turnCount = 0
@@ -126,6 +127,9 @@ class Game:
 
   def getDrawCount(self):
     return self.drawCount
+
+  def getCheckMateCount(self):
+    return self.checkMateCount
 
   def getIsPaused(self):
     return self.paused
@@ -207,6 +211,7 @@ class Game:
   def update(self, board, game, gameRules):
     self.init()
 
+    # Avoid updating if no move has been committed
     if not self.successfulMove:
       return
     else:

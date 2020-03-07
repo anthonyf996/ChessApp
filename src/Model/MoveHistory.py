@@ -3,7 +3,6 @@ class MoveHistory:
     self.moves = []
     self.boardSnapshots = []
     self.Board = Board
-    self.Board.moveHistory = self # TODO REMOVE AFTER TESTING
 
   def add(self, move):
     self.moves.append( move )

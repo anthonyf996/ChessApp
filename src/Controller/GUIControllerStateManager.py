@@ -13,7 +13,7 @@ class GUIControllerStateManager(ControllerStateManager):
                                       self.HintManager )
     self.states[ StateType.PAUSE ] = GUIPauseState( self, self.View, self.Model,\
                                       self.MoveController, self.InputController )
-    self.states[ StateType.AI ] = GUIAIState( self, self.View, self.Model,\
+    self.states[ StateType.AI ] = GUIAIState( self, self.View, self.Model, Controller,\
                                     self.MoveController, self.InputController,\
                                     self.AI )
     self.states[ StateType.PIECE_UPGRADE ] = GUIPieceUpgradeState( self,\

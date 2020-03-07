@@ -54,8 +54,7 @@ class ConsoleControllerFactory(ControllerFactory):
     return HintManager( Game, AI )
 
   def createAI(self, Model):
-    return AI( Model, Model.getBoard(), Model.getGame(),\
-                  Model.getGame().getAIColor() )
+    return AI( Model, Model.getBoard(), Model.getGame() )
 
   def createStateManager(self, View, Model, MoveController, InputController,\
                          AI, HintManager):
