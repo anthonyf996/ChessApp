@@ -60,7 +60,7 @@ class Pon( Piece ):
     if board.isValidMove( pos ):
       piece = board.getPiece( pos )
       currPiece = board.getPiece( currPos )
-      if piece is not None and piece.getColor != currPiece.getColor():
+      if piece is not None and piece.getType() == PieceType.PON and piece.getColor() != currPiece.getColor():
         moves.add( EnPassantCommand( board, currPos, pos ) )
     return moves
 

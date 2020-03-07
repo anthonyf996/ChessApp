@@ -1,4 +1,5 @@
 from Move import Move
+from PieceColor import PieceColor
 
 class SimpleMove(Move):
   def __init__(self, board, startPos, endPos):

@@ -28,7 +28,6 @@ class SetEnPassantCommand(Command):
     currX, currY = self.currPos
     self.checkToSetEnPassant( ( currX - 1, currY ), EnPassantDirection.NONE )
     self.checkToSetEnPassant( ( currX + 1, currY ), EnPassantDirection.NONE )
-    self.board.clearCanEnPassant()
     
   def checkToSetEnPassant(self, pos, d):
     if self.board.isValidMove( pos ):
@@ -37,4 +36,7 @@ class SetEnPassantCommand(Command):
       if piece is not None and piece.getType() == PieceType.PON and\
         piece.getColor() != currPiece.getColor():
         piece.setCanEnPassant( d )
-        self.board.registerCanEnPassant( piece )
+        if d == EnPassantDirection.NONE:
+          self.board.popCanEnPassant()
+        else:
+          self.board.registerCanEnPassant( piece )

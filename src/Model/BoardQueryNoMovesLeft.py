@@ -6,7 +6,7 @@ class BoardQueryNoMovesLeft(BoardQuery):
     self.default = True
 
   def shouldSkipPiece(self, subjectPiece, currPiece):
-    if currPiece is None or currPiece.getColor() != subjectPiece.getColor():
+    if currPiece is None or subjectPiece is not None and currPiece.getColor() != subjectPiece.getColor():
       return True
     return False
 

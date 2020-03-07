@@ -7,7 +7,7 @@ class Controller:
     self.Model = self.Factory.createModel()
     self.Clock = self.Factory.createClock()
     self.MoveController = self.Factory.createMoveController( 
-                            self.Factory.createMoveHistory() )
+                            self.Factory.createMoveHistory( self.Model ) )
     self.AI = self.Factory.createAI( self.Model )
     self.HintManager = self.Factory.createHintManager( self.Model.getGame(),\
                          self.AI )
@@ -17,7 +17,7 @@ class Controller:
                                                        self.MoveController, self.KeyHandler )
     self.InputController = self.Factory.createInputController( self, self.InputReader )
     self.StateManager = self.Factory.createStateManager( self.View, self.Model,\
-                          self.MoveController, self.InputController,\
+                          self, self.MoveController, self.InputController,\
                           self.AI, self.HintManager )
 
   def run(self):

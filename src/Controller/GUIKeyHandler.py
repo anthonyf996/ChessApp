@@ -16,7 +16,14 @@ class GUIKeyHandler(KeyHandler):
       print ( "USER_INPUT_TOGGLE_PLAYERS_ENABLED ( %s )" % ( "ON" if ( not self.Game.getPlayersEnabled() ) else "OFF" ) )
       self.Game.togglePlayersEnabled()
     elif k == pygame.K_s:
+      print ( "USER_INPUT_SHOW_CURRENT_GAME_STATE" )
       print ( self.Game )
+    elif k == pygame.K_c:
+      print ( "USER_INPUT_SHOW_CONTROLS" )
+      self.printControls()
+    elif k == pygame.K_t:
+      print ( "USER_INPUT_TOGGLE_TESTING ( %s )" % ( "ON" if ( not self.Game.getIsTesting() ) else "OFF" ) )
+      self.Game.toggleIsTesting()
     elif k == pygame.K_h:
       if self.Game.getPlayersEnabled():
         print ( "USER_INPUT_GET_HINT" )
@@ -35,3 +42,21 @@ class GUIKeyHandler(KeyHandler):
         else:
           self.MoveController.undoLastMove( self.Game )
           self.MoveController.undoLastMove( self.Game )
+
+  def printControls(self):
+    controlDict = { 
+                    "GET HINT" : "h",
+                    "FOLLOW HINT" : "f",
+                    "UNDO MOVE" : "u",
+                    "TOGGLE PAUSE" : "p",
+                    "TOGGLE MULTIPLAYER" : "m",
+                    "TOGGLE PLAYERS ENABLED" : "a",
+                    "TOGGLE TESTING" : "t",
+                    "SHOW GAME STATE" : "s",
+                    "SHOW CONTROLS" : "c"
+                  }
+
+    print ( "-" * 30 )
+    for action,key in controlDict.items():
+      print ( "%-25s%5s" % ( action, key ) )
+      print ( "-" * 30 )

@@ -1,11 +1,13 @@
 from ControllerState import ControllerState
 from StateType import StateType
+from time import sleep
 
 class GUIMainState(ControllerState):
-  def __init__(self, StateManager, View, Model, MoveController, InputController, HintManager):
+  def __init__(self, StateManager, View, Model, Controller, MoveController, InputController, HintManager):
     self.StateManager = StateManager
     self.View = View
     self.Model = Model
+    self.Controller = Controller
     self.MoveController = MoveController
     self.InputController = InputController
     self.HintManager = HintManager
@@ -47,3 +49,6 @@ class GUIMainState(ControllerState):
           self.StateManager.setState( StateType.AI )
       else:
         self.StateManager.setState( StateType.AI )
+    elif self.Game.getIsTesting():
+      self.Controller.reset()
+      sleep( 5 )

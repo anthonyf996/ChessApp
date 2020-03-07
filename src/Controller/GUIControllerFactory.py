@@ -44,8 +44,8 @@ class GUIControllerFactory(ControllerFactory):
   def createMoveController(self, MoveHistory):
     return MoveController( MoveHistory )
 
-  def createMoveHistory(self):
-    return MoveHistory()
+  def createMoveHistory(self, Model):
+    return MoveHistory( Model.getBoard() )
 
   def createKeyHandler(self, Model, MoveController, HintManager):
     return GUIKeyHandler( Model.getBoard(), Model.getGame(), MoveController, HintManager )
@@ -57,7 +57,7 @@ class GUIControllerFactory(ControllerFactory):
     return AI( Model, Model.getBoard(), Model.getGame(),\
                   Model.getGame().getAIColor() )
 
-  def createStateManager(self, View, Model, MoveController, InputController,\
+  def createStateManager(self, View, Model, Controller, MoveController, InputController,\
                          AI, HintManager):
-    return GUIControllerStateManager( View, Model, MoveController,\
+    return GUIControllerStateManager( View, Model, Controller, MoveController,\
                                       InputController, AI, HintManager )

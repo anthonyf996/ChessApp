@@ -13,25 +13,56 @@ class Game:
     self.turnColor = self.startingColor
     self.turnCount = 0 # Used by the MoveHistory class in the Controller/ directory to implement the undo feature
     self.gameTurnCount = 0
+    self.gameCount = 0
+    self.drawCount = 0
     self.paused = False
     self.defaultPlayersEnabled = True
     self.defaultMultiplayer = False
+    self.testing = False
+    self.successfulMove = False
     self.init()
     if not self.playersEnabled:
       self.paused = True
 
   def __str__(self):
     s = ""
-    s += "USER_INPUT_SHOW_CURRENT_GAME_STATE\n"
+    s += ( "-" * 38 ) + "\n"
+    s += "TESTING:         %20s\n" % ( self.getIsTesting() )
+    s += ( "-" * 38 ) + "\n"
+    s += "GAME COUNT:      %20d\n" % ( self.getGameCount() )
+    s += ( "-" * 38 ) + "\n"
+    s += "DRAW COUNT:      %20d\n" % ( self.getDrawCount() )
+    s += ( "-" * 38 ) + "\n"
+    s += "CHECKMATE COUNT: %20d\n" % ( self.getGameCount() - self.getDrawCount() )
+    s += ( "-" * 38 ) + "\n"
+    if self.getGameCount() == 0:
+      s += "DRAW PERCT:     %20d%%\n" % ( 0 )
+      s += ( "-" * 38 ) + "\n"
+      s += "CHECKMATE PERCT:%20d%%\n" % ( 0 )
+      s += ( "-" * 38 ) + "\n"
+    else:
+      s += "DRAW PERCT:     %20d%%\n" % ( round( 100 * ( self.getDrawCount() / ( self.getGameCount() ) ) ) )
+      s += ( "-" * 38 ) + "\n"
+      s += "CHECKMATE PERCT:%20d%%\n" % ( round( 100 * ( ( self.getGameCount() - self.getDrawCount() ) / ( self.getGameCount() ) ) ) )
+      s += ( "-" * 38 ) + "\n"
     s += "PAUSE:           %20s\n" % ( self.getIsPaused() )
+    s += ( "-" * 38 ) + "\n"
     s += "MULTIPLAYER:     %20s\n" % ( self.getIsMultiplayer() )
+    s += ( "-" * 38 ) + "\n"
     s += "PLAYERS ENABLED: %20s\n" % ( self.getPlayersEnabled() )
+    s += ( "-" * 38 ) + "\n"
     s += "TURN NUM:        %20d\n" % ( self.getGameTurnCount() + 1 )
+    s += ( "-" * 38 ) + "\n"
     s += "TURN:            %20s\n" % ( self.getTurnColor() )
+    s += ( "-" * 38 ) + "\n"
     s += "CHECK:           %20s\n" % ( self.getIsCheck() )
+    s += ( "-" * 38 ) + "\n"
     s += "DRAW:            %20s\n" % ( self.getIsDraw() )
+    s += ( "-" * 38 ) + "\n"
     s += "CHECKMATE:       %20s\n" % ( self.getIsCheckMate() )
-    s += "GAMEOVER:        %20s" % ( self.isGameOver() )
+    s += ( "-" * 38 ) + "\n"
+    s += "GAMEOVER:        %20s\n" % ( self.isGameOver() )
+    s += ( "-" * 38 )
     return s
 
   def init(self):
@@ -50,18 +81,27 @@ class Game:
       self.aiColor = self.startingColor
     else:
       self.aiColor = self.getOpponentColor( self.startingColor )
+    
+    if self.testing and self.gameOver:
+      self.reset()
 
   def reset(self):
     self.aiColor = self.getOpponentColor( self.startingColor )
     self.turnColor = self.startingColor
     self.turnCount = 0
     self.gameTurnCount = 0
+    self.gameCount = self.gameCount + 1
+    if self.isDraw:
+      self.drawCount = self.drawCount + 1
     self.paused = False
-    self.defaultPlayersEnabled = True
-    self.defaultMultiplayer = False
+    if not self.testing:
+      self.defaultPlayersEnabled = True
+      self.defaultMultiplayer = False
     self.init()
-    if not self.playersEnabled:
+    if not self.testing and not self.playersEnabled:
       self.paused = True
+    if self.testing:
+      print ( self )
 
   def resetTurnCount(self):
     self.turnCount = 0
@@ -81,8 +121,17 @@ class Game:
   def getTurnCount(self):
     return self.turnCount
 
+  def getGameCount(self):
+    return self.gameCount
+
+  def getDrawCount(self):
+    return self.drawCount
+
   def getIsPaused(self):
     return self.paused
+
+  def getIsTesting(self):
+    return self.testing
 
   def getAIColor(self):
     return self.aiColor
@@ -126,6 +175,9 @@ class Game:
   def setTurnColor(self, color):
     self.turnColor = color
 
+  def setSuccessfulMove(self, b):
+    self.successfulMove = b
+
   #def toggleAIColor(self):
   #  self.aiColor = self.getOpponentColor( self.aiColor )
 
@@ -137,6 +189,9 @@ class Game:
 
   def togglePlayersEnabled(self):
     self.defaultPlayersEnabled = not self.defaultPlayersEnabled
+
+  def toggleIsTesting(self):
+    self.testing = not self.testing
 
   def isGameOver(self):
     return self.gameOver
@@ -152,6 +207,11 @@ class Game:
   def update(self, board, game, gameRules):
     self.init()
 
+    if not self.successfulMove:
+      return
+    else:
+      self.successfulMove = False
+
     kings = board.getKings()
 
     for color,king in kings.items():
@@ -159,16 +219,19 @@ class Game:
         self.setGameOver( True )
         self.isCheckMate = True
         self.inCheckMate = king
+        self.successfulMove = True
         break
       if gameRules.isInCheck( board, king.getPos() ):
         self.isCheck = True
         self.inCheck = king
+        self.successfulMove = True
         break
 
     if gameRules.isDraw( board, game, kings[ PieceColor.LIGHT ].getPos(), 
                          kings[ PieceColor.DARK ].getPos() ):
       self.isDraw = True
       self.setGameOver( True )
+      self.successfulMove = True
 
   def checkToResetTurnCount(self, board, move ):
     innerMove = move

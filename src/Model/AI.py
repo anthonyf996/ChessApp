@@ -36,15 +36,22 @@ class AI:
 
   def getWeightedMove(self, board, game, move, color):
     weight = 0
+    originalMove = move
 
     if random.random() <= self.encourageForwardMovementRate:
       weight += self.calculateForwardMovementScore( move, color )
     weight += self.calculateCaptureScore( board, move )
     weight += self.calculateProgressToUpgradePonScore( board, move, color )
 
+    move = self.Board.checkToWrapMoveToUnsetEnPassant( move )
+
     self.performMove( move )
 
-    weight += self.calculateInconsistentStateScore( board, color)
+    #weight += self.calculateInconsistentStateScore( board, color)
+    if board.isInInconsistentState( color ):
+      self.undoMove( move )
+      return ( -10000, None )
+
     if random.random() <= self.encourageCastlingRate:
       weight += self.calculateCastleScore( move )
     weight += self.calculateEnPassantScore( move )
@@ -55,7 +62,7 @@ class AI:
 
     self.undoMove( move )
 
-    return ( weight, move )
+    return ( weight, originalMove )
 
   def calculateForwardMovementScore(self, move, color):
     x1, y1 = move.getStartPos()
@@ -75,7 +82,8 @@ class AI:
       weightsDict = { PieceType.QUEEN : 100, PieceType.ROOK : 80,
                       PieceType.BISHOP : 60, PieceType.KNIGHT : 40,
                       PieceType.PON : 20 }
-      weight += self.getPieceTypeWeight( target, weightsDict )
+      if target is not None:
+        weight += self.getPieceTypeWeight( target, weightsDict )
     return weight
 
   def getPieceTypeWeight(self, piece, weightsDict):

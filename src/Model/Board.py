@@ -20,6 +20,18 @@ class Board:
     self.board = self.getInitBoard()
     self.setupBoard()
 
+  def __str__(self):
+    s = ""
+    for r in self.board:
+      for p in r:
+        if p is None:
+          s += "____"
+        else:
+          s += " %s " % ( str( p ) )
+        s += " "
+      s += "\n"
+    return s
+
   def getInitBoard(self):
     board = []
     for y in range(0, self.numRows):
@@ -121,7 +133,7 @@ class Board:
   def move(self, move):
     startPiece = self.getPiece( move.getStartPos() )
 
-    move = self.checkToWrapMoveToUnsetEnPassant( move )
+    #move = self.checkToWrapMoveToUnsetEnPassant( move )
 
     move.execute()
 
@@ -148,6 +160,9 @@ class Board:
 
   def clearCanEnPassant(self):
     self.canEnPassant = []
+
+  def popCanEnPassant(self):
+    del self.canEnPassant[-1]
 
   def isInDanger(self, currPos):
     return BoardQueryIsInDanger().queryBoard( self, currPos )
@@ -186,8 +201,11 @@ class Board:
     return False
 
   def stillInCheckAfterMove(self, king, move):
+    move = self.checkToWrapMoveToUnsetEnPassant( move )
     self.unprotectedMove( move )
-    stillInCheck = self.isInDanger( king.getPos() )
+    stillInCheck = True
+    if king is not None:
+      stillInCheck = self.isInDanger( king.getPos() )
     self.undo( move )
     return stillInCheck
 

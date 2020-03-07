@@ -8,13 +8,14 @@ from EnPassantCommand import EnPassantCommand
 
 class MoveController:
   def __init__(self, MoveHistory):
-    self.reset()
     self.MoveHistory = MoveHistory
+    self.reset()
 
   def reset(self):
     self.currPos = None
     self.currPiece = None
     self.prevPos = None
+    self.MoveHistory.reset()
 
   def getCurrPos(self):
     return self.currPos
@@ -83,12 +84,14 @@ class MoveController:
 
   def performMove(self, board, game, move):
     if move is not None:
+      move = board.checkToWrapMoveToUnsetEnPassant( move )
       successful = board.move( move )
       if successful:
         print( "[ %s ]: %s" % ( game.getTurnColor(), str( move ) ) )
         self.MoveHistory.add( ( move, self.prevPos, game.getTurnCount(), game.getTurnColor() ) )
         game.checkToResetTurnCount( board, move )
         game.advanceTurn()
+        game.setSuccessfulMove( True )
         self.prevPos = move.getEndPos()
         return True
     return False

@@ -30,7 +30,7 @@ class EnPassantCommand(Command):
     targetX, targetY = self.targetPos
     if pon.getColor() == PieceColor.LIGHT:
       self.newPonPos = ( targetX, targetY - 1 )
-    else:
+    elif pon.getColor() == PieceColor.DARK:
       self.newPonPos = ( targetX, targetY + 1 )
    
     self.board.addPiece( self.newPonPos, pon )

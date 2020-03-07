@@ -6,7 +6,7 @@ class BoardQueryIsInDanger(BoardQuery):
     self.default = False
 
   def shouldSkipPiece(self, subjectPiece, currPiece):
-    if currPiece is None or currPiece.getColor() == subjectPiece.getColor():
+    if currPiece is None or subjectPiece is not None and currPiece.getColor() == subjectPiece.getColor():
       return True
     return False
 

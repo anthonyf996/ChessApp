@@ -28,4 +28,4 @@ class UnsetEnPassantCommand(Command):
   def undo(self):
     for i in range(0,len(self.pons)):
       self.pons[ i ].setCanEnPassant( self.EnPassantDirection[ i ] )
-      self.board.registerCanEnPassant( pon )
+      self.board.registerCanEnPassant( self.pons[i] )

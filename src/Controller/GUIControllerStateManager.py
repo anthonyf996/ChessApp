@@ -6,10 +6,10 @@ from GUIPieceUpgradeState import GUIPieceUpgradeState
 from GUIPauseState import GUIPauseState 
 
 class GUIControllerStateManager(ControllerStateManager):
-  def __init__(self, View, Model, MoveController, InputController, AI, HintManager):
+  def __init__(self, View, Model, Controller, MoveController, InputController, AI, HintManager):
     super().__init__( View, Model, MoveController, InputController, AI, HintManager)
     self.states[ StateType.MAIN ] = GUIMainState( self, self.View, self.Model,\
-                                      self.MoveController, self.InputController,\
+                                      Controller, self.MoveController, self.InputController,\
                                       self.HintManager )
     self.states[ StateType.PAUSE ] = GUIPauseState( self, self.View, self.Model,\
                                       self.MoveController, self.InputController )
