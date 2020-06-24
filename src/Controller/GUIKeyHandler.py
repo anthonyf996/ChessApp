@@ -53,7 +53,8 @@ class GUIKeyHandler(KeyHandler):
                     "TOGGLE PLAYERS ENABLED" : "a",
                     "TOGGLE TESTING" : "t",
                     "SHOW GAME STATE" : "s",
-                    "SHOW CONTROLS" : "c"
+                    "SHOW CONTROLS" : "c",
+                    "QUIT" : "q"
                   }
 
     print ( "-" * 30 )

@@ -44,8 +44,8 @@ class ConsoleControllerFactory(ControllerFactory):
   def createMoveController(self, MoveHistory):
     return MoveController( MoveHistory )
 
-  def createMoveHistory(self):
-    return MoveHistory()
+  def createMoveHistory(self, Model):
+    return MoveHistory( Model.getBoard() )
 
   def createKeyHandler(self, Model, MoveController, HintManager):
     return ConsoleKeyHandler( Model.getBoard(), Model.getGame(), MoveController, HintManager )
@@ -56,7 +56,7 @@ class ConsoleControllerFactory(ControllerFactory):
   def createAI(self, Model):
     return AI( Model, Model.getBoard(), Model.getGame() )
 
-  def createStateManager(self, View, Model, MoveController, InputController,\
+  def createStateManager(self, View, Model, Controller, MoveController, InputController,\
                          AI, HintManager):
     return ConsoleControllerStateManager( View, Model, MoveController,\
                                             InputController, AI, HintManager )

@@ -14,6 +14,13 @@ class AI:
     self.Game = Game
     self.encourageForwardMovementRate = 0.01
     self.encourageCastlingRate = 0.8
+    self.FORWARD_MOVEMENT_WEIGHT = 20
+    self.CASTLE_WEIGHT = 20
+    self.EN_PASSANT_WEIGHT = 20
+    self.UPGRADE_PIECE_WEIGHT = 20
+    self.PLACE_IN_CHECK_WEIGHT = 20
+    self.PLACE_IN_CHECKMATE_WEIGHT = 1000
+    self.INCONSISTENT_STATE_WEIGHT = -10000
 
   def performMove(self, move):
     move.execute()
@@ -49,7 +56,7 @@ class AI:
     #weight += self.calculateInconsistentStateScore( board, color)
     if board.isInInconsistentState( color ):
       self.undoMove( move )
-      return ( -10000, None )
+      return ( self.INCONSISTENT_STATE_WEIGHT, None )
 
     if random.random() <= self.encourageCastlingRate:
       weight += self.calculateCastleScore( move )
@@ -68,10 +75,10 @@ class AI:
     x2, y2 = move.getEndPos()
     if color == PieceColor.LIGHT:
       if ( y2 < y1 ):
-        return 20
+        return self.FORWARD_MOVEMENT_WEIGHT
     else:
       if ( y2 > y1 ):
-        return 20
+        return self.FORWARD_MOVEMENT_WEIGHT
     return 0
 
   def calculateCaptureScore(self, board, move):
@@ -92,7 +99,7 @@ class AI:
 
   def calculateInconsistentStateScore(self, board, color):
     if board.isInInconsistentState( color ):
-      return -10000
+      return self.INCONSISTENT_STATE_WEIGHT
     return 0
 
   def calculateCastleScore(self, move):
@@ -101,7 +108,7 @@ class AI:
     else:
       innerMove = move
     if isinstance( innerMove, CastleCommand ):
-      return 20
+      return self.CASTLE_WEIGHT
     return 0
 
   def calculateEnPassantScore(self, move):
@@ -110,7 +117,7 @@ class AI:
     else:
       innerMove = move
     if isinstance( innerMove, EnPassantCommand ):
-      return 20
+      return self.EN_PASSANT_WEIGHT
     return 0
 
   def calculateProgressToUpgradePonScore(self, board, move, color):
@@ -124,19 +131,19 @@ class AI:
     if isinstance( move, MoveWithSideEffects ):
       command = move.getCommand( 0 )
       if isinstance( command, PieceUpgradeCommand ):
-        return 20
+        return self.UPGRADE_PIECE_WEIGHT
     return 0
 
   def calculatePlaceOpponentInCheckScore(self, game, color):
     if game.getIsCheck():
       if game.getInCheck().getColor() == game.getOpponentColor( color ):
-        return 20
+        return self.PLACE_IN_CHECK_WEIGHT
     return 0
 
   def calculatePlaceOpponentInCheckMateScore(self, game, color):
     if game.getIsCheckMate():
       if game.getInCheckMate().getColor() == game.getOpponentColor( color ):
-        return 1000
+        return self.PLACE_IN_CHECKMATE_WEIGHT
     return 0
 
   def calculateSacrificePieceScore(self, board, color):
@@ -150,13 +157,12 @@ class AI:
               weightsDict = { PieceType.QUEEN : 90, PieceType.ROOK : 70,
                               PieceType.BISHOP : 60, PieceType.KNIGHT : 50,
                               PieceType.PON : 40 }
-              weight -= self.getPieceTypeWeight( piece, weightsDict )
             # Further discourage losing own piece without protection
             else:
               weightsDict = { PieceType.QUEEN : 120, PieceType.ROOK : 100,
                               PieceType.BISHOP : 80, PieceType.KNIGHT : 60,
                               PieceType.PON : 40 }
-              weight -= self.getPieceTypeWeight( piece, weightsDict )
+            weight -= self.getPieceTypeWeight( piece, weightsDict )
     return weight
 
   def getMaxMove(self, weightedMoves):
@@ -170,9 +176,8 @@ class AI:
       elif weight == maxWeight:
         maxMoves.append( move )
 
-    if len( maxMoves ) == 0:
-      move = None
-    else:
+    move = None
+    if len( maxMoves ) > 0:
       move = maxMoves[ random.randint( 0, len( maxMoves ) - 1 ) ]
 
     return move
