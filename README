@@ -1,4 +1,19 @@
-NOTE: At the moment, the pygame package is not compatible with MacOS Mojave.
-      More info about this issue can be found here: https://github.com/pygame/pygame/issues/555
-      Unfortunately, any users running MacOS Mojave will not be able to run the app until a
-      fix is released.
+A complete, object-oriented chess implementation written in python3 using the pygame library.
+
+All official chess rules and mechanics are supported.
+
+To run the app, from the src/ directory, run:
+
+  $ python3 chess.py
+  
+DEPENDENCIES: pygame
+
+To install pygame with pip3, run:
+
+  $ pip3 install pygame
+
+DEMO: https://www.youtube.com/playlist?list=PLDlLzU2EysQjMh3X1WvNVpr9O8uaTgdSv
+
+NOTE: The pygame package may not be compatible with MacOS Mojave and attempting to run any program
+      using it may result in an infinite loop. More info about this issue and a potential fix can be 
+      found here: https://github.com/pygame/pygame/issues/555
