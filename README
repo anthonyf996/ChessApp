@@ -14,8 +14,6 @@ To install pygame with pip3, run:
 
 DEMO: https://www.youtube.com/playlist?list=PLDlLzU2EysQjMh3X1WvNVpr9O8uaTgdSv
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLDlLzU2EysQjMh3X1WvNVpr9O8uaTgdSv" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 NOTE: The pygame package may not be compatible with MacOS Mojave and attempting to run any program
       using it may result in an infinite loop. More info about this issue and a potential fix can be 
       found here: https://github.com/pygame/pygame/issues/555
